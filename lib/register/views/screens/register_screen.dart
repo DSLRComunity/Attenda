@@ -4,25 +4,69 @@ import 'package:attenda/register/business_logic/register_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../login/views/widgets/custom_button.dart';
 import '../../../login/views/widgets/custom_text_field.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
 
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passController = TextEditingController();
   final firstNameController = TextEditingController();
   final latNameController = TextEditingController();
   final confirmPassController = TextEditingController();
+  final personalPhoneNumberController = TextEditingController();
+  final technicalSupportNumberController = TextEditingController();
+  final subjectController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late String email;
   late String password;
-   String phone='01064339042';
+  late String phone;
   late String firstName;
   late String lastName;
+
+  //late String subject;
+  late String technicalSupportNumber;
+  late String governorate;
+  late String expectedStudentsNum;
+
+  List<String> expectedStudentsList = [
+    '1-100',
+    '100-300',
+    '300-500',
+    '500-1000',
+    '1000 - .......',
+  ];
+  List<String> governorates = [
+    'Cairo',
+    'Beni-Suef',
+    'Giza',
+  ];
+
+  List<DropdownMenuItem> getMenuItems(List<String> list) {
+    List<DropdownMenuItem> menuItems = list
+        .map((item) => DropdownMenuItem(
+              value: item,
+              child: Text(item),
+            ))
+        .toList();
+    return menuItems;
+  }
+
+  @override
+  void initState() {
+    governorate = governorates[0];
+    expectedStudentsNum = expectedStudentsList[0];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +74,7 @@ class RegisterScreen extends StatelessWidget {
       key: formKey,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.130,
+          horizontal: MediaQuery.of(context).size.width * 0.1,
           vertical: MediaQuery.of(context).size.height * 0.04,
         ),
         child: BlocListener<RegisterCubit,RegisterState>(
@@ -130,6 +174,145 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 15.h),
+                LayoutBuilder(
+                  builder: (context, constraints) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'personal phone number',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(color: Colors.black, fontSize: 18.sp),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          SizedBox(
+                            width: constraints.maxWidth * 0.45,
+                            child: MyTextField(
+                              onSave: (value) {
+                                phone = value!;
+                              },
+                              myController: personalPhoneNumberController,
+                              validate: (String? value) {
+                                validateMobile(value);
+                              },
+                              isPassword: false,
+                              type: TextInputType.phone,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Technical support number',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(color: Colors.black, fontSize: 18.sp),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          SizedBox(
+                            width: constraints.maxWidth * 0.45,
+                            child: MyTextField(
+                              onSave: (value) {
+                                technicalSupportNumber = value!;
+                              },
+                              myController: technicalSupportNumberController,
+                              validate: (String? value) {
+                                validateMobile(value);
+                              },
+                              isPassword: false,
+                              type: TextInputType.phone,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 15.h),
+                LayoutBuilder(
+                  builder: (context, constraints) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: constraints.maxWidth * .45,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'governorate',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                      color: Colors.black, fontSize: 18.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            StatefulBuilder(
+                              builder: (context, setState) => SizedBox(
+                                  width: constraints.maxWidth * .45,
+                                  child: DropdownButton<dynamic>(
+                                    value: governorate,
+                                    onChanged: (Object? newValue) {
+                                      setState(() {
+                                        governorate = newValue.toString();
+                                      });
+                                    },
+                                    items: getMenuItems(governorates),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: constraints.maxWidth * .45,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Technical support number',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                      color: Colors.black, fontSize: 18.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            StatefulBuilder(
+                              builder: (context, setState) => SizedBox(
+                                  width: constraints.maxWidth * .45,
+                                  child: DropdownButton<dynamic>(
+                                    value: expectedStudentsNum,
+                                    onChanged: (Object? newValue) {
+                                      setState(() {
+                                        expectedStudentsNum =
+                                            newValue.toString();
+                                      });
+                                    },
+                                    items: getMenuItems(expectedStudentsList),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 15.h),
                 Text(
                   'Email',
                   style: Theme.of(context)
@@ -217,20 +400,24 @@ class RegisterScreen extends StatelessWidget {
                   }else{
                     return CustomLoginButton(
                         onPressed: () async {
-                          if (formKey.currentState!.validate()) {
-                            formKey.currentState!.save();
-                            await RegisterCubit.get(context).register(
-                                firstName: firstName,
-                                lastName: lastName,
-                                email: email,
-                                password: password,
-                                phone: phone);
-                            goToLogin(context);
-                          }
-                        },
-                        text: 'Sign up');
-                }
-                },),
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              await RegisterCubit.get(context).register(
+                                  firstName: firstName,
+                                  lastName: lastName,
+                                  email: email,
+                                  password: password,
+                                  phone: phone,
+                                  expectedStudentsNum: expectedStudentsNum,
+                                  governorate: governorate,
+                                  technicalSupportNum: technicalSupportNumber);
+                              goToLogin(context);
+                            }
+                          },
+                          text: 'Sign up');
+                    }
+                  },
+                ),
                 SizedBox(
                   height: 10.h,
                 ),
@@ -259,6 +446,17 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
+  String? validateMobile(String? value) {
+    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = RegExp(pattern);
+    if (value!.isEmpty) {
+      return 'Please enter mobile number';
+    } else if (!regExp.hasMatch(value)) {
+      return 'Please enter valid mobile number';
+    }
+    return null;
+  }
+
   void goToLogin(BuildContext context) {
     HomeLoginCubit.get(context).changeToLogin();
     emailController.dispose();
@@ -266,6 +464,8 @@ class RegisterScreen extends StatelessWidget {
     confirmPassController.dispose();
     firstNameController.dispose();
     latNameController.dispose();
-
+    personalPhoneNumberController.dispose();
+    technicalSupportNumberController.dispose();
+    subjectController.dispose();
   }
 }

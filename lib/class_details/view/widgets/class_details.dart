@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+
 import '../../../classes/models/class_model.dart';
 import '../../../core/colors.dart';
 import '../../business_logic/class_details_cubit.dart';
@@ -34,9 +35,20 @@ class _ClassDetailsState extends State<ClassDetails> {
     placeController.text = widget.currentClass.centerName;
     priceController.text = widget.currentClass.classPrice.toString();
     timeController.text = widget.currentClass.time;
-    // attendanceController.text = widget.currentClass.students.length.toString();
+    attendanceController.text =
+        ClassDetailsCubit.get(context).numOfAttendantStudents.toString();
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    dateController.dispose();
+    placeController.dispose();
+    priceController.dispose();
+    attendanceController.dispose();
+    timeController.dispose();
+    super.dispose();
   }
 
   final TextEditingController dateController = TextEditingController();
@@ -49,11 +61,13 @@ class _ClassDetailsState extends State<ClassDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ClassDetailsCubit,ClassDetailsState>(
+    attendanceController.text =
+        ClassDetailsCubit.get(context).numOfAttendantStudents.toString();
+    return BlocListener<ClassDetailsCubit, ClassDetailsState>(
       listener: (context, state) {
-        if(state is UpdateDetailsSuccess){
+        if (state is UpdateDetailsSuccess) {
           showSuccessToast(context: context, message: 'Updated Successfully');
-        }else if(state is UpdateDetailsError){
+        } else if (state is UpdateDetailsError) {
           showErrorToast(context: context, message: 'Error in update');
         }
       },
@@ -328,7 +342,9 @@ class _ClassDetailsState extends State<ClassDetails> {
                                 context: context,
                                 builder: (context) {
                                   return AttendanceDialog(
-                                      attendanceStudents: StudentsCubit.get(context).students!, currentClass: widget.currentClass);
+                                      attendanceStudents:
+                                          StudentsCubit.get(context).students!,
+                                      currentClass: widget.currentClass);
                                 });
                           }),
                       SizedBox(
@@ -347,12 +363,14 @@ class _ClassDetailsState extends State<ClassDetails> {
                                   BorderRadius.all(Radius.circular(10.r)),
                             ),
                             disabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: MyColors.grey),
+                              borderSide:
+                                  const BorderSide(color: MyColors.grey),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.r)),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: MyColors.grey),
+                              borderSide:
+                                  const BorderSide(color: MyColors.grey),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.r)),
                             ),

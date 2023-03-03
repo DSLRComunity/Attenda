@@ -3,7 +3,7 @@ import 'package:attenda/core/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import '../../business_logic/classes_cubit/classes_cubit.dart';
+
 import '../../models/class_model.dart';
 import 'class_card_info.dart';
 
@@ -71,11 +71,11 @@ class ClassItem extends StatelessWidget {
                   Icons.delete,
                   color: Colors.white,
                 ),
-                onPressed: () async{
-                  await ClassesCubit.get(context).deleteClass(getClassName(currentClass),currentClass.date.toString());
-                  await ClassesCubit.get(context).getAllClasses();
+                onPressed: () async {
+                  // await ClassesCubit.get(context).deleteClass(getClassName(currentClass),currentClass.date.toString());
+                  // await ClassesCubit.get(context).getAllClasses();
                 },
-              )
+              ),
             ],
           ),
         ),

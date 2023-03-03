@@ -1,8 +1,9 @@
 import 'package:attenda/core/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -31,4 +32,18 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
+  bool isVisible = true;
+  var visibleIcon = Icons.visibility;
+
+  dynamic changePassVisibility() {
+    if (isVisible == true) {
+      visibleIcon = Icons.visibility_off;
+      isVisible = false;
+      emit(ChangePassVisibilityState());
+    } else {
+      visibleIcon = Icons.visibility;
+      isVisible = true;
+      emit(ChangePassVisibilityState());
+    }
+  }
 }

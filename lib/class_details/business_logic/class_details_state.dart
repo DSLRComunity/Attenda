@@ -27,13 +27,22 @@ class UpdateDetailsSuccess extends ClassDetailsState {}
 class UpdateDetailsLoad extends ClassDetailsState {}
 class UpdateDetailsError extends ClassDetailsState {
   String error;
+
   UpdateDetailsError(this.error);
 }
 
 //////////////////////////
 
 class UpdateHistoryLoad extends ClassDetailsState {}
+
 class UpdateHistorySuccess extends ClassDetailsState {}
+
 class UpdateHistoryError extends ClassDetailsState {}
 
+////////////////////////
 
+class GetClassHistorySuccess extends ClassDetailsState {}
+
+class GetClassHistoryLoad extends ClassDetailsState {}
+
+class GetClassHistoryError extends ClassDetailsState {}

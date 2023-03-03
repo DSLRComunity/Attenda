@@ -1,8 +1,8 @@
 import 'package:attenda/core/colors.dart';
-import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../classes/models/class_model.dart';
 import '../../../classes/view/widgets/custom_button.dart';
 import '../../../students/models/students_model.dart';
@@ -104,19 +104,20 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
                         itemBuilder: (context, index) => Container(
                           decoration: BoxDecoration(
                               border:
-                                  Border.all(color: Colors.grey, width: 1.w)),
+                                  Border.all(color: Colors.grey, width: 0.5.w)),
                           child: Row(
                             children: [
-                              Text(
-                                  searchList[index].name),
+                              Text(searchList[index].name),
                               SizedBox(
                                 width: 5.w,
                               ),
                               const Spacer(),
                               CustomButton(
                                   text: 'Attend',
-                                  onPressed: () async{
-                                  await  ClassDetailsCubit.get(context).addToAttendance(searchList[index], widget.currentClass);
+                                  onPressed: () async {
+                                    await ClassDetailsCubit.get(context)
+                                        .addToAttendance(searchList[index],
+                                            widget.currentClass);
                                   }),
                             ],
                           ),

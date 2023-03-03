@@ -1,4 +1,3 @@
-import 'package:attenda/class_details/business_logic/class_details_cubit.dart';
 import 'package:attenda/class_details/view/screens/class_details_screen.dart';
 import 'package:attenda/classes/models/class_model.dart';
 import 'package:attenda/core/routes.dart';
@@ -12,6 +11,7 @@ import 'package:attenda/students/models/students_model.dart';
 import 'package:attenda/students/view/screens/edit_student_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../students/view/screens/new_student_screen.dart';
 
 class AppRouter {
@@ -38,9 +38,7 @@ class AppRouter {
       case Routes.classDetailsRoute:
         final currentClass = settings.arguments as ClassModel;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                create: (_) => ClassDetailsCubit(),
-                child: ClassDetailsScreen(currentClass: currentClass)));
+            builder: (_) => ClassDetailsScreen(currentClass: currentClass));
     }
     return null;
   }

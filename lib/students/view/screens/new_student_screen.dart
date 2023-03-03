@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../../classes/view/widgets/custom_button.dart';
 import '../../../classes/view/widgets/custom_text_field.dart';
 import '../../../classes/view/widgets/toast.dart';
 import '../../business_logic/add_student_cubit/add_student_cubit.dart';
 import '../../business_logic/students_cubit/students_cubit.dart';
 import '../../models/students_model.dart';
-import '../widgets/drop_down.dart';
 import '../widgets/show_student_dialog.dart';
 
 class NewStudentScreen extends StatefulWidget {
@@ -25,18 +25,43 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController parentPhoneController = TextEditingController();
+  TextEditingController nationalIdController = TextEditingController();
+
+  List<DropdownMenuItem> menuItems = [];
 
   late String name;
   late String phone;
   late String parentPhone;
   late String id;
+  late String className;
+  late String nationalId;
+
+  @override
+  void initState() {
+    menuItems = getMenuItems(context);
+    className = menuItems[0].value;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    parentPhoneController.dispose();
+    nationalIdController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyColors.black,
-        title:  Text('Add New Student',style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: MyColors.primary)),
+        title: Text('Add New Student',
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: MyColors.primary)),
         centerTitle: true,
       ),
       body: BlocConsumer<AddStudentCubit, AddStudentState>(
@@ -49,6 +74,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
             nameController.clear();
             phoneController.clear();
             parentPhoneController.clear();
+            nationalIdController.clear();
           }
         },
         builder: (context, state) {
@@ -97,7 +123,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     phone = value!;
                                   },
                                   validate: (value) {
-                                    return validation(value, 'phone number');
+                                    validateMobile(value);
                                   }),
                             ),
                           ],
@@ -109,10 +135,19 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
-                             height: 60,
-                              child: MyDropDown(
-                                menuItems:getMenuItems(context),   //  getMenuItems(context),
-                              ),
+                              width: 80.w,
+                              child: CustomTextFiled(
+                                  hint: 'last 7 digits in national id',
+                                  label: 'last 7 digits in national id',
+                                  controller: nationalIdController,
+                                  prefixIcon: Icons.numbers,
+                                  inputType: TextInputType.number,
+                                  onSave: (value) {
+                                    nationalId = value!;
+                                  },
+                                  validate: (value) {
+                                    return validateNationalId(value);
+                                  }),
                             ),
                             SizedBox(
                               width: 10.w,
@@ -129,8 +164,33 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     parentPhone = value!;
                                   },
                                   validate: (value) {
-                                    return validation(value, 'parent phone');
+                                    return validateMobile(value);
                                   }),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            StatefulBuilder(
+                              builder: (BuildContext context,
+                                  void Function(void Function()) setState) {
+                                return SizedBox(
+                                  height: 60,
+                                  child: DropdownButton<dynamic>(
+                                    value: className,
+                                    onChanged: (Object? newValue) {
+                                      setState(() {
+                                        className = newValue.toString();
+                                      });
+                                    },
+                                    items: getMenuItems(context),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -149,13 +209,16 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                         onPressed: () async {
                           if (formKey.currentState!.validate()) {
                             formKey.currentState!.save();
-                            await AddStudentCubit.get(context).addStudent(StudentsModel(
-                              name: name,
-                              phone: phone,
-                              className: 'Wednesday, 2:15 PM',
-                              parentPhone: parentPhone,
-                              id: _getStudentId(),
-                            ),context);
+                            await AddStudentCubit.get(context).addStudent(
+                              StudentsModel(
+                                name: name,
+                                phone: phone,
+                                className: className,
+                                parentPhone: parentPhone,
+                                id: _getStudentId(),
+                                nationalId: nationalId,
+                              ),
+                            );
                             await StudentsCubit.get(context).getAllStudents();
                           }
                         })),
@@ -175,7 +238,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
 
   List<DropdownMenuItem> getMenuItems(BuildContext context) {
     List<DropdownMenuItem> menuItems = ClassesCubit.get(context)
-        .classesNames()
+        .getClassesNames()
         .map((className) => DropdownMenuItem(
               value: className,
               child: Text(className),
@@ -183,7 +246,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
         .toList();
     return menuItems;
   }
-
   String _getStudentId() {
     id = const Uuid().v1();
     return id;
@@ -195,5 +257,25 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
     } else {
       return null;
     }
+  }
+
+  String? validateMobile(String? value) {
+    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = RegExp(pattern);
+    if (value!.isEmpty) {
+      return 'Please enter mobile number';
+    } else if (!regExp.hasMatch(value) ||
+        value.length < 11 ||
+        value.length > 11) {
+      return 'Please enter valid mobile number';
+    }
+    return null;
+  }
+
+  String? validateNationalId(String? value) {
+    if (value!.isEmpty || value.length != 7) {
+      return 'please enter last 7 digits in national id';
+    }
+    return null;
   }
 }

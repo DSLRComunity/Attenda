@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../core/colors.dart';
 import '../widgets/circular_chart.dart';
 import '../widgets/column_chart.dart';
@@ -24,8 +25,7 @@ class _DashBoardState extends State<DashBoard> {
   }
   @override
   Widget build(BuildContext context) {
-    var height=MediaQuery.of(context).size.height;
-    var width=MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -35,10 +35,10 @@ class _DashBoardState extends State<DashBoard> {
             children: [
               Container(
                 alignment: Alignment.topCenter,
-                height: MediaQuery.of(context).size.height*.35,
+                height: MediaQuery.of(context).size.height * .35,
                 color: Colors.transparent,
                 child: Container(
-                  height: MediaQuery.of(context).size.height*.25,
+                  height: MediaQuery.of(context).size.height * .25,
                   color: MyColors.black,
                 ),
               ),

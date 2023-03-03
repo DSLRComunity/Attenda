@@ -1,3 +1,4 @@
+import 'package:attenda/class_details/business_logic/class_details_cubit.dart';
 import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:attenda/core/strings.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'bloc_observer.dart';
 import 'core/cache_helper.dart';
 import 'core/firebase_config/firebase_config.dart';
@@ -26,22 +28,6 @@ void main() async{
     await Firebase.initializeApp();
   }
   await CacheHelper.init();
-  // print(uId);
-  // if(uId==null){
-  //   initialRoute=Routes.homeLoginRoute;
-  // }else{
-  //   initialRoute=Routes.homeRoute;
-  // }
-  // FirebaseAuth.instance.signOut();
-  //
-  // FirebaseAuth.instance.authStateChanges().listen((user) {
-  //   if(user==null){
-  //     initialRoute=Routes.homeLoginRoute;
-  //   }else{
-  //     initialRoute=Routes.homeRoute;
-  //   }
-  // });
-  // print(FirebaseAuth.instance.currentUser!.uid);
   String initialRoute;
   uId = CacheHelper.getData(key: 'uId');
   if (uId != null) {
@@ -58,6 +44,7 @@ void main() async{
 
 class MyApp extends StatelessWidget {
   final String initialRoute;
+
   const MyApp({super.key,required this.initialRoute});
 
   @override
@@ -69,14 +56,15 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_)=>ClassesCubit()),
-              BlocProvider(create: (_)=>StudentsCubit()),
+              BlocProvider(create: (_) => ClassesCubit()),
+              BlocProvider(create: (_) => StudentsCubit()),
+              BlocProvider(create: (_) => ClassDetailsCubit()),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: lightTheme,
               onGenerateRoute: AppRouter().generateRoute,
-             initialRoute: initialRoute,
+              initialRoute: initialRoute,
             ),
           );
         });
