@@ -32,14 +32,14 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
   @override
   void initState() {
     _getClassStudents();
-    quizStatus = quizStatuses[0];
-    hwStatus = false;
+    // quizStatus = quizStatuses[0];
+    // hwStatus = false;
     super.initState();
   }
 
   late String quizDegree;
-  late dynamic quizStatus;
-  late dynamic hwStatus;
+  // late dynamic quizStatus;
+  // late dynamic hwStatus;
   late String hwDegree;
   late String comment;
   late String pay;
@@ -100,25 +100,25 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: ClassDetailsCubit.get(context)
                               .classStudents
-                              .map((student) => Row(
-                                    children: [
-                                      Text(student.name),
-                                      SizedBox(
-                                        width: 5.w,
-                                      ),
-                                      const Spacer(),
-                                      CustomButton(
-                                          text: 'Attend',
-                                          onPressed: () async {
-                                            await ClassDetailsCubit.get(context)
-                                                .addToAttendance(student,
-                                                    widget.currentClass);
-                                            await ClassDetailsCubit.get(context)
-                                                .getClassHistory(
-                                                    widget.currentClass);
-                                          }),
-                                    ],
-                                  ))
+                              .map((student) => Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3.h),
+                                child: Row(
+                                      children: [
+                                        Text(student.name),
+                                        SizedBox(
+                                          width: 5.w,
+                                        ),
+                                        const Spacer(),
+                                        CustomButton(
+                                            text: 'Attend',
+                                            onPressed: () async {
+                                              await ClassDetailsCubit.get(context)
+                                                  .addToAttendance(student,
+                                                      widget.currentClass);
+                                            }),
+                                      ],
+                                    ),
+                              ))
                               .toList(), //getStudentsNames(context),
                         ),
                       ),
@@ -133,10 +133,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
     );
   }
 
-  List<String> quizStatuses = [
+  List<dynamic> quizStatuses = [
     'لم يؤدي',
-    'بداية',
-    'نهاية',
+    'بداية الحصة',
+    'نهاية الحصة',
   ];
 
   List<dynamic> hwStatuses = [
@@ -154,14 +154,13 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
   ];
 
   List<DataColumn> getColumns(List<String> columnsLabels) {
-    return columnsLabels
-        .map((label) => DataColumn(label: Text(label)))
-        .toList();
+    return columnsLabels.map((label) => DataColumn(label: Text(label))).toList();
   }
 
   List<DataRow> getRows(List<StudentHistory> histories) {
     List<DataRow> historyList = [];
     histories.forEach((history) {
+      print(history.quizStatus);
       historyList.add(DataRow(cells: [
         DataCell(
           TextFormField(
@@ -171,10 +170,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
         ),
         DataCell(
           DropdownButton<dynamic>(
-            value: quizStatus,
+            value:history.quizStatus,
             onChanged: (Object? newValue) async {
               setState(() {
-                quizStatus = newValue;
+                history.quizStatus = newValue;
               });
               await ClassDetailsCubit.get(context).updateHistory(
                   widget.currentClass,
@@ -189,19 +188,20 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                           hwDegree: history.hwDegree,
                           hwStatus: history.hwStatus,
                           quizDegree: history.quizDegree,
-                          quizStatus: quizStatus.toString())
+                          quizStatus: history.quizStatus)
                       .toJson());
             },
             items: <DropdownMenuItem<dynamic>>[
-              DropdownMenuItem(
-                value: quizStatuses[0],
-                child: Text(quizStatuses[0]),
+              const DropdownMenuItem(
+                value: 'لم يؤدي',
+                child: Text('لم يؤدي'),
               ),
               DropdownMenuItem(
-                  value: quizStatuses[1], child: Text(quizStatuses[1])),
+                  value: quizStatuses[1],
+                  child: const Text('بداية الحصة')),
               DropdownMenuItem(
                 value: quizStatuses[2],
-                child: Text(quizStatuses[2]),
+                child: const Text('نهاية الحصة'),
               ),
             ],
           ),
@@ -231,10 +231,10 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
             showEditIcon: true),
         DataCell(
           DropdownButton<dynamic>(
-            value: hwStatus,
+            value: history.hwStatus,
             onChanged: (Object? newValue) {
               setState(() {
-                hwStatus = newValue;
+                history.hwStatus = newValue;
                 ClassDetailsCubit.get(context).updateHistory(
                     widget.currentClass,
                     history.id,
@@ -246,9 +246,9 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
                             className: history.className,
                             costPurchased: history.costPurchased,
                             hwDegree: history.hwDegree,
-                            hwStatus: hwStatus,
+                            hwStatus: history.hwStatus,
                             quizDegree: history.quizDegree,
-                            quizStatus: quizStatus.toString())
+                            quizStatus: history.quizStatus)
                         .toJson());
               });
             },
@@ -340,51 +340,4 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
     return historyList;
   }
 
-//
-// Future editQuizStatus(StudentsModel editStudent, bool quizStatus) async {
-//   setState(() => widget.currentClass.students =
-//           widget.currentClass.students.map((student) {
-//         final isEditedStudent = student == editStudent;
-//         if (isEditedStudent) {
-//           return student.edit(
-//               quizStatus: quizStatus, date: widget.currentClass.date);
-//         } else {
-//           return student;
-//         }
-//       }).toList());
-// }
-//
-// Future editHwStatus(StudentsModel editStudent, bool hwStatus) async {
-//   setState(() => widget.currentClass.students =
-//           widget.currentClass.students.map((student) {
-//         final isEditedStudent = student == editStudent;
-//         if (isEditedStudent) {
-//           return student.edit(
-//               hwStatus: hwStatus, date: widget.currentClass.date);
-//         } else {
-//           return student;
-//         }
-//       }).toList());
-// }
-//
-// Future editQuizDegree(StudentsModel editStudent) async {
-//   // List<StudentModel>students= widget.currentClass.students;
-//   final quizDegree = await showTextDialog(
-//     context,
-//     title: 'Change quiz degree',
-//     value: editStudent
-//         .studentHistory!['${widget.currentClass.date}']!.quizDegree,
-//   );
-//   setState(() => widget.currentClass.students =
-//           widget.currentClass.students.map((student) {
-//         final isEditedStudent = student == editStudent;
-//         if (isEditedStudent) {
-//           return student.edit(
-//               quizDegree: quizDegree, date: widget.currentClass.date);
-//         } else {
-//           return student;
-//         }
-//       }).toList());
-// }
-//
 }

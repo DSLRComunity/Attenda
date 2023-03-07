@@ -3,8 +3,7 @@ import 'package:attenda/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:uuid/uuid.dart';
-
+import 'package:intl/intl.dart';
 import '../../../classes/view/widgets/custom_button.dart';
 import '../../../classes/view/widgets/custom_text_field.dart';
 import '../../../classes/view/widgets/toast.dart';
@@ -23,6 +22,7 @@ class NewStudentScreen extends StatefulWidget {
 class _NewStudentScreenState extends State<NewStudentScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
+  TextEditingController parentNameController=TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController parentPhoneController = TextEditingController();
   TextEditingController nationalIdController = TextEditingController();
@@ -30,22 +30,26 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
   List<DropdownMenuItem> menuItems = [];
 
   late String name;
+  late String parentName;
   late String phone;
   late String parentPhone;
   late String id;
   late String className;
   late String nationalId;
+  late String gender;
 
   @override
   void initState() {
     menuItems = getMenuItems(context);
     className = menuItems[0].value;
+    gender=genders[0];
     super.initState();
   }
 
   @override
   void dispose() {
     nameController.dispose();
+    parentNameController.dispose();
     phoneController.dispose();
     parentPhoneController.dispose();
     nationalIdController.dispose();
@@ -79,7 +83,11 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
         },
         builder: (context, state) {
           return SingleChildScrollView(
-            child: Column(
+            child:ClassesCubit.get(context).classes!.isEmpty?
+                Column(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,children: const [
+                  Text('Please Add a Class First !',)
+                ],):
+            Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
@@ -109,9 +117,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                   }),
                             ),
                             SizedBox(
-                              width: 10.w,
-                            ),
-                            SizedBox(
                               width: 80.w,
                               child: CustomTextFiled(
                                   hint: 'Phone Number',
@@ -126,14 +131,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     validateMobile(value);
                                   }),
                             ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
                             SizedBox(
                               width: 80.w,
                               child: CustomTextFiled(
@@ -149,8 +146,28 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     return validateNationalId(value);
                                   }),
                             ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             SizedBox(
-                              width: 10.w,
+                              width: 80.w,
+                              child: CustomTextFiled(
+                                  hint: 'Enter parent name',
+                                  label: 'parent name',
+                                  controller: parentNameController,
+                                  prefixIcon: Icons.person,
+                                  inputType: TextInputType.name,
+                                  onSave: (value) {
+                                    parentName = value!;
+                                  },
+                                  validate: (value) {
+                                    return validation(value, 'parent name');
+                                  }),
                             ),
                             SizedBox(
                               width: 80.w,
@@ -167,32 +184,68 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     return validateMobile(value);
                                   }),
                             ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
                             StatefulBuilder(
                               builder: (BuildContext context,
                                   void Function(void Function()) setState) {
-                                return SizedBox(
-                                  height: 60,
-                                  child: DropdownButton<dynamic>(
-                                    value: className,
-                                    onChanged: (Object? newValue) {
-                                      setState(() {
-                                        className = newValue.toString();
-                                      });
-                                    },
-                                    items: getMenuItems(context),
+                                return Container(
+                                  height: 50.h,
+                                  width: 80.w,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: MyColors.grey),
+                                      borderRadius: BorderRadius.all(Radius.circular(10.r))
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: DropdownButton<dynamic>(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      menuMaxHeight: double.maxFinite,
+                                      value: gender,
+                                      onChanged: (Object? newValue) {
+                                        setState(() {
+                                          gender = newValue.toString();
+                                        });
+                                      },
+                                      items: getGenderItems(),
+                                    ),
                                   ),
                                 );
                               },
                             ),
                           ],
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        StatefulBuilder(
+                          builder: (context, setState) {
+                            return Container(
+                              width: 80.w,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: MyColors.grey),
+                                  borderRadius: BorderRadius.all(Radius.circular(10.r))
+                              ),
+                              child: StatefulBuilder(
+                                builder: (BuildContext context, void Function(void Function()) setState) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: DropdownButton<dynamic>(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      menuMaxHeight: double.maxFinite,
+                                      value: className,
+                                      onChanged: (Object? newValue) {
+                                        setState(() {
+                                          className = newValue.toString();
+                                        });
+                                      },
+                                      items: getMenuItems(context),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         ),
                         SizedBox(
                           height: 20.h,
@@ -213,10 +266,12 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                               StudentsModel(
                                 name: name,
                                 phone: phone,
+                                parentName: parentName,
                                 className: className,
                                 parentPhone: parentPhone,
-                                id: _getStudentId(),
+                                id: _getStudentId(gender),
                                 nationalId: nationalId,
+                                gender: gender
                               ),
                             );
                             await StudentsCubit.get(context).getAllStudents();
@@ -246,11 +301,29 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
         .toList();
     return menuItems;
   }
-  String _getStudentId() {
-    id = const Uuid().v1();
-    return id;
+
+  List<String>genders=['Male','Female'];
+  List<DropdownMenuItem> getGenderItems() {
+    List<DropdownMenuItem> genderItems = genders
+        .map((gender) => DropdownMenuItem(
+      value: gender,
+      child: Text(gender),
+    ))
+        .toList();
+    return genderItems;
   }
 
+  String _getStudentId(String gender) {
+String date=DateFormat('MM-dd').format(DateTime.now());
+String first=nationalId.substring(0,4);
+String last=nationalId.substring(4,7);
+String genderId=gender[0];
+
+    id = 'st$genderId$first$date$last';
+    return id;
+
+    //st-genderId-first4num-12-05-last3num
+  }
   String? validation(String? value, String text) {
     if (value!.isEmpty) {
       return 'Enter the $text';
@@ -258,7 +331,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
       return null;
     }
   }
-
   String? validateMobile(String? value) {
     String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
     RegExp regExp = RegExp(pattern);
@@ -271,7 +343,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
     }
     return null;
   }
-
   String? validateNationalId(String? value) {
     if (value!.isEmpty || value.length != 7) {
       return 'please enter last 7 digits in national id';

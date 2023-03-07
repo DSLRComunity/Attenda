@@ -2,30 +2,33 @@ class StudentsModel {
   String name;
   String phone;
   String parentPhone;
+  String parentName;
   String id;
   String className;
   String nationalId;
-
-  // Map<String,StudentHistory>? studentHistory={'0':StudentHistory(comment: '', classDate: '', costPurchased: 0.0, degree: '', hwDegree: '', hwStatus: false, quizDegree: '', quizStatus: false)};
+  String gender;
 
   StudentsModel({
     required this.name,
     required this.phone,
+    required this.parentName,
     required this.className,
     required this.parentPhone,
     required this.id,
     required this.nationalId,
-    // required this.studentHistory
+    required this.gender,
   });
 
   factory StudentsModel.fromJson(Map<String, dynamic> json) {
     return StudentsModel(
-      phone: json['phone'],
-      className: json['className'],
       name: json['name'],
+      phone: json['phone'],
+      parentName: json['parentName'],
       parentPhone: json['parentPhone'],
+      className: json['className'],
       id: json['id'],
       nationalId: json['nationalId'],
+      gender: json['gender'],
     );
   }
 
@@ -33,10 +36,12 @@ class StudentsModel {
     return {
       'name': name,
       'phone': phone,
+      'parentName':parentName,
       'parentPhone': parentPhone,
       'className': className,
       'id': id,
       'nationalId': nationalId,
+      'gender':gender
     };
   }
 

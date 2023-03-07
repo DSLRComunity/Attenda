@@ -31,6 +31,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
   TextEditingController parentPhoneController = TextEditingController();
 
   late String name;
+  late String parentName;
   late String phone;
   late String parentPhone;
 
@@ -44,6 +45,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
     nameController.text = widget.student.name;
     phoneController.text = widget.student.phone;
     parentPhoneController.text = widget.student.parentPhone;
+    parentNameController.text=widget.student.parentName;
     super.initState();
   }
 
@@ -192,10 +194,12 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                                     .editStudentInfo(StudentsModel(
                                   name: name,
                                   phone: phone,
+                                  parentName: widget.student.parentName,
                                   className: widget.student.className,
                                   parentPhone: parentPhone,
                                   id: widget.student.id,
                                   nationalId: widget.student.nationalId,
+                                  gender: widget.student.gender,
                                 ));
                                 StudentsCubit.get(context).getAllStudents();
                               }
@@ -253,7 +257,6 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
       return null;
     }
   }
-
   List<DropdownMenuItem> getMenuItems(BuildContext context) {
     List<DropdownMenuItem> menuItems = ClassesCubit.get(context)
         .getClassesNames()
@@ -293,7 +296,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
           Text(history.className),
         ),
         DataCell(
-          Text(history.quizStatus),
+          Text(history.quizStatus.toString()),
         ),
         DataCell(
           Text(history.quizDegree),

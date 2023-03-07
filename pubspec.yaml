@@ -20,9 +20,9 @@ dependencies:
   flutter_svg: ^2.0.1
   flutter_screenutil: ^5.6.1
   dartz: ^0.10.1
-
   cupertino_icons: ^1.0.2
   syncfusion_flutter_charts: ^20.4.51
+  syncfusion_flutter_xlsio: ^20.4.52-beta
   toast: ^0.3.0
   conditional_builder_null_safety: ^0.0.6
   firebase_core: ^2.7.0
@@ -30,6 +30,9 @@ dependencies:
   cloud_firestore: ^4.4.3
   firebase_storage: ^11.0.14
   shared_preferences: ^2.0.18
+  dio: ^5.0.1
+  path_provider: ^2.0.13
+  universal_html: ^2.0.9
 
 dev_dependencies:
   flutter_test:
@@ -42,13 +45,13 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-     - assets/images/Google.svg
-     - assets/images/Facebook.svg
-     - assets/images/search.svg
-     - assets/images/logo.jfif
-     - assets/images/loading.gif
-     - assets/images/empty.gif
+#  assets:
+#     - assets/images/Google.svg
+#     - assets/images/Facebook.svg
+#     - assets/images/search.svg
+#     - assets/images/logo.jfif
+#     - assets/images/loading.gif
+#     - assets/images/empty.gif
 
 
   # example:

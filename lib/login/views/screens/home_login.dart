@@ -18,9 +18,9 @@ class HomeLogin extends StatelessWidget {
             child: Container(
               height: double.infinity,
               color: MyColors.primary,
-              child: Center(
-                child: Image.asset('images/logo.jfif',height: MediaQuery.of(context).size.height*.25),
-              ),
+              // child: Center(
+              //   child: Image.asset('images/logo.jfif',height: MediaQuery.of(context).size.height*.25),
+              // ),
             ),
           ),
       Expanded(

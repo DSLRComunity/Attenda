@@ -1,16 +1,21 @@
+import 'dart:convert';
+
 import 'package:attenda/class_details/view/widgets/attendance_dialog.dart';
 import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
 import 'package:attenda/classes/view/widgets/custom_button.dart';
 import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
 import '../../../classes/models/class_model.dart';
 import '../../../core/colors.dart';
+import '../../../students/models/student_history_model.dart';
 import '../../business_logic/class_details_cubit.dart';
+import "package:universal_html/html.dart" show AnchorElement;
 
 class ClassDetails extends StatefulWidget {
   ClassDetails({Key? key, required this.currentClass}) : super(key: key);
@@ -56,6 +61,7 @@ class _ClassDetailsState extends State<ClassDetails> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController attendanceController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -148,13 +154,16 @@ class _ClassDetailsState extends State<ClassDetails> {
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: MyColors.grey),
+                                    borderSide:
+                                        BorderSide(color: MyColors.grey),
                                   ),
                                   disabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: MyColors.grey),
+                                    borderSide:
+                                        BorderSide(color: MyColors.grey),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: MyColors.grey),
+                                    borderSide:
+                                        BorderSide(color: MyColors.grey),
                                   ),
                                 ),
                                 validator: (value) {
@@ -300,26 +309,31 @@ class _ClassDetailsState extends State<ClassDetails> {
                           SizedBox(
                             width: 50.w,
                             height: 40.h,
-                            child:
-                            BlocBuilder<ClassDetailsCubit,ClassDetailsState>(
+                            child: BlocBuilder<ClassDetailsCubit,
+                                ClassDetailsState>(
                               builder: (context, state) {
-                                if(state is UpdateDetailsLoad){
-                                  return const Center(child: CircularProgressIndicator(),);
-                                }else{
+                                if (state is UpdateDetailsLoad) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else {
                                   return CustomButton(
                                       text: 'Update',
-                                      onPressed: () async{
+                                      onPressed: () async {
                                         if (formKey.currentState!.validate()) {
                                           formKey.currentState!.save();
-                                          await ClassDetailsCubit.get(context).updateClassDetails(
-                                              ClassModel(
+                                          await ClassDetailsCubit.get(context)
+                                              .updateClassDetails(ClassModel(
                                                   date: date,
                                                   time: time,
-                                                  region: widget.currentClass.region,
+                                                  region: widget
+                                                      .currentClass.region,
                                                   classPrice: price,
                                                   centerName: place,
-                                                  iteration: widget.currentClass.iteration));
-                                          await ClassesCubit.get(context).getAllClasses();
+                                                  iteration: widget
+                                                      .currentClass.iteration));
+                                          await ClassesCubit.get(context)
+                                              .getAllClasses();
                                         }
                                       });
                                 }
@@ -375,12 +389,20 @@ class _ClassDetailsState extends State<ClassDetails> {
                                   BorderRadius.all(Radius.circular(10.r)),
                             ),
                           ),
+                          onChanged: (value) {
+                            messageController.text = value;
+                          },
                         ),
                       ),
                       SizedBox(
                         height: 5.h,
                       ),
-                      CustomButton(text: 'Send', onPressed: () {})
+                      CustomButton(
+                          text: 'Extract excel sheet',
+                          onPressed: () async {
+                            await createExcel(ClassDetailsCubit.get(context).classHistory);
+                            // await DioHelper.postData(path: '/111973761834007/messages', data: WhatsappModel(phoneNumber: '201001700373', message: messageController.text));
+                          })
                     ],
                   ),
                 ],
@@ -390,5 +412,31 @@ class _ClassDetailsState extends State<ClassDetails> {
         ),
       ),
     );
+  }
+
+  Future<void> createExcel(List<StudentHistory>studentsHistory) async {
+    excel.Worksheet sheet;
+    final excel.Workbook workbook = excel.Workbook();
+    sheet = workbook.worksheets[0];
+    int index=1;
+   studentsHistory.forEach((history) {
+     sheet.getRangeByName('A$index').setText(history.name);
+     sheet.getRangeByName('B$index').setText(history.quizStatus.toString());
+     sheet.getRangeByName('C$index').setText(history.quizDegree);
+     sheet.getRangeByName('D$index').setText(history.hwStatus.toString());
+     sheet.getRangeByName('E$index').setText(history.hwDegree);
+     sheet.getRangeByName('F$index').setText(history.comment);
+     sheet.getRangeByName('G$index').setNumber(history.costPurchased);
+     index++;
+   });
+    final List<int> bytes = workbook.saveAsStream();
+    workbook.dispose();
+    if (kIsWeb) {
+      AnchorElement(
+          href:
+              'data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}')
+        ..setAttribute('download', 'output.xlsx')
+        ..click();
+    }
   }
 }

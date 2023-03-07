@@ -4,9 +4,9 @@ class StudentHistory {
   String classDate;
   String className;
   String comment;
-  String quizStatus;
+  var quizStatus;
   String quizDegree;
-  bool hwStatus;
+  dynamic hwStatus;
   String hwDegree;
   double costPurchased;
 
@@ -33,7 +33,7 @@ class StudentHistory {
         hwDegree: json['hwDegree'].toString(),
         hwStatus: json['hwStatus'],
         quizDegree: json['quizDegree'].toString(),
-        quizStatus: json['quizStatus'].toString());
+        quizStatus: json['quizStatus']);
   }
 
   Map<String, dynamic> toJson() {
@@ -46,7 +46,7 @@ class StudentHistory {
       'comment': comment,
       'hwStatus': hwStatus,
       'hwDegree': hwDegree,
-      'quizStatue': quizStatus,
+      'quizStatue': quizStatus.toString(),
       'quizDegree': quizDegree,
     };
   }

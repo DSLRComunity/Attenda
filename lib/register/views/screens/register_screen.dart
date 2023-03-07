@@ -4,12 +4,12 @@ import 'package:attenda/register/business_logic/register_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../login/views/widgets/custom_button.dart';
 import '../../../login/views/widgets/custom_text_field.dart';
+import '../widgets/data.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -32,26 +32,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late String phone;
   late String firstName;
   late String lastName;
-
-  //late String subject;
   late String technicalSupportNumber;
-  late String governorate;
+  late Map<String,dynamic> governorate;
+  late String governorateName;
+  late String governorateCode;
   late String expectedStudentsNum;
 
-  List<String> expectedStudentsList = [
-    '1-100',
-    '100-300',
-    '300-500',
-    '500-1000',
-    '1000 - .......',
-  ];
-  List<String> governorates = [
-    'Cairo',
-    'Beni-Suef',
-    'Giza',
-  ];
+  //late String subject;
 
-  List<DropdownMenuItem> getMenuItems(List<String> list) {
+  List<DropdownMenuItem> getGovernoratesItems(List<Map<String, dynamic>> list) {
+    List<DropdownMenuItem> menuItems = list
+        .map((item) => DropdownMenuItem(
+              value: item,
+              child: Text(item['governorate']),
+            ))
+        .toList();
+    return menuItems;
+  }
+  List<DropdownMenuItem> getExpectedStudentsItems(List<String> list) {
     List<DropdownMenuItem> menuItems = list
         .map((item) => DropdownMenuItem(
               value: item,
@@ -63,7 +61,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void initState() {
-    governorate = governorates[0];
+    governorate=governorates[0];
     expectedStudentsNum = expectedStudentsList[0];
     super.initState();
   }
@@ -77,11 +75,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           horizontal: MediaQuery.of(context).size.width * 0.1,
           vertical: MediaQuery.of(context).size.height * 0.04,
         ),
-        child: BlocListener<RegisterCubit,RegisterState>(
+        child: BlocListener<RegisterCubit, RegisterState>(
           listener: (context, state) {
-            if(state is RegisterSuccess){
+            if (state is RegisterSuccess) {
               showSuccessToast(context: context, message: 'Registered Success');
-            }else if(state is RegisterError){
+            } else if (state is RegisterError) {
               showErrorToast(context: context, message: state.error);
             }
           },
@@ -265,12 +263,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   width: constraints.maxWidth * .45,
                                   child: DropdownButton<dynamic>(
                                     value: governorate,
-                                    onChanged: (Object? newValue) {
+                                    onChanged: (dynamic newValue) {
                                       setState(() {
-                                        governorate = newValue.toString();
+                                        governorate=newValue;
+                                        governorateName = newValue['governorate'];
+                                        governorateCode=newValue['code'];
                                       });
                                     },
-                                    items: getMenuItems(governorates),
+                                    items: getGovernoratesItems(governorates),
                                   )),
                             ),
                           ],
@@ -303,7 +303,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             newValue.toString();
                                       });
                                     },
-                                    items: getMenuItems(expectedStudentsList),
+                                    items: getExpectedStudentsItems(expectedStudentsList),
                                   )),
                             ),
                           ],
@@ -394,12 +394,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   height: 20.h,
                 ),
-                BlocBuilder<RegisterCubit,RegisterState>(builder:(context, state) {
-                  if(state is RegisterLoad){
-                    return const Center(child: CircularProgressIndicator(),);
-                  }else{
-                    return CustomLoginButton(
-                        onPressed: () async {
+                BlocBuilder<RegisterCubit, RegisterState>(
+                  builder: (context, state) {
+                    if (state is RegisterLoad) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return CustomLoginButton(
+                          onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               formKey.currentState!.save();
                               await RegisterCubit.get(context).register(
@@ -409,8 +412,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   password: password,
                                   phone: phone,
                                   expectedStudentsNum: expectedStudentsNum,
-                                  governorate: governorate,
-                                  technicalSupportNum: technicalSupportNumber);
+                                  governorate: governorateName,
+                                  technicalSupportNum: technicalSupportNumber,
+                              governorateCode: governorateCode);
                               goToLogin(context);
                             }
                           },
@@ -456,7 +460,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     return null;
   }
-
   void goToLogin(BuildContext context) {
     HomeLoginCubit.get(context).changeToLogin();
     emailController.dispose();

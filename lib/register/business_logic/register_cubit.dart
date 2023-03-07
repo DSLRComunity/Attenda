@@ -21,6 +21,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     required String technicalSupportNum,
     required String expectedStudentsNum,
     required String governorate,
+    required String governorateCode,
   }) async {
     emit(RegisterLoad());
     try {
@@ -32,12 +33,14 @@ class RegisterCubit extends Cubit<RegisterState> {
       await createUser(
           lastName: lastName,
           email: email,
-          uId: credential.user!.uid,
+          uId: _createTeacherId(phone, governorateCode),
           phone: phone,
           firstName: firstName,
           technicalSupportNum: technicalSupportNum,
           expectedStudentsNum: expectedStudentsNum,
-          governorate: governorate);
+          governorate: governorate,
+      governorateCode: governorateCode,
+      );
       emit(RegisterSuccess());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -59,6 +62,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     required String technicalSupportNum,
     required String expectedStudentsNum,
     required String governorate,
+    required String governorateCode,
   }) async {
     emit(CreateUserLoad());
     UserModel userData = UserModel(
@@ -70,6 +74,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       technicalSupportNum: technicalSupportNum,
       governorate: governorate,
       expectedStudentsNum: expectedStudentsNum,
+      governorateCode: governorateCode,
     );
     try {
       await FirebaseFirestore.instance
@@ -81,6 +86,12 @@ class RegisterCubit extends Cubit<RegisterState> {
       print(error.toString());
       emit(CreateUserError(error.toString()));
     }
-    ;
+  }
+
+  String _createTeacherId(String phoneNumber,String code){
+    String id;
+    String last7Num=phoneNumber.substring(3,11);
+    id='TH-$code-$last7Num';
+    return id;
   }
 }

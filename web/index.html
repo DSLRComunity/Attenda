@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<title>Attenda - Website for students attendance</title>
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -14,7 +15,7 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="./">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -24,13 +25,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="attenda">
-  <link rel="apple-touch-icon" href="./icons/Icon-192.png">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>attenda</title>
-  <link rel="manifest" href="./manifest.json">
+  <link rel="manifest" href="manifest.json">
 
   <script>
     // The value below is injected by flutter build, do not touch.
@@ -55,23 +56,27 @@
       });
     });
   </script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js"></script>
-  <script>
-  var firebaseConfig = {
-    apiKey: "AIzaSyC438XAKez4ChyYoY9NjkkuNFswVo2b2vo",
-    authDomain: "attenda-ac62f.firebaseapp.com",
-    databaseURL: "https://attenda-ac62f-default-rtdb.firebaseio.com",
-    projectId: "attenda-ac62f",
-    storageBucket: "attenda-ac62f.appspot.com",
-    messagingSenderId: "380964444480",
-    appId: "1:380964444480:web:1db0b33307dabf8ddec2a5",
-    measurementId: "G-G7B7W8VTET"
-  };
+  <!-- Insert this script at the bottom of the HTML, but before you use any Firebase services -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js'
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-analytics.js'
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js'
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js'
 
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
+
+    const firebaseConfig = {
+     apiKey: "AIzaSyC438XAKez4ChyYoY9NjkkuNFswVo2b2vo",
+     authDomain: "attenda-ac62f.firebaseapp.com",
+     databaseURL: "https://attenda-ac62f-default-rtdb.firebaseio.com",
+     projectId: "attenda-ac62f",
+     storageBucket: "attenda-ac62f.appspot.com",
+     messagingSenderId: "380964444480",
+     appId: "1:380964444480:web:1db0b33307dabf8ddec2a5",
+     measurementId: "G-G7B7W8VTET"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
   </script>
 </body>
 </html>

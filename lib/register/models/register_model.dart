@@ -7,6 +7,7 @@ class UserModel {
   String? technicalSupportNum;
   String? expectedStudentsNum;
   String? governorate;
+  String? governorateCode;
 
   UserModel({
     required this.firstName,
@@ -17,6 +18,7 @@ class UserModel {
     required this.governorate,
     required this.expectedStudentsNum,
     required this.technicalSupportNum,
+    required this.governorateCode,
   });
 
   Map<String,dynamic> toJson(){
@@ -29,6 +31,7 @@ class UserModel {
       'governorate': governorate,
       'expectedStudentsNum': expectedStudentsNum,
       'technicalSupportNum': technicalSupportNum,
+      'governorateCode': governorateCode,
     };
   }
 

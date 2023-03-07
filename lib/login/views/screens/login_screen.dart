@@ -168,17 +168,17 @@ class LoginScreen extends StatelessWidget {
                       SizedBox(
                         height: 30.h,
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:  [
-                          const MyIconButton(
-                              icon: 'images/Google.svg', title: 'Google'),
-                          SizedBox(width: 10.w,),
-                          const MyIconButton(
-                              icon: 'images/Facebook.svg', title: 'Facebook'),
-                        ],
-                      ),
+                      // Row(
+                      //   crossAxisAlignment: CrossAxisAlignment.center,
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children:  [
+                      //     const MyIconButton(
+                      //         icon: 'images/Google.svg', title: 'Google'),
+                      //     SizedBox(width: 10.w,),
+                      //     const MyIconButton(
+                      //         icon: 'images/Facebook.svg', title: 'Facebook'),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),

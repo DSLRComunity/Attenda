@@ -1,6 +1,7 @@
 import 'package:attenda/class_details/view/screens/class_details_screen.dart';
 import 'package:attenda/classes/models/class_model.dart';
 import 'package:attenda/core/routes.dart';
+import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/home/views/screens/home_screen.dart';
 import 'package:attenda/login/business_logic/home_login_cubit/home_login_cubit.dart';
 import 'package:attenda/login/business_logic/login_cubit/login_cubit.dart';
@@ -25,7 +26,7 @@ class AppRouter {
                   BlocProvider(create: (_) => LoginCubit()),
                 ], child: HomeLogin()));
       case Routes.homeRoute:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => BlocProvider(create: (_)=>HomeCubit(),child: const HomeScreen()));
       case Routes.newStudentRoute:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
