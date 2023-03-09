@@ -40,7 +40,7 @@ class StudentsCubit extends Cubit<StudentsState> {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('students')
         .doc(student.id)
-        .set(student.toJson())
+        .update(student.toJson())
         .then((value) async {
       await addStudentToChoosedClass(student);
       emit(UpdateStudentSuccess());

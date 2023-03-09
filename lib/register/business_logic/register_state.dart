@@ -21,3 +21,5 @@ class CreateUserError extends RegisterState {
   String error;
   CreateUserError(this.error);
 }
+
+class ChangePassVisibilityState extends RegisterState {}

@@ -7,22 +7,21 @@ class MyTextField extends StatelessWidget {
   final TextInputType type;
   final bool isPassword;
   final void Function(String?)? onSave;
-
-  // IconData prefixIcon;
-
+  final IconData? suffixIcon;
+ final Function()? suffixPress;
   final String? Function(String? value) validate;
 
-  const MyTextField(
-      {Key? key,
-      this.hint,
-      this.isPassword = false,
-      this.type = TextInputType.text,
-      required this.myController,
-      required this.validate,
-       this.onSave
-      // required this.prefixIcon,
-      })
-      : super(key: key);
+  const MyTextField({
+    Key? key,
+    this.hint,
+    required this.isPassword,
+    this.type = TextInputType.text,
+    required this.myController,
+    required this.validate,
+    this.onSave,
+    this.suffixIcon,
+    this.suffixPress,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +37,18 @@ class MyTextField extends StatelessWidget {
             borderSide: BorderSide(color: MyColors.primary)),
         hintText: hint ?? '',
         hintStyle: Theme.of(context).textTheme.displaySmall,
-        // prefixIcon: Icon(prefixIcon),
-        // prefixIconColor: const Color(0xffd8d8d8),
+        suffixIcon: IconButton(
+          icon: Icon(
+            suffixIcon,
+            color: MyColors.black,
+          ),
+          onPressed: suffixPress,
+        ),
         contentPadding: const EdgeInsets.all(15),
       ),
       onSaved: onSave,
       controller: myController,
       keyboardType: type,
-      // TextInputType.multiline
       validator: validate,
       obscureText: isPassword,
     );

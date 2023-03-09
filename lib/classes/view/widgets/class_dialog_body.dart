@@ -219,7 +219,11 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                                     region: region,
                                     classPrice: price,
                                     centerName: centerName,
-                                    iteration: iterative));
+                                    iteration: iterative,
+                                    maxHwDegree: 0.0,
+                                      moneyCollected: 0.0,
+                                      maxQuizDegree: 0.0,
+                                    ));
                                 ClassesCubit.get(context).getAllClasses();
                               }
                             }),

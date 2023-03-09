@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -34,7 +35,7 @@ class SearchField extends StatelessWidget {
             prefixIcon: Padding(
                 padding:  EdgeInsets.symmetric(horizontal: 5.w),
                 child: SvgPicture.asset(
-                  'images/search.svg',
+                  "${(kDebugMode && kIsWeb)?"":"assets/"}images/search.svg",
                   width: 18.w,
                   height: 18.h,
                 )),

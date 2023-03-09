@@ -8,6 +8,7 @@ import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/home/views/widgets/search_field.dart';
 import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
 import 'package:attenda/students/view/screens/students_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,19 +59,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             child: AppBar(
               elevation: 3,
               backgroundColor: MyColors.black,
-              leadingWidth: MediaQuery.of(context).size.width * .44,
+              leadingWidth: MediaQuery.of(context).size.width * .46,
               leading: Row(
                 children: [
                   Container(
-                    height: 20.h,
+                    height: 30.h,
                     width: 10.w,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: MyColors.primary,
                     ),
+                    child: Image.asset('${(kDebugMode && kIsWeb)?"":"assets/"}images/a.png'),
                   ),
                   SizedBox(
-                    width: 3.w,
+                    width: 2.w,
                   ),
                   Text(
                     'Attenda',
@@ -80,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * .35,
+                      width: MediaQuery.of(context).size.width * .33,
                       child: TabBar(
                         controller: _tabController,
                         indicator: UnderlineTabIndicator(

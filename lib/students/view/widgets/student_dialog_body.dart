@@ -1,41 +1,90 @@
+import 'dart:convert';
+import 'package:attenda/classes/view/widgets/custom_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/colors.dart';
+import "package:universal_html/html.dart" show AnchorElement, document;
 
-class StudentDialogBody extends StatelessWidget {
+
+class StudentDialogBody extends StatefulWidget {
   const StudentDialogBody({Key? key,required this.id}) : super(key: key);
 
   final String id;
+
+  @override
+  State<StudentDialogBody> createState() => _StudentDialogBodyState();
+}
+
+class _StudentDialogBodyState extends State<StudentDialogBody> {
+  final ScreenshotController _screenshotController=ScreenshotController();
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: MyColors.white,
-      elevation:0,
-      content: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Student Added Successfully',style: TextStyle(color: MyColors.primary),),
-              SizedBox(height: 50.h,),
-              Container(
-                alignment: Alignment.center,
-                height: 100.h,
-                width: 100.w,
-                child: QrImage(
-                  data: id,
-                  version: QrVersions.auto,
-                ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+
+      children: [
+        AlertDialog(
+          backgroundColor: MyColors.white,
+          elevation:0,
+          content: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+            child: Center(
+              child: Column(
+                children: [
+                  Screenshot(
+                    controller: _screenshotController,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Student Added Successfully',style: TextStyle(color: MyColors.primary),),
+                        SizedBox(height: 50.h,),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 200.h,
+                          width: 200.w,
+                          child: QrImage(
+                            data: widget.id,
+                            version: QrVersions.auto,
+                          ),
+                        ),
+                        SizedBox(height: 5.h),
+                        SelectableText(widget.id,style: const TextStyle(fontSize: 28),)
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10.h,),
+                  CustomButton(text: 'Take screenshot and share', onPressed: ()async{
+                    _takeScreenShot(widget.id);
+                  }),
+                ],
               ),
-              SizedBox(height: 5.h),
-              SelectableText(id)
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
+  void _takeScreenShot(String id)async{
+    double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+
+    final image=await _screenshotController.capture(pixelRatio: pixelRatio,delay: const Duration(milliseconds: 200));
+    if (image != null) {
+      if(kIsWeb){
+        final anchor = AnchorElement(href: 'data:application/octet-stream;base64,${base64.encode(image)}')
+          ..download = "$id.png"..target='blank';
+        document.body!.append(anchor);
+        anchor.click();
+        anchor.remove();
+
+       String? x= anchor.pathname;
+       print(x);
+       Share.shareXFiles([XFile(x!)]);
+      }
+    }
+  }
 }

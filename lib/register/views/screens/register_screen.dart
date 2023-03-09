@@ -4,6 +4,7 @@ import 'package:attenda/register/business_logic/register_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/colors.dart';
 import '../../../login/views/widgets/custom_button.dart';
 import '../../../login/views/widgets/custom_text_field.dart';
 import '../widgets/data.dart';
@@ -37,8 +38,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late String governorateName;
   late String governorateCode;
   late String expectedStudentsNum;
-
-  //late String subject;
 
   List<DropdownMenuItem> getGovernoratesItems(List<Map<String, dynamic>> list) {
     List<DropdownMenuItem> menuItems = list
@@ -116,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 5.h,
                           ),
                           SizedBox(
-                            width: constraints.maxWidth * 0.45,
+                            width: constraints.maxWidth * 0.48,
                             child: MyTextField(
                               onSave: (value) {
                                 firstName = value!;
@@ -149,7 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 5.h,
                           ),
                           SizedBox(
-                            width: constraints.maxWidth * 0.45,
+                            width: constraints.maxWidth * 0.48,
                             child: MyTextField(
                               onSave: (value) {
                                 lastName = value!;
@@ -190,7 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 5.h,
                           ),
                           SizedBox(
-                            width: constraints.maxWidth * 0.45,
+                            width: constraints.maxWidth * 0.48,
                             child: MyTextField(
                               onSave: (value) {
                                 phone = value!;
@@ -219,7 +218,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 5.h,
                           ),
                           SizedBox(
-                            width: constraints.maxWidth * 0.45,
+                            width: constraints.maxWidth * 0.48,
                             child: MyTextField(
                               onSave: (value) {
                                 technicalSupportNumber = value!;
@@ -243,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: constraints.maxWidth * .45,
+                        width: constraints.maxWidth * .48,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -259,25 +258,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               height: 5.h,
                             ),
                             StatefulBuilder(
-                              builder: (context, setState) => SizedBox(
-                                  width: constraints.maxWidth * .45,
-                                  child: DropdownButton<dynamic>(
-                                    value: governorate,
-                                    onChanged: (dynamic newValue) {
-                                      setState(() {
-                                        governorate=newValue;
-                                        governorateName = newValue['governorate'];
-                                        governorateCode=newValue['code'];
-                                      });
-                                    },
-                                    items: getGovernoratesItems(governorates),
+                              builder: (context, setState) => Container(
+                                  width: constraints.maxWidth * .48,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: MyColors.primary),
+                                      borderRadius: BorderRadius.all(Radius.circular(10.r))
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: DropdownButton<dynamic>(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      value: governorate,
+                                      onChanged: (dynamic newValue) {
+                                        setState(() {
+                                          governorate=newValue;
+                                          governorateName = newValue['governorate'];
+                                          governorateCode=newValue['code'];
+                                        });
+                                      },
+                                      items: getGovernoratesItems(governorates),
+                                    ),
                                   )),
                             ),
                           ],
                         ),
                       ),
                       SizedBox(
-                        width: constraints.maxWidth * .45,
+                        width: constraints.maxWidth * .48,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -293,17 +301,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               height: 5.h,
                             ),
                             StatefulBuilder(
-                              builder: (context, setState) => SizedBox(
-                                  width: constraints.maxWidth * .45,
-                                  child: DropdownButton<dynamic>(
-                                    value: expectedStudentsNum,
-                                    onChanged: (Object? newValue) {
-                                      setState(() {
-                                        expectedStudentsNum =
-                                            newValue.toString();
-                                      });
-                                    },
-                                    items: getExpectedStudentsItems(expectedStudentsList),
+                              builder: (context, setState) => Container(
+                                  width: constraints.maxWidth * .48,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: MyColors.primary),
+                                      borderRadius: BorderRadius.all(Radius.circular(10.r))
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: DropdownButton<dynamic>(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      value: expectedStudentsNum,
+                                      onChanged: (Object? newValue) {
+                                        setState(() {
+                                          expectedStudentsNum =
+                                              newValue.toString();
+                                        });
+                                      },
+                                      items: getExpectedStudentsItems(expectedStudentsList),
+                                    ),
                                   )),
                             ),
                           ],
@@ -337,59 +354,91 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return 'enter a valid email';
                     }
                   },
-                  type: TextInputType.emailAddress,
+                  type: TextInputType.emailAddress, isPassword: false,
                 ),
                 SizedBox(height: 15.h),
-                Text(
-                  'Password',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall!
-                      .copyWith(color: Colors.black, fontSize: 18),
-                ),
-                SizedBox(height: 5.h),
-                MyTextField(
-                  onSave: (value) {
-                    password = value!;
+                LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Password',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(color: Colors.black, fontSize: 18),
+                            ),
+                            SizedBox(height: 5.h),
+                            SizedBox(
+                              width: constraints.maxWidth*.48,
+                              child: BlocBuilder<RegisterCubit,RegisterState>(
+                                builder: (context, state) => MyTextField(
+                                  onSave: (value) {
+                                    password = value!;
+                                  },
+                                  myController: passController,
+                                  validate: (String? value) {
+                                    if (value!.isEmpty) {
+                                      return 'enter a password';
+                                    } else if (value.length < 8) {
+                                      return 'password must be above 8 digits';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  type: TextInputType.visiblePassword,
+                                  isPassword: RegisterCubit.get(context).isVisible,
+                                  suffixIcon:RegisterCubit.get(context).visibleIcon ,
+                                  suffixPress: (){
+                                    RegisterCubit.get(context).changePassVisibility();
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Confirm Password',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(color: Colors.black, fontSize: 18),
+                            ),
+                            SizedBox(height: 5.h),
+                            SizedBox(
+                              width: constraints.maxWidth*.48,
+                              child: BlocBuilder<RegisterCubit,RegisterState>(
+                                builder: (context, state) =>  MyTextField(
+                                  myController: confirmPassController,
+                                  validate: (String? value) {
+                                    if (value!.isEmpty) {
+                                      return 'please confirm the password';
+                                    } else if (value.length < 8) {
+                                      return 'password must be above 8 digits';
+                                    } else if (passController.text !=
+                                        confirmPassController.text) {
+                                      return 'password is wrong';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  type: TextInputType.visiblePassword,
+                                  isPassword: true,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
                   },
-                  myController: passController,
-                  validate: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'enter a password';
-                    } else if (value.length < 8) {
-                      return 'password must be above 8 digits';
-                    } else {
-                      return null;
-                    }
-                  },
-                  type: TextInputType.visiblePassword,
-                  isPassword: true,
-                ),
-                SizedBox(height: 15.h),
-                Text(
-                  'Confirm Password',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall!
-                      .copyWith(color: Colors.black, fontSize: 18),
-                ),
-                SizedBox(height: 5.h),
-                MyTextField(
-                  myController: confirmPassController,
-                  validate: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'please confirm the password';
-                    } else if (value.length < 8) {
-                      return 'password must be above 8 digits';
-                    } else if (passController.text !=
-                        confirmPassController.text) {
-                      return 'password is wrong';
-                    } else {
-                      return null;
-                    }
-                  },
-                  type: TextInputType.visiblePassword,
-                  isPassword: true,
                 ),
                 SizedBox(
                   height: 20.h,
@@ -460,6 +509,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     return null;
   }
+
   void goToLogin(BuildContext context) {
     HomeLoginCubit.get(context).changeToLogin();
     emailController.dispose();

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/register_model.dart';
@@ -79,12 +80,26 @@ class RegisterCubit extends Cubit<RegisterState> {
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(uId)
+          .doc()
           .set(userData.toJson());
       emit(CreateUserSuccess());
     } catch (error) {
       print(error.toString());
       emit(CreateUserError(error.toString()));
+    }
+  }
+
+  bool isVisible = true;
+  var visibleIcon = Icons.visibility;
+  dynamic changePassVisibility() {
+    if (isVisible == true) {
+      visibleIcon = Icons.visibility_off;
+      isVisible = false;
+      emit(ChangePassVisibilityState());
+    } else {
+      visibleIcon = Icons.visibility;
+      isVisible = true;
+      emit(ChangePassVisibilityState());
     }
   }
 

@@ -109,14 +109,6 @@ class _StudentsScreenState extends State<StudentsScreen> {
             ),
           ),
         ),
-        // CustomButton(
-        //     text: 'delete',
-        //     onPressed: () {
-        //       StudentsCubit.get(context).students!.forEach((student) async {
-        //         await student.delete();
-        //         StudentsCubit.get(context).getAllStudents();
-        //       });
-        //     }),
         Expanded(
           child: ScrollableWidget(
             child: Column(

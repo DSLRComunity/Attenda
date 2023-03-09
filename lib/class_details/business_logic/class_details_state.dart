@@ -34,15 +34,19 @@ class UpdateDetailsError extends ClassDetailsState {
 //////////////////////////
 
 class UpdateHistoryLoad extends ClassDetailsState {}
-
 class UpdateHistorySuccess extends ClassDetailsState {}
-
-class UpdateHistoryError extends ClassDetailsState {}
+class UpdateHistoryError extends ClassDetailsState {
+  String error;
+  UpdateHistoryError(this.error);
+}
 
 ////////////////////////
 
 class GetClassHistorySuccess extends ClassDetailsState {}
-
 class GetClassHistoryLoad extends ClassDetailsState {}
-
 class GetClassHistoryError extends ClassDetailsState {}
+
+/////////////////////////////////
+
+class GetTotalMoney extends ClassDetailsState {}
+class AddToTotalMoney extends ClassDetailsState {}

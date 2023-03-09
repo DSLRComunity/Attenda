@@ -41,7 +41,7 @@ class StudentsModel {
       'className': className,
       'id': id,
       'nationalId': nationalId,
-      'gender':gender
+      'gender':gender,
     };
   }
 

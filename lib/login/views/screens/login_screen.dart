@@ -2,6 +2,7 @@ import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:attenda/login/business_logic/home_login_cubit/home_login_cubit.dart';
 import 'package:attenda/login/business_logic/login_cubit/login_cubit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -114,21 +115,27 @@ class LoginScreen extends StatelessWidget {
                       SizedBox(
                         height: 5.h,
                       ),
-                      MyTextField(
-                        onSave: (value){
-                          password=value!;
-                        },
-                        myController: passController,
-                        validate: (String? value) {
-                          if(value!.isEmpty){
-                            return 'please enter password';
-                          }else{
-                            return null;
-                          }
-                        },
-                        type: TextInputType.visiblePassword,
-                        isPassword: true,
-                        hint: 'Enter your password',
+                      BlocBuilder<LoginCubit,LoginState>(
+                        builder: (context, state) =>MyTextField(
+                          onSave: (value){
+                            password=value!;
+                          },
+                          myController: passController,
+                          validate: (String? value) {
+                            if(value!.isEmpty){
+                              return 'please enter password';
+                            }else{
+                              return null;
+                            }
+                          },
+                          type: TextInputType.visiblePassword,
+                          isPassword: LoginCubit.get(context).isVisible,
+                          suffixIcon:LoginCubit.get(context).visibleIcon ,
+                          suffixPress: (){
+                            LoginCubit.get(context).changePassVisibility();
+                          },
+                          hint: 'Enter your password',
+                        ) ,
                       ),
                       SizedBox(
                         height: 25.h,
@@ -168,17 +175,17 @@ class LoginScreen extends StatelessWidget {
                       SizedBox(
                         height: 30.h,
                       ),
-                      // Row(
-                      //   crossAxisAlignment: CrossAxisAlignment.center,
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children:  [
-                      //     const MyIconButton(
-                      //         icon: 'images/Google.svg', title: 'Google'),
-                      //     SizedBox(width: 10.w,),
-                      //     const MyIconButton(
-                      //         icon: 'images/Facebook.svg', title: 'Facebook'),
-                      //   ],
-                      // ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:  [
+                           const MyIconButton(
+                              icon: "${(kDebugMode && kIsWeb)?"":"assets/"}images/Google.svg", title: 'Google'),
+                          SizedBox(width: 10.w,),
+                          const MyIconButton(
+                              icon: "${(kDebugMode && kIsWeb)?"":"assets/"}images/Facebook.svg", title: 'Facebook'),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -200,7 +207,6 @@ class LoginScreen extends StatelessWidget {
   }
 
   void goToHome(BuildContext context){
-    print('////////////');
     emailController.dispose();
     passController.dispose();
     Navigator.pushReplacementNamed(context, Routes.homeRoute);

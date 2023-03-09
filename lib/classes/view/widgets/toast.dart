@@ -7,7 +7,7 @@ ToastContext().init(context);
 Toast.show(message, duration: Toast.lengthShort, gravity:  Toast.bottom,backgroundColor:MyColors.primary);
 }
 
-void showErrorToast({required BuildContext context,required String message}){
+void showErrorToast({required BuildContext context,required String message,}){
   ToastContext().init(context);
-  Toast.show(message, duration: Toast.lengthShort, gravity:  Toast.bottom,backgroundColor:const Color(0xffff0000),);
+  Toast.show(message, duration: 5, gravity:  Toast.bottom,backgroundColor:const Color(0xffff0000),);
 }
