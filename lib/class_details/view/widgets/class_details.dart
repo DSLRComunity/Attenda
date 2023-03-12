@@ -33,13 +33,12 @@ class _ClassDetailsState extends State<ClassDetails> {
   late double price;
   late double maxQuizDegree;
   late double maxHwDegree;
-  late double moneyCollected;
+
 
   @override
   void initState() {
     date = widget.currentClass.date;
     time = widget.currentClass.time;
-    moneyCollected = widget.currentClass.moneyCollected;
     dateController.text = DateFormat.yMMMd().format(widget.currentClass.date);
     placeController.text = widget.currentClass.centerName;
     priceController.text = widget.currentClass.classPrice.toString();
@@ -47,8 +46,7 @@ class _ClassDetailsState extends State<ClassDetails> {
     maxQuizDegreeController.text = widget.currentClass.maxQuizDegree.toString();
     maxHwDegreeController.text = widget.currentClass.maxHwDegree.toString();
     moneyCollectedController.text = widget.currentClass.moneyCollected.toString();
-    attendanceController.text = ClassDetailsCubit.get(context).numOfAttendantStudents.toString();
-    ClassDetailsCubit.get(context).getTotalMoney();
+    attendanceController.text = widget.currentClass.numOfAttendants.toString();
     super.initState();
   }
 
@@ -80,9 +78,6 @@ class _ClassDetailsState extends State<ClassDetails> {
 
   @override
   Widget build(BuildContext context) {
-    print(ClassDetailsCubit.get(context).numOfAttendantStudents.toString());
-    attendanceController.text = ClassDetailsCubit.get(context).numOfAttendantStudents.toString();
-    moneyCollectedController.text=ClassDetailsCubit.get(context).totalMoney.toString();
     return BlocListener<ClassDetailsCubit, ClassDetailsState>(
       listener: (context, state) {
         if (state is UpdateDetailsSuccess) {
@@ -313,7 +308,7 @@ class _ClassDetailsState extends State<ClassDetails> {
                                     width: 40.w,
                                     child: TextFormField(
                                       enabled: false,
-                                      controller: moneyCollectedController,
+                                      initialValue:  ClassDetailsCubit.get(context).totalMoney.toString(),
                                       decoration: myBorder(isUpdate),
                                     ),
                                   ),
@@ -369,7 +364,7 @@ class _ClassDetailsState extends State<ClassDetails> {
                                     width: 40.w,
                                     child: TextFormField(
                                       enabled: false,
-                                      controller: attendanceController,
+                                      initialValue: ClassDetailsCubit.get(context).classAttendants.toString(),
                                       decoration: myBorder(isUpdate),
                                     ),
                                   ),
@@ -435,22 +430,19 @@ class _ClassDetailsState extends State<ClassDetails> {
                                           if (formKey.currentState!
                                               .validate()) {
                                             formKey.currentState!.save();
-                                            await ClassDetailsCubit.get(context)
-                                                .updateClassDetails(ClassModel(
+                                            await ClassDetailsCubit.get(context).updateClassDetails(ClassModel(
                                               date: date,
                                               time: time,
-                                              region:
-                                                  widget.currentClass.region,
+                                              region: widget.currentClass.region,
                                               classPrice: price,
                                               centerName: place,
-                                              iteration:
-                                                  widget.currentClass.iteration,
+                                              iteration: widget.currentClass.iteration,
                                               maxQuizDegree: maxQuizDegree,
                                               maxHwDegree: maxHwDegree,
-                                              moneyCollected: moneyCollected,
+                                              moneyCollected: ClassDetailsCubit.get(context).totalMoney,
+                                              numOfAttendants:ClassDetailsCubit.get(context).classAttendants,
                                             ));
-                                            await ClassesCubit.get(context)
-                                                .getAllClasses();
+                                            await ClassesCubit.get(context).getAllClasses();
                                             setState(() {
                                               isUpdate = false;
                                             });
@@ -497,8 +489,7 @@ class _ClassDetailsState extends State<ClassDetails> {
     workbook.dispose();
     if (kIsWeb) {
       AnchorElement(
-          href:
-              'data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}')
+          href: 'data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}')
         ..setAttribute('download', 'output.xlsx')
         ..click();
     }

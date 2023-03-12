@@ -10,6 +10,7 @@ class ClassModel {
   double maxQuizDegree;
   double maxHwDegree;
   double moneyCollected;
+  int numOfAttendants;
 
   ClassModel({
     required this.date,
@@ -21,6 +22,7 @@ class ClassModel {
     required this.maxHwDegree,
     required this.maxQuizDegree,
     required this.moneyCollected,
+    required this.numOfAttendants,
   });
 
   factory ClassModel.fromJson(Map<String, dynamic> json, String date) {
@@ -34,6 +36,7 @@ class ClassModel {
       maxQuizDegree: json['maxQuizDegree'],
       maxHwDegree: json['maxHwDegree'],
       moneyCollected: json['moneyCollected'],
+      numOfAttendants: json['numOfAttendants']
     );
   }
 
@@ -48,6 +51,7 @@ class ClassModel {
       'maxQuizDegree': maxQuizDegree,
       'maxHwDegree': maxHwDegree,
       'moneyCollected': moneyCollected,
+      'numOfAttendants':numOfAttendants,
     };
   }
 }

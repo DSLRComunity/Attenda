@@ -47,4 +47,11 @@ class LoginCubit extends Cubit<LoginState> {
       emit(ChangePassVisibilityState());
     }
   }
+
+  bool rememberMe=false;
+  void changeRememberMe(bool? value){
+    rememberMe=value!;
+    emit(ChangeRememberMe());
+  }
+
 }

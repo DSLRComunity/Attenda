@@ -1,9 +1,11 @@
+import 'package:attenda/home/views/widgets/search_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/colors.dart';
+import '../../../students/business_logic/students_cubit/students_cubit.dart';
 
 class SearchField extends StatelessWidget {
   const SearchField({Key? key}) : super(key: key);
@@ -42,6 +44,17 @@ class SearchField extends StatelessWidget {
             hintText: 'Search',
             hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[700]),
           ),
+          onTap: (){
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return SearchDialog(
+                      attendanceStudents:
+                      StudentsCubit.get(context)
+                          .students!,
+                      );
+                });
+          },
         ),
       ),
     );

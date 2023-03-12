@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../core/colors.dart';
 import "package:universal_html/html.dart" show AnchorElement, document;
 
 
 class StudentDialogBody extends StatefulWidget {
-  const StudentDialogBody({Key? key,required this.id}) : super(key: key);
+  const StudentDialogBody({Key? key,required this.id, required this.name, required this.className}) : super(key: key);
 
   final String id;
+  final String name;
+  final String className;
 
   @override
   State<StudentDialogBody> createState() => _StudentDialogBodyState();
@@ -52,13 +53,17 @@ class _StudentDialogBodyState extends State<StudentDialogBody> {
                           ),
                         ),
                         SizedBox(height: 5.h),
-                        SelectableText(widget.id,style: const TextStyle(fontSize: 28),)
+                        SelectableText(widget.name,style: const TextStyle(fontSize: 28),),
+                        SizedBox(height: 5.h),
+                        SelectableText(widget.className,style: const TextStyle(fontSize: 28),),
+                        SizedBox(height: 5.h),
+                        SelectableText(widget.id,style: const TextStyle(fontSize: 28),),
                       ],
                     ),
                   ),
                   SizedBox(height: 10.h,),
                   CustomButton(text: 'Take screenshot and share', onPressed: ()async{
-                    _takeScreenShot(widget.id);
+                    _takeScreenShot(widget.name);
                   }),
                 ],
               ),
@@ -69,21 +74,18 @@ class _StudentDialogBodyState extends State<StudentDialogBody> {
     );
   }
 
-  void _takeScreenShot(String id)async{
-    double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-
-    final image=await _screenshotController.capture(pixelRatio: pixelRatio,delay: const Duration(milliseconds: 200));
+  void _takeScreenShot(String name)async{
+    final image=await _screenshotController.capture();
     if (image != null) {
       if(kIsWeb){
-        final anchor = AnchorElement(href: 'data:application/octet-stream;base64,${base64.encode(image)}')
-          ..download = "$id.png"..target='blank';
+        final anchor = AnchorElement(href: 'data:application/octet-stream;base64,${base64.encode(image)}')..download = "$name.png"..target='blank';
         document.body!.append(anchor);
         anchor.click();
         anchor.remove();
 
-       String? x= anchor.pathname;
-       print(x);
-       Share.shareXFiles([XFile(x!)]);
+       // String? x= anchor.text;
+       // // print(x);
+       // // Share.shareXFiles([XFile(x!)]);
       }
     }
   }

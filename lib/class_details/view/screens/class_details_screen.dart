@@ -4,8 +4,6 @@ import 'package:attenda/class_details/view/widgets/history_details.dart';
 import 'package:attenda/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../classes/models/class_model.dart';
 import '../../../classes/view/widgets/get_day_function.dart';
 import '../../business_logic/class_details_cubit.dart';
@@ -22,9 +20,14 @@ class ClassDetailsScreen extends StatefulWidget {
 
 class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
   void _getClassStudents() async {
+    ClassDetailsCubit.get(context).totalMoney=0;
+    ClassDetailsCubit.get(context)..classAttendants=0;
     await ClassDetailsCubit.get(context).getClassStudents(widget.currentClass);
     await ClassDetailsCubit.get(context).getClassAttendantStudents(widget.currentClass);
     await ClassDetailsCubit.get(context).getClassHistory(widget.currentClass);
+    await  ClassDetailsCubit.get(context).getTotalMoney(widget.currentClass);
+    await ClassDetailsCubit.get(context).getClassAttendantsNum(widget.currentClass);
+
   }
 
   @override
@@ -74,4 +77,5 @@ class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
           ),
     );
   }
+
 }

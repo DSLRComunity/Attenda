@@ -4,6 +4,7 @@ import 'package:attenda/core/cache_helper.dart';
 import 'package:attenda/core/colors.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:attenda/dash_board/views/screens/dashboard_screen.dart';
+import 'package:attenda/history/historyScreen.dart';
 import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/home/views/widgets/search_field.dart';
 import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
@@ -26,11 +27,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _getInitialData() async {
     await ClassesCubit.get(context).getAllClasses();
     await StudentsCubit.get(context).getAllStudents();
+    await HomeCubit.get(context).getUserData();
   }
 
   @override
   void initState() {
-    _tabController = TabController(vsync: this, length: 3);
+    _tabController = TabController(vsync: this, length: 4);
     _tabController.addListener(_handleTabColor);
     _getInitialData();
     super.initState();
@@ -52,14 +54,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         }
       },
       child: DefaultTabController(
-        length: 3,
+        length: 4,
         child: Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.h),
             child: AppBar(
               elevation: 3,
               backgroundColor: MyColors.black,
-              leadingWidth: MediaQuery.of(context).size.width * .46,
+              leadingWidth: MediaQuery.of(context).size.width * .48,
               leading: Row(
                 children: [
                   Container(
@@ -82,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * .33,
+                      width: MediaQuery.of(context).size.width * .38,
                       child: TabBar(
                         controller: _tabController,
                         indicator: UnderlineTabIndicator(
@@ -129,6 +131,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           ? MyColors.primary
                                           : Colors.white,
                                       fontSize: 16.sp)),
+                          Text('History',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                  color: _tabController.index == 3
+                                      ? MyColors.primary
+                                      : Colors.white,
+                                  fontSize: 16.sp)),
+
                         ],
                       ),
                     ),
@@ -157,6 +169,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               DashBoard(),
               ClassesScreen(),
               StudentsScreen(),
+              HistoryScreen(),
             ],
           ),
         ),

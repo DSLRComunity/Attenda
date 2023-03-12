@@ -34,3 +34,23 @@ List<Map<String,dynamic>> governorates = [
   {'governorate':'North Sinai','code':'34'},
   {'governorate':'South Sinai','code':'35'},
 ];
+
+
+List<String>subjects=[
+  "لغة عربية",
+  "رياضيات",
+  "علوم",
+  "دراسات",
+  "إنجليزي",
+  "الماني",
+  "لغة فرنسية",
+  "احياء",
+  "جغرافيا",
+  "تاريخ",
+  "كيمياء",
+  "فيزياء",
+  "جيولوجيا",
+  "علم نفس",
+  "احصاء",
+  "فلسفة",
+];

@@ -20,18 +20,20 @@ class HomeLogin extends StatelessWidget {
               height: double.infinity,
               color: MyColors.primary,
               child: Center(
-                child: Image.asset("${(kDebugMode && kIsWeb)?"":"assets/"}images/logo.jfif",height: MediaQuery.of(context).size.height*.25),
+                child: Image.asset(
+                    "${(kDebugMode && kIsWeb) ? "" : "assets/"}images/logo.jfif",
+                    height: MediaQuery.of(context).size.height * .25),
               ),
             ),
           ),
-      Expanded(
-        flex: 3,
-        child: BlocBuilder<HomeLoginCubit,HomeLoginState>(
-          builder: (context, state) {
-            return HomeLoginCubit.get(context).view;
-          },
-        ),
-      ),
+          Expanded(
+            flex: 3,
+            child: BlocBuilder<HomeLoginCubit, HomeLoginState>(
+              builder: (context, state) {
+                return HomeLoginCubit.get(context).view;
+              },
+            ),
+          ),
         ],
       ),
     );

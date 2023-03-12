@@ -17,7 +17,7 @@ class HomeLoginCubit extends Cubit<HomeLoginState> {
   }
   void changeToRegister(){
 
-    view=RegisterScreen();
+    view=const RegisterScreen();
     emit(ChangeView());
   }
 }

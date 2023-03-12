@@ -1,12 +1,14 @@
 import 'package:attenda/classes/models/class_model.dart';
 import 'package:attenda/classes/view/widgets/toast.dart';
+import 'package:attenda/core/colors.dart';
+import 'package:attenda/students/view/widgets/text_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../students/models/student_history_model.dart';
 import '../../../students/view/widgets/scrollable_widget.dart';
+import '../../../whatsapp/business_logic/functions.dart';
+import '../../../whatsapp/view/widgets/whatsapp_button.dart';
 import '../../business_logic/class_details_cubit.dart';
 
 class HistoryDetails extends StatefulWidget {
@@ -77,6 +79,7 @@ class _HistoryDetailsState extends State<HistoryDetails> {
     'HW degree',
     'comment',
     'Pay',
+    'remove'
   ];
 
   List<DataColumn> getColumns(List<String> columnsLabels) {
@@ -90,8 +93,9 @@ class _HistoryDetailsState extends State<HistoryDetails> {
     histories.forEach((history) {
       historyList.add(DataRow(cells: [
         DataCell(SizedBox(
-            width: 20.w,
-            child: WhatsappButton(parentNum: history.parentPhone, message: makeTemplate(history)))),
+            width: 15.w, child: WhatsappButton(
+                num: history.parentPhone,
+                message: makeTemplate(history,context)))),
         DataCell(
           TextFormField(
             enabled: false,
@@ -113,7 +117,8 @@ class _HistoryDetailsState extends State<HistoryDetails> {
                 child: Text('لم يؤدي'),
               ),
               DropdownMenuItem(
-                  value: quizStatuses[1], child: const Text('أدى في بداية الحصة')),
+                  value: quizStatuses[1],
+                  child: const Text('أدى في بداية الحصة')),
               DropdownMenuItem(
                 value: quizStatuses[2],
                 child: const Text('أدى في نهاية الحصة'),
@@ -167,69 +172,50 @@ class _HistoryDetailsState extends State<HistoryDetails> {
             ),
             showEditIcon: true),
         DataCell(
-            TextFormField(
-              initialValue: history.comment,
-              keyboardType: TextInputType.text,
-              onFieldSubmitted: (val) async {
-                history.comment = val;
-                await ClassDetailsCubit.get(context)
-                    .updateComment(history.id, val, widget.currentClass);
-              },
-            ),
-            showEditIcon: true),
+          SizedBox(width: 30.w,child: Text(history.comment,maxLines: 1,overflow: TextOverflow.ellipsis)),
+          onTap: () async {
+            String? comment = await showTextDialog(context,
+                title: 'Add comment',
+                value: history.comment,);
+            if(comment!=null){
+              history.comment=comment;
+              await ClassDetailsCubit.get(context)
+                  .updateComment(history.id, comment, widget.currentClass);
+            }
+          },
+          showEditIcon: true,
+        ),
         DataCell(
             TextFormField(
               initialValue: history.costPurchased.toString(),
               keyboardType: TextInputType.name,
               onFieldSubmitted: (val) async {
+                double difference=history.costPurchased-double.parse(val);
+
                 history.costPurchased = double.parse(val);
-                await ClassDetailsCubit.get(context).updateCost(
-                    history.id, double.parse(val), widget.currentClass);
+                await ClassDetailsCubit.get(context).updateCost(history.id, double.parse(val), widget.currentClass);
+                ClassDetailsCubit.get(context).totalMoney+=difference;
+               await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
               },
             ),
             showEditIcon: true),
+        DataCell(IconButton(
+          onPressed: () async {
+            ClassDetailsCubit.get(context).classAttendants--;
+            ClassDetailsCubit.get(context).totalMoney-=history.costPurchased;
+            await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
+            await ClassDetailsCubit.get(context).updateNumOfAttendants(widget.currentClass);
+            await ClassDetailsCubit.get(context).removeFromAttendance(history.id, widget.currentClass);
+          },
+          icon: const Icon(
+            Icons.group_remove_outlined,
+            color: MyColors.primary,
+          ),
+        )),
       ]));
     });
     return historyList;
   }
-  String makeTemplate(StudentHistory history) {
-    String hwStatus=history.hwStatus?'سلم الواجب':'لم يسلم الواجب ';
-    String template = ' ${history.comment}. و خاصه بتعليق المدرس الخاص ${history.costPurchased} و قام بدفع ${history.hwDegree} بدرجة $hwStatus و بخصوص الواجب ف قد ${history.quizDegree} بدرجة ${history.quizStatus}و قد ${history.classDate} قد حضر ابنكم/ابنتكم حصة يوم ${history.name}الي ولي امر الطالب ';
-    return template;
-  }
 
 }
 
-class WhatsappButton extends StatelessWidget {
-  const WhatsappButton({
-    Key? key,
-    required this.parentNum,
-    required this.message,
-  }) : super(key: key);
-  final String parentNum;
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-        ),
-        onPressed: () async {
-          await openWhatsapp(parentNum, message);
-        },
-        child: SvgPicture.asset(
-          'assets/images/whatsapp.svg',
-          fit: BoxFit.cover,
-          width: 30.w,
-          height: 30.h,
-        ));
-  }
-
-  Future<void> openWhatsapp(String num, String message) async {
-    var whatsappUrl =
-        'https://api.whatsapp.com/send/?phone=+2$num&text=$message';
-    launchUrl(Uri.parse(whatsappUrl));
-  }
-
-}

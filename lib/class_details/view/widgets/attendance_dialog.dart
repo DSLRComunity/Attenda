@@ -9,9 +9,8 @@ import '../../../students/models/students_model.dart';
 import '../../business_logic/class_details_cubit.dart';
 
 class AttendanceDialog extends StatefulWidget {
-  const AttendanceDialog(
-      {Key? key, required this.attendanceStudents, required this.currentClass})
-      : super(key: key);
+
+  const AttendanceDialog({Key? key, required this.attendanceStudents, required this.currentClass}) : super(key: key);
   final List<StudentsModel> attendanceStudents;
   final ClassModel currentClass;
 

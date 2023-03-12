@@ -10,6 +10,7 @@ class MyTextField extends StatelessWidget {
   final IconData? suffixIcon;
  final Function()? suffixPress;
   final String? Function(String? value) validate;
+  final Function(String)? onSubmit;
 
   const MyTextField({
     Key? key,
@@ -21,6 +22,7 @@ class MyTextField extends StatelessWidget {
     this.onSave,
     this.suffixIcon,
     this.suffixPress,
+    this.onSubmit,
   }) : super(key: key);
 
   @override
@@ -51,6 +53,7 @@ class MyTextField extends StatelessWidget {
       keyboardType: type,
       validator: validate,
       obscureText: isPassword,
+      onFieldSubmitted:onSubmit ,
     );
   }
 }

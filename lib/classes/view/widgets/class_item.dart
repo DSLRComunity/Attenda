@@ -1,9 +1,9 @@
+import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
 import 'package:attenda/classes/view/widgets/get_day_function.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-
 import '../../models/class_model.dart';
 import 'class_card_info.dart';
 
@@ -66,16 +66,17 @@ class ClassItem extends StatelessWidget {
                   ],
                 ),
               ),
+             currentClass.date.isAfter(DateTime.now())?
               IconButton(
                 icon: const Icon(
                   Icons.delete,
                   color: Colors.white,
                 ),
                 onPressed: () async {
-                  // await ClassesCubit.get(context).deleteClass(getClassName(currentClass),currentClass.date.toString());
-                  // await ClassesCubit.get(context).getAllClasses();
+                  await ClassesCubit.get(context).deleteClass(currentClass.date, getClassName(currentClass));
                 },
-              ),
+              ):
+              Container(),
             ],
           ),
         ),

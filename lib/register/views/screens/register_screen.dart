@@ -34,10 +34,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late String firstName;
   late String lastName;
   late String technicalSupportNumber;
-  late Map<String,dynamic> governorate;
+  late Map<String, dynamic> governorate;
   late String governorateName;
   late String governorateCode;
   late String expectedStudentsNum;
+  late String subject;
 
   List<DropdownMenuItem> getGovernoratesItems(List<Map<String, dynamic>> list) {
     List<DropdownMenuItem> menuItems = list
@@ -48,7 +49,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
         .toList();
     return menuItems;
   }
+
   List<DropdownMenuItem> getExpectedStudentsItems(List<String> list) {
+    List<DropdownMenuItem> menuItems = list
+        .map((item) => DropdownMenuItem(
+              value: item,
+              child: Text(item),
+            ))
+        .toList();
+    return menuItems;
+  }
+
+  List<DropdownMenuItem> getSubjectsItem(List<String> list) {
     List<DropdownMenuItem> menuItems = list
         .map((item) => DropdownMenuItem(
               value: item,
@@ -60,8 +72,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void initState() {
-    governorate=governorates[0];
+    governorate = governorates[0];
+    governorateName = governorates[0]['governorate'];
+    governorateCode = governorates[0]['code'];
     expectedStudentsNum = expectedStudentsList[0];
+    subject = subjects[0];
     super.initState();
   }
 
@@ -179,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'personal phone number',
+                            'Personal phone number',
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall!
@@ -196,7 +211,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                               myController: personalPhoneNumberController,
                               validate: (String? value) {
-                                validateMobile(value);
+                                return validateMobile(value);
                               },
                               isPassword: false,
                               type: TextInputType.phone,
@@ -225,7 +240,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                               myController: technicalSupportNumberController,
                               validate: (String? value) {
-                                validateMobile(value);
+                                return validateMobile(value);
                               },
                               isPassword: false,
                               type: TextInputType.phone,
@@ -247,7 +262,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'governorate',
+                              'Governorate',
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall!
@@ -261,20 +276,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               builder: (context, setState) => Container(
                                   width: constraints.maxWidth * .48,
                                   decoration: BoxDecoration(
-                                      border: Border.all(color: MyColors.primary),
-                                      borderRadius: BorderRadius.all(Radius.circular(10.r))
-                                  ),
+                                      border:
+                                          Border.all(color: MyColors.primary),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.r))),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 2.w),
                                     child: DropdownButton<dynamic>(
                                       isExpanded: true,
                                       underline: Container(),
                                       value: governorate,
                                       onChanged: (dynamic newValue) {
                                         setState(() {
-                                          governorate=newValue;
-                                          governorateName = newValue['governorate'];
-                                          governorateCode=newValue['code'];
+                                          governorate = newValue;
+                                          governorateName =
+                                              newValue['governorate'];
+                                          governorateCode = newValue['code'];
                                         });
                                       },
                                       items: getGovernoratesItems(governorates),
@@ -290,7 +308,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Technical support number',
+                              'Expected students number',
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall!
@@ -304,11 +322,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               builder: (context, setState) => Container(
                                   width: constraints.maxWidth * .48,
                                   decoration: BoxDecoration(
-                                      border: Border.all(color: MyColors.primary),
-                                      borderRadius: BorderRadius.all(Radius.circular(10.r))
-                                  ),
+                                      border:
+                                          Border.all(color: MyColors.primary),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.r))),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 2.w),
                                     child: DropdownButton<dynamic>(
                                       isExpanded: true,
                                       underline: Container(),
@@ -319,7 +339,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               newValue.toString();
                                         });
                                       },
-                                      items: getExpectedStudentsItems(expectedStudentsList),
+                                      items: getExpectedStudentsItems(
+                                          expectedStudentsList),
                                     ),
                                   )),
                             ),
@@ -330,36 +351,100 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 SizedBox(height: 15.h),
-                Text(
-                  'Email',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displaySmall!
-                      .copyWith(color: Colors.black, fontSize: 18.sp),
-                ),
-                SizedBox(height: 5.h),
-                MyTextField(
-                  onSave: (value) {
-                    email = value!;
-                  },
-                  myController: emailController,
-                  validate: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'enter an email';
-                    } else if (value.endsWith('.com') &&
-                        value.contains('@') &&
-                        value.substring(0, value.indexOf('@')).isNotEmpty) {
-                      return null;
-                    } else {
-                      return 'enter a valid email';
-                    }
-                  },
-                  type: TextInputType.emailAddress, isPassword: false,
+                LayoutBuilder(
+                  builder: (context, constraints) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: constraints.maxWidth * .48,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Email',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                      color: Colors.black, fontSize: 18.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            MyTextField(
+                              onSave: (value) {
+                                email = value!;
+                              },
+                              myController: emailController,
+                              validate: (String? value) {
+                                if (value!.isEmpty) {
+                                  return 'enter an email';
+                                } else if (value.endsWith('.com') &&
+                                    value.contains('@') &&
+                                    value
+                                        .substring(0, value.indexOf('@'))
+                                        .isNotEmpty) {
+                                  return null;
+                                } else {
+                                  return 'enter a valid email';
+                                }
+                              },
+                              type: TextInputType.emailAddress,
+                              isPassword: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: constraints.maxWidth * .48,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Subjects',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(
+                                      color: Colors.black, fontSize: 18.sp),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            StatefulBuilder(
+                              builder: (context, setState) => Container(
+                                  width: constraints.maxWidth * .48,
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: MyColors.primary),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.r))),
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: DropdownButton<dynamic>(
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      value: subject,
+                                      onChanged: (Object? newValue) {
+                                        setState(() {
+                                          subject = newValue.toString();
+                                        });
+                                      },
+                                      items: getSubjectsItem(subjects),
+                                    ),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
                 SizedBox(height: 15.h),
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    return  Row(
+                    return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
@@ -374,8 +459,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             SizedBox(height: 5.h),
                             SizedBox(
-                              width: constraints.maxWidth*.48,
-                              child: BlocBuilder<RegisterCubit,RegisterState>(
+                              width: constraints.maxWidth * .48,
+                              child: BlocBuilder<RegisterCubit, RegisterState>(
                                 builder: (context, state) => MyTextField(
                                   onSave: (value) {
                                     password = value!;
@@ -391,10 +476,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     }
                                   },
                                   type: TextInputType.visiblePassword,
-                                  isPassword: RegisterCubit.get(context).isVisible,
-                                  suffixIcon:RegisterCubit.get(context).visibleIcon ,
-                                  suffixPress: (){
-                                    RegisterCubit.get(context).changePassVisibility();
+                                  isPassword:
+                                      RegisterCubit.get(context).isVisible,
+                                  suffixIcon:
+                                      RegisterCubit.get(context).visibleIcon,
+                                  suffixPress: () {
+                                    RegisterCubit.get(context)
+                                        .changePassVisibility();
                                   },
                                 ),
                               ),
@@ -413,9 +501,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             SizedBox(height: 5.h),
                             SizedBox(
-                              width: constraints.maxWidth*.48,
-                              child: BlocBuilder<RegisterCubit,RegisterState>(
-                                builder: (context, state) =>  MyTextField(
+                              width: constraints.maxWidth * .48,
+                              child: BlocBuilder<RegisterCubit, RegisterState>(
+                                builder: (context, state) => MyTextField(
                                   myController: confirmPassController,
                                   validate: (String? value) {
                                     if (value!.isEmpty) {
@@ -455,15 +543,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             if (formKey.currentState!.validate()) {
                               formKey.currentState!.save();
                               await RegisterCubit.get(context).register(
-                                  firstName: firstName,
-                                  lastName: lastName,
-                                  email: email,
-                                  password: password,
-                                  phone: phone,
-                                  expectedStudentsNum: expectedStudentsNum,
-                                  governorate: governorateName,
-                                  technicalSupportNum: technicalSupportNumber,
-                              governorateCode: governorateCode);
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                password: password,
+                                phone: phone,
+                                expectedStudentsNum: expectedStudentsNum,
+                                governorate: governorateName,
+                                technicalSupportNum: technicalSupportNumber,
+                                governorateCode: governorateCode,
+                                subject: subject,
+                              );
                               goToLogin(context);
                             }
                           },

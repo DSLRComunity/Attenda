@@ -23,6 +23,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     required String expectedStudentsNum,
     required String governorate,
     required String governorateCode,
+    required String subject,
   }) async {
     emit(RegisterLoad());
     try {
@@ -32,15 +33,17 @@ class RegisterCubit extends Cubit<RegisterState> {
         password: password,
       );
       await createUser(
-          lastName: lastName,
-          email: email,
-          uId: _createTeacherId(phone, governorateCode),
-          phone: phone,
-          firstName: firstName,
-          technicalSupportNum: technicalSupportNum,
-          expectedStudentsNum: expectedStudentsNum,
-          governorate: governorate,
-      governorateCode: governorateCode,
+        lastName: lastName,
+        email: email,
+        uId: _createTeacherId(phone, governorateCode),
+        phone: phone,
+        firstName: firstName,
+        technicalSupportNum: technicalSupportNum,
+        expectedStudentsNum: expectedStudentsNum,
+        governorate: governorate,
+        governorateCode: governorateCode,
+        subject: subject,
+        firebaseUserId: credential.user!.uid,
       );
       emit(RegisterSuccess());
     } on FirebaseAuthException catch (e) {
@@ -64,6 +67,8 @@ class RegisterCubit extends Cubit<RegisterState> {
     required String expectedStudentsNum,
     required String governorate,
     required String governorateCode,
+    required String subject,
+    required String firebaseUserId,
   }) async {
     emit(CreateUserLoad());
     UserModel userData = UserModel(
@@ -76,11 +81,12 @@ class RegisterCubit extends Cubit<RegisterState> {
       governorate: governorate,
       expectedStudentsNum: expectedStudentsNum,
       governorateCode: governorateCode,
+      subject: subject,
     );
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc()
+          .doc(firebaseUserId)
           .set(userData.toJson());
       emit(CreateUserSuccess());
     } catch (error) {
@@ -91,6 +97,7 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   bool isVisible = true;
   var visibleIcon = Icons.visibility;
+
   dynamic changePassVisibility() {
     if (isVisible == true) {
       visibleIcon = Icons.visibility_off;
@@ -103,10 +110,10 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  String _createTeacherId(String phoneNumber,String code){
+  String _createTeacherId(String phoneNumber, String code) {
     String id;
-    String last7Num=phoneNumber.substring(3,11);
-    id='TH-$code-$last7Num';
+    String last7Num = phoneNumber.substring(3, 11);
+    id = 'TH-$code-$last7Num';
     return id;
   }
 }

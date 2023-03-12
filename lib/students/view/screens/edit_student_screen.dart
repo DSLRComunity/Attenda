@@ -1,6 +1,7 @@
 import 'package:attenda/core/colors.dart';
 import 'package:attenda/students/models/student_history_model.dart';
 import 'package:attenda/students/models/students_model.dart';
+import 'package:attenda/whatsapp/view/widgets/whatsapp_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +11,7 @@ import '../../../classes/business_logic/classes_cubit/classes_cubit.dart';
 import '../../../classes/view/widgets/custom_button.dart';
 import '../../../classes/view/widgets/custom_text_field.dart';
 import '../../../classes/view/widgets/toast.dart';
+import '../../../whatsapp/business_logic/functions.dart';
 import '../../business_logic/students_cubit/students_cubit.dart';
 import '../widgets/drop_down.dart';
 import '../widgets/scrollable_widget.dart';
@@ -125,22 +127,19 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                                       }),
                                 ),
                                 SizedBox(
-                                  width: 10.w,
-                                ),
-                                SizedBox(
                                   width: 80.w,
                                   child: CustomTextFiled(
                                       hint: 'Phone Number',
                                       label: 'Phone',
                                       controller: phoneController,
                                       prefixIcon: Icons.phone,
+                                      suffix: WhatsappButton(num: phoneController.text),
                                       inputType: TextInputType.phone,
                                       onSave: (value) {
                                         phone = value!;
                                       },
                                       validate: (value) {
-                                        return validation(
-                                            value, 'phone number');
+                                        return validation(value, 'phone number');
                                       }),
                                 ),
                               ],
@@ -155,9 +154,6 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                                   menuItems: getMenuItems(context),
                                 ),
                                 SizedBox(
-                                  width: 10.w,
-                                ),
-                                SizedBox(
                                   width: 80.w,
                                   child: CustomTextFiled(
                                       hint: 'parent phone',
@@ -165,6 +161,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                                       inputType: TextInputType.phone,
                                       prefixIcon: Icons.phone,
                                       controller: parentPhoneController,
+                                      suffix: WhatsappButton(num: parentPhoneController.text),
                                       onSave: (value) {
                                         parentPhone = value!;
                                       },
@@ -269,6 +266,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
   }
 
   List<String> columnsLabels = [
+    'whatsapp',
     'class date',
     'class name',
     'quiz status',
@@ -289,6 +287,11 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
     List<DataRow> records = [];
     histories.forEach((history) {
       records.add(DataRow(cells: [
+        DataCell(SizedBox(
+            width: 15.w,
+            child: WhatsappButton(
+                num: history.parentPhone,
+                message: makeTemplate(history,context)))),
         DataCell(
           Text(DateFormat.yMMMd().format(DateTime.parse(history.classDate))),
         ),

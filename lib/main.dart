@@ -74,10 +74,11 @@ class MyApp extends StatelessWidget {
               title: 'Attenda',
               debugShowCheckedModeBanner: false,
               theme: lightTheme,
-              onGenerateRoute: AppRouter().generateRoute,
-              initialRoute: initialRoute,
+              onGenerateRoute: AppRouter(initialRoute).generateRoute,
             ),
           );
         });
   }
 }
+
+//flutter build web --web-renderer canvaskit

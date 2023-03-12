@@ -13,19 +13,33 @@ class AddClassCubit extends Cubit<AddClassState> {
   static AddClassCubit get(BuildContext context) => BlocProvider.of(context);
 
   Future<void> addClass(ClassModel myClass) async {
-    DateTime initialDate=myClass.date;
+    DateTime initialDate = myClass.date;
     emit(AddClassLoad());
     try {
       int iteration = myClass.iteration;
       FirebaseFirestore instance = FirebaseFirestore.instance;
-      await instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
+      await instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('classes')
           .doc(getClassName(myClass))
           .set(myClass.toJson());
-      for (int i = 1; i<=iteration; i++) {
-         instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('classes').doc(getClassName(myClass)).collection('dates').doc(initialDate.toString()).set({});
+      for (int i = 1; i <= iteration; i++) {
+        instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('classes')
+            .doc(getClassName(myClass))
+            .collection('dates')
+            .doc(initialDate.toString())
+            .set({
+          'moneyCollected': myClass.moneyCollected,
+          'numOfAttendants': myClass.numOfAttendants,
+          'maxQuizDegree':myClass.maxQuizDegree,
+          'maxHwDegree':myClass.maxHwDegree,
+        });
         await Future.delayed(const Duration(milliseconds: 500));
-         initialDate= initialDate.add(Duration(days: 7 * i));
+        initialDate = initialDate.add(const Duration(days: 7));
       }
       emit(AddClassSuccess());
     } catch (error) {

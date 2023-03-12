@@ -40,9 +40,11 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
 
   @override
   void initState() {
-    menuItems = getMenuItems(context);
-    className = menuItems[0].value;
-    gender=genders[0];
+    if(ClassesCubit.get(context).classes!.isNotEmpty){
+      menuItems = getMenuItems(context);
+      className = menuItems[0].value;
+      gender=genders[0];
+    }
     super.initState();
   }
 
@@ -74,7 +76,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
             showErrorToast(context: context, message: state.error);
           }
           if (state is AddStudentSuccess) {
-            showStudentDialog(context, id);
+            showStudentDialog(context, id,name,className);
             nameController.clear();
             parentNameController.clear();
             phoneController.clear();
@@ -290,7 +292,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                 ],
               ),
             );
-
           }
         },
       ),

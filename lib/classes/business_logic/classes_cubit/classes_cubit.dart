@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../models/class_model.dart';
 import '../../view/widgets/get_day_function.dart';
 
@@ -26,23 +25,18 @@ class ClassesCubit extends Cubit<ClassesState> {
         .collection('classes')
         .get()
         .then((classesNames) {
-      print('$classesNames/////////////////////////');
       classesNames.docs.forEach((currentClass) async {
-        print('$currentClass');
         await currentClass.reference
             .collection('dates')
             .get()
             .then((classDates) {
-          print('$classDates/////////////////');
           classDates.docs.forEach((element) {
-            print('$element');
             tempClasses
                 .add(ClassModel.fromJson(currentClass.data(), element.id));
             List<ClassModel>? sortedClasses = tempClasses
               ..sort((a, b) => b.date.compareTo(a.date));
             classes = sortedClasses.reversed.toList();
             emit(GetClassesSuccess());
-            print(classes);
           });
         }).catchError((error) {
           emit(GetClassesError(error.toString()));
@@ -54,26 +48,23 @@ class ClassesCubit extends Cubit<ClassesState> {
     //getClassesDates();
   }
 
-  // Future<void> deleteClass(String date, String className) async {
-  //   emit(DeleteClassLoad());
-  //   FirebaseFirestore instance = FirebaseFirestore.instance;
-  //   CollectionReference users = instance
-  //       .collection('users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .collection('classes');
-  //   await users
-  //       .doc(className)
-  //       .collection('dates')
-  //       .doc(date)
-  //       .delete()
-  //       .then((value) {
-  //     print('deleteSuccess////////////////////');
-  //     emit(DeleteClassSuccess());
-  //   }).catchError((error) {
-  //     print('${DeleteClassError(error.toString())}////////////////////');
-  //     emit(DeleteClassError(error.toString()));
-  //   });
-  // }
+  Future<void> deleteClass(DateTime date, String className) async {
+    emit(DeleteClassLoad());
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('classes')
+        .doc(className)
+        .collection('dates')
+        .doc(date.toString())
+        .delete()
+        .then((value) {
+          classes!.removeWhere((element) => (element.date==date)&&(getClassName(element)==className));
+      emit(DeleteClassSuccess());
+    }).catchError((error) {
+      emit(DeleteClassError(error.toString()));
+    });
+  }
 
   Set<String> getClassesNames() {
     return classes!

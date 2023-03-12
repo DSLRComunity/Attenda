@@ -50,3 +50,5 @@ class GetClassHistoryError extends ClassDetailsState {}
 
 class GetTotalMoney extends ClassDetailsState {}
 class AddToTotalMoney extends ClassDetailsState {}
+
+class GetTotalAttendants extends ClassDetailsState {}

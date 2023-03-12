@@ -8,6 +8,7 @@ class UserModel {
   String? expectedStudentsNum;
   String? governorate;
   String? governorateCode;
+  String? subject;
 
   UserModel({
     required this.firstName,
@@ -19,9 +20,10 @@ class UserModel {
     required this.expectedStudentsNum,
     required this.technicalSupportNum,
     required this.governorateCode,
+    required this.subject,
   });
 
-  Map<String,dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'firstName': firstName,
       'lastName': lastName,
@@ -32,7 +34,21 @@ class UserModel {
       'expectedStudentsNum': expectedStudentsNum,
       'technicalSupportNum': technicalSupportNum,
       'governorateCode': governorateCode,
+      'subject': subject,
     };
+  }
+
+  factory UserModel.fromJson(Map<String, dynamic>json){
+    return UserModel(firstName: json['firstName'],
+        lastName: json['lastName'],
+        email: json['email'],
+        phone: json['phone'],
+        uId: json['uId'],
+        governorate: json['governorate'],
+        expectedStudentsNum: json['expectedStudentsNum'],
+        technicalSupportNum: json['technicalSupportNum'],
+        governorateCode: json['governorateCode'],
+        subject: json['subject']);
   }
 
 }

@@ -23,7 +23,7 @@ class ClassStudents extends StatelessWidget {
           );
         } else {
           return Padding(
-           padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 3.w),
+            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 3.w),
             child: Column(
               children: [
                 SingleChildScrollView(
@@ -36,7 +36,9 @@ class ClassStudents extends StatelessWidget {
                               padding: EdgeInsets.symmetric(vertical: 3.h),
                               child: Row(
                                 children: [
-                                  FittedBox(fit: BoxFit.fitWidth,child: Text(student.name)),
+                                  FittedBox(
+                                      fit: BoxFit.fitWidth,
+                                      child: Text(student.name)),
                                   const Spacer(),
                                   AttendButton(
                                       currentClass: currentClass,
@@ -68,7 +70,6 @@ class AttendButton extends StatefulWidget {
 }
 
 class _AttendButtonState extends State<AttendButton> {
-
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
@@ -76,10 +77,14 @@ class _AttendButtonState extends State<AttendButton> {
       backgroundColor: MyColors.primary,
       child: IconButton(
           onPressed: () async {
-              await ClassDetailsCubit.get(context).addToAttendance(widget.student, widget.currentClass);
+            // ClassDetailsCubit.get(context).classAttendants++;
+            // ClassDetailsCubit.get(context).totalMoney+=widget.currentClass.classPrice;
+            await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
+            await ClassDetailsCubit.get(context).updateNumOfAttendants(widget.currentClass);
+            await ClassDetailsCubit.get(context).addToAttendance(widget.student, widget.currentClass);
           },
           icon: const Icon(
-         Icons.add,
+            Icons.add,
             color: Colors.white,
           )),
     );

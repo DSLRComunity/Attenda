@@ -11,6 +11,7 @@ class StudentHistory {
   double costPurchased;
   String parentPhone;
   String parentName;
+  String gender;
 
   StudentHistory({
     required this.name,
@@ -25,6 +26,7 @@ class StudentHistory {
     required this.quizStatus,
     required this.parentPhone,
     required this.parentName,
+    required this.gender,
   });
 
   factory StudentHistory.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class StudentHistory {
       quizStatus: json['quizStatus'],
       parentPhone: json['parentPhone'],
       parentName: json['parentName'],
+      gender: json['gender'],
     );
   }
 
@@ -58,6 +61,7 @@ class StudentHistory {
       'quizDegree': quizDegree,
       'parentPhone': parentPhone,
       'parentName': parentName,
+      'gender':gender,
     };
   }
 }

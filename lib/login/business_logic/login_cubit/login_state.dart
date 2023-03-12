@@ -20,3 +20,5 @@ class LoginError extends LoginState {
 }
 
 class ChangePassVisibilityState extends LoginState {}
+
+class ChangeRememberMe extends LoginState {}

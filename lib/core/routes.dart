@@ -1,4 +1,5 @@
 class Routes {
+  static const String splashRoute='/';
   static const String homeLoginRoute='/login';
   static const String homeRoute='/home-screen';
   static const String classesRoute='/classes-screen';
