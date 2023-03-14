@@ -28,55 +28,59 @@ class ClassItem extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15.w)),
           ),
-          child: Row(
+          child: ListView(
             children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClassCardInfo(
-                      title: '',
-                      value: getClassName(currentClass),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22.sp,
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClassCardInfo(
+                          title: '',
+                          value: getClassName(currentClass),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22.sp,
+                        ),
+                        SizedBox(
+                          height: 7.h,
+                        ),
+                        ClassCardInfo(
+                            title: 'Date: ',
+                            value: DateFormat.yMMMd().format(currentClass.date)),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        ClassCardInfo(
+                            title: 'Region: ', value: currentClass.region),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        ClassCardInfo(
+                            title: 'Center: ', value: currentClass.centerName),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        ClassCardInfo(
+                            title: 'Price: ',
+                            value: currentClass.classPrice.toString()),
+                      ],
                     ),
-                    SizedBox(
-                      height: 7.h,
+                  ),
+                 currentClass.date.isAfter(DateTime.now())?
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
                     ),
-                    ClassCardInfo(
-                        title: 'Date: ',
-                        value: DateFormat.yMMMd().format(currentClass.date)),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    ClassCardInfo(
-                        title: 'Region: ', value: currentClass.region),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    ClassCardInfo(
-                        title: 'Center: ', value: currentClass.centerName),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    ClassCardInfo(
-                        title: 'Price: ',
-                        value: currentClass.classPrice.toString()),
-                  ],
-                ),
+                    onPressed: () async {
+                      await ClassesCubit.get(context).deleteClass(currentClass.date, getClassName(currentClass));
+                    },
+                  ):
+                  Container(),
+                ],
               ),
-             currentClass.date.isAfter(DateTime.now())?
-              IconButton(
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
-                onPressed: () async {
-                  await ClassesCubit.get(context).deleteClass(currentClass.date, getClassName(currentClass));
-                },
-              ):
-              Container(),
             ],
           ),
         ),

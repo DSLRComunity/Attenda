@@ -45,6 +45,7 @@ class CustomTextFiled extends StatelessWidget {
               color: MyColors.primary,
             ),
             suffix:suffix,
+
         ),
         validator: validate,
         onTap: onTab,

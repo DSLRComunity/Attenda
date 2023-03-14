@@ -76,28 +76,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
     governorateName = governorates[0]['governorate'];
     governorateCode = governorates[0]['code'];
     expectedStudentsNum = expectedStudentsList[0];
-    subject = subjects[0];
+    subject = arabicSubjects[0];
     super.initState();
   }
 
+  int _value = 1;
+
   @override
   Widget build(BuildContext context) {
+    print(_value);
     return Form(
       key: formKey,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1,
-          vertical: MediaQuery.of(context).size.height * 0.04,
-        ),
-        child: BlocListener<RegisterCubit, RegisterState>(
-          listener: (context, state) {
-            if (state is RegisterSuccess) {
-              showSuccessToast(context: context, message: 'Registered Success');
-            } else if (state is RegisterError) {
-              showErrorToast(context: context, message: state.error);
-            }
-          },
-          child: SingleChildScrollView(
+      child: BlocListener<RegisterCubit, RegisterState>(
+        listener: (context, state) {
+          if (state is RegisterSuccess) {
+            showSuccessToast(context: context, message: 'Registered Success');
+          } else if (state is RegisterError) {
+            showErrorToast(context: context, message: state.error);
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.1,
+              vertical: MediaQuery.of(context).size.height * 0.04,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -431,16 +434,66 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           subject = newValue.toString();
                                         });
                                       },
-                                      items: getSubjectsItem(subjects),
+                                      items: getSubjectsItem(_value==1?arabicSubjects:_value==2?englishSubjects:frenchSubjects),
                                     ),
                                   )),
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
+                LayoutBuilder(
+                    builder: (context, constraints) => Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                Text('بالفرنسية'),
+                                Radio(
+                                    value: 3,
+                                    groupValue: _value,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _value=value!;
+                                        subject=frenchSubjects[0];
+                                      });
+                                    })
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('بالانجليزية'),
+                                Radio(
+                                    value: 2,
+                                    groupValue: _value,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _value=value!;
+                                        subject=englishSubjects[0];
+
+                                      });
+                                    })
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('بالعربية'),
+                                Radio(
+                                    value: 1,
+                                    groupValue: _value,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _value=value!;
+                                        subject=arabicSubjects[0];
+
+                                      });
+                                    })
+                              ],
+                            ),
+                          ],
+                        )),
                 SizedBox(height: 15.h),
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {

@@ -60,175 +60,178 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
             child: SingleChildScrollView(
               child: Form(
                 key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text('Add Class '),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    CustomTextFiled(
-                        hint: 'date',
-                        label: 'date',
-                        prefixIcon: Icons.date_range,
-                        controller: dateController,
-                        inputType: TextInputType.datetime,
-                        onSave: (value) {},
-                        onTab: () {
-                          showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime.parse('2026-02-12'),
-                          ).then((value) {
-                            if(value==null){
-                              dateController.text=DateFormat.yMMMd().format(DateTime.now());
-                              dateTime=DateTime.now();
-                            }else{
-                            dateController.text =
-                            DateFormat.yMMMd().format(value);
-                            dateTime = value;
-                            }
-                          });
-                        },
-                        validate: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter the data !';
-                          } else {
-                            return null;
-                          }
-                        }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    CustomTextFiled(
-                        hint: 'time',
-                        label: 'Time',
-                        inputType: TextInputType.datetime,
-                        prefixIcon: Icons.timelapse,
-                        controller: timeController,
-                        onSave: (value) {
-                          time = value!;
-                        },
-                        onTab: () {
-                          showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now())
-                              .then((value) {
-                                if(value==null){
-                                  timeController.text=TimeOfDay.now().format(context);
-                                }else{
-                                  timeController.text = value.format(context);
-                                }
-                          });
-                        },
-                        validate: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter the time !';
-                          } else {
-                            return null;
-                          }
-                        }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    CustomTextFiled(
-                        hint: 'region',
-                        label: 'Region',
-                        prefixIcon: Icons.place,
-                        controller: regionController,
-                        onSave: (value) {
-                          region = value!;
-                        },
-                        validate: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter the region !';
-                          } else {
-                            return null;
-                          }
-                        }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    CustomTextFiled(
-                        hint: 'center name',
-                        label: 'Center Name',
-                        prefixIcon: Icons.message,
-                        controller: centerNameController,
-                        onSave: (value) {
-                          centerName = value!;
-                        },
-                        validate: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter the center name !';
-                          } else {
-                            return null;
-                          }
-                        }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    CustomTextFiled(
-                        hint: 'class price',
-                        label: 'Price',
-                        controller: priceController,
-                        inputType: TextInputType.number,
-                        prefixIcon: Icons.date_range,
-                        onSave: (value) {
-                          price = double.parse(value!);
-                        },
-                        validate: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter the price !';
-                          } else {
-                            return null;
-                          }
-                        }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    CustomTextFiled(
-                        hint: 'class times in the month',
-                        label: 'Class Times',
-                        prefixIcon: Icons.date_range,
-                        controller: iterativeController,
-                        onSave: (value) {
-                          iterative = int.parse(value!);
-                        },
-                        validate: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter the class times !';
-                          } else {
-                            return null;
-                          }
-                        }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    state is AddClassLoad
-                        ? const CircularProgressIndicator()
-                        : CustomButton(
-                            text: 'Add',
-                            onPressed: () async{
-                              if (formKey.currentState!.validate()) {
-                                formKey.currentState!.save();
-                               await AddClassCubit.get(context).addClass(
-                                    ClassModel(
-                                    date: dateTime,
-                                    time: time,
-                                    region: region,
-                                    classPrice: price,
-                                    centerName: centerName,
-                                    iteration: iterative,
-                                    maxHwDegree: 0.0,
-                                      moneyCollected: 0.0,
-                                      maxQuizDegree: 0.0,
-                                      numOfAttendants: 0,
-                                    ));
-                                ClassesCubit.get(context).getAllClasses();
+                child: SizedBox(
+                  width: 90.w,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Text('Add Class '),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      CustomTextFiled(
+                          hint: 'date',
+                          label: 'date',
+                          prefixIcon: Icons.date_range,
+                          controller: dateController,
+                          inputType: TextInputType.datetime,
+                          onSave: (value) {},
+                          onTab: () {
+                            showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.parse('2026-02-12'),
+                            ).then((value) {
+                              if(value==null){
+                                dateController.text=DateFormat.yMMMd().format(DateTime.now());
+                                dateTime=DateTime.now();
+                              }else{
+                              dateController.text =
+                              DateFormat.yMMMd().format(value);
+                              dateTime = value;
                               }
-                            }),
-                  ],
+                            });
+                          },
+                          validate: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter the data !';
+                            } else {
+                              return null;
+                            }
+                          }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      CustomTextFiled(
+                          hint: 'time',
+                          label: 'Time',
+                          inputType: TextInputType.datetime,
+                          prefixIcon: Icons.timelapse,
+                          controller: timeController,
+                          onSave: (value) {
+                            time = value!;
+                          },
+                          onTab: () {
+                            showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now())
+                                .then((value) {
+                                  if(value==null){
+                                    timeController.text=TimeOfDay.now().format(context);
+                                  }else{
+                                    timeController.text = value.format(context);
+                                  }
+                            });
+                          },
+                          validate: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter the time !';
+                            } else {
+                              return null;
+                            }
+                          }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      CustomTextFiled(
+                          hint: 'region',
+                          label: 'Region',
+                          prefixIcon: Icons.place,
+                          controller: regionController,
+                          onSave: (value) {
+                            region = value!;
+                          },
+                          validate: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter the region !';
+                            } else {
+                              return null;
+                            }
+                          }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      CustomTextFiled(
+                          hint: 'center name',
+                          label: 'Center Name',
+                          prefixIcon: Icons.message,
+                          controller: centerNameController,
+                          onSave: (value) {
+                            centerName = value!;
+                          },
+                          validate: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter the center name !';
+                            } else {
+                              return null;
+                            }
+                          }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      CustomTextFiled(
+                          hint: 'class price',
+                          label: 'Price',
+                          controller: priceController,
+                          inputType: TextInputType.number,
+                          prefixIcon: Icons.date_range,
+                          onSave: (value) {
+                            price = double.parse(value!);
+                          },
+                          validate: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter the price !';
+                            } else {
+                              return null;
+                            }
+                          }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      CustomTextFiled(
+                          hint: 'class times ',
+                          label: 'Class Times',
+                          prefixIcon: Icons.date_range,
+                          controller: iterativeController,
+                          onSave: (value) {
+                            iterative = int.parse(value!);
+                          },
+                          validate: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter the class times !';
+                            } else {
+                              return null;
+                            }
+                          }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      state is AddClassLoad
+                          ? const CircularProgressIndicator()
+                          : CustomButton(
+                              text: 'Add',
+                              onPressed: () async{
+                                if (formKey.currentState!.validate()) {
+                                  formKey.currentState!.save();
+                                 await AddClassCubit.get(context).addClass(
+                                      ClassModel(
+                                      date: dateTime,
+                                      time: time,
+                                      region: region,
+                                      classPrice: price,
+                                      centerName: centerName,
+                                      iteration: iterative,
+                                      maxHwDegree: 0.0,
+                                        moneyCollected: 0.0,
+                                        maxQuizDegree: 0.0,
+                                        numOfAttendants: 0,
+                                      ));
+                                  ClassesCubit.get(context).getAllClasses();
+                                }
+                              }),
+                    ],
+                  ),
                 ),
               ),
             ),

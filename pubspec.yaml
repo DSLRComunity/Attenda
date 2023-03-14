@@ -57,6 +57,7 @@ flutter:
      - assets/images/empty.gif
      - assets/images/whatsapp.svg
      - assets/images/a.png
+     - assets/images/picture.png
 
 
   # example:

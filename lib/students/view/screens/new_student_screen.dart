@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 import '../../../classes/view/widgets/custom_button.dart';
 import '../../../classes/view/widgets/custom_text_field.dart';
 import '../../../classes/view/widgets/toast.dart';
@@ -25,7 +26,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
   TextEditingController parentNameController=TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController parentPhoneController = TextEditingController();
-  TextEditingController nationalIdController = TextEditingController();
 
   List<DropdownMenuItem> menuItems = [];
 
@@ -35,7 +35,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
   late String parentPhone;
   late String id;
   late String className;
-  late String nationalId;
   late String gender;
 
   @override
@@ -54,7 +53,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
     parentNameController.dispose();
     phoneController.dispose();
     parentPhoneController.dispose();
-    nationalIdController.dispose();
     super.dispose();
   }
 
@@ -81,7 +79,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
             parentNameController.clear();
             phoneController.clear();
             parentPhoneController.clear();
-            nationalIdController.clear();
           }
         },
         builder: (context, state) {
@@ -137,20 +134,33 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                       return validateMobile(value);
                                     }),
                               ),
-                              SizedBox(
-                                width: 80.w,
-                                child: CustomTextFiled(
-                                    hint: 'last 7 digits in national id',
-                                    label: 'last 7 digits in national id',
-                                    controller: nationalIdController,
-                                    prefixIcon: Icons.numbers,
-                                    inputType: TextInputType.number,
-                                    onSave: (value) {
-                                      nationalId = value!;
-                                    },
-                                    validate: (value) {
-                                      return validateNationalId(value);
-                                    }),
+                              StatefulBuilder(
+                                builder: (BuildContext context,
+                                    void Function(void Function()) setState) {
+                                  return Container(
+                                    height: 50.h,
+                                    width: 80.w,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: MyColors.grey),
+                                        borderRadius: BorderRadius.all(Radius.circular(10.r))
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                      child: DropdownButton<dynamic>(
+                                        isExpanded: true,
+                                        underline: Container(),
+                                        menuMaxHeight: double.maxFinite,
+                                        value: gender,
+                                        onChanged: (Object? newValue) {
+                                          setState(() {
+                                            gender = newValue.toString();
+                                          });
+                                        },
+                                        items: getGenderItems(),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -191,67 +201,36 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     }),
                               ),
                               StatefulBuilder(
-                                builder: (BuildContext context,
-                                    void Function(void Function()) setState) {
+                                builder: (context, setState) {
                                   return Container(
-                                    height: 50.h,
                                     width: 80.w,
                                     decoration: BoxDecoration(
                                         border: Border.all(color: MyColors.grey),
                                         borderRadius: BorderRadius.all(Radius.circular(10.r))
                                     ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                      child: DropdownButton<dynamic>(
-                                        isExpanded: true,
-                                        underline: Container(),
-                                        menuMaxHeight: double.maxFinite,
-                                        value: gender,
-                                        onChanged: (Object? newValue) {
-                                          setState(() {
-                                            gender = newValue.toString();
-                                          });
-                                        },
-                                        items: getGenderItems(),
-                                      ),
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context, void Function(void Function()) setState) {
+                                        return Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                          child: DropdownButton<dynamic>(
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            menuMaxHeight: double.maxFinite,
+                                            value: className,
+                                            onChanged: (Object? newValue) {
+                                              setState(() {
+                                                className = newValue.toString();
+                                              });
+                                            },
+                                            items: getMenuItems(context),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   );
                                 },
                               ),
                             ],
-                          ),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          StatefulBuilder(
-                            builder: (context, setState) {
-                              return Container(
-                                width: 80.w,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: MyColors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.r))
-                                ),
-                                child: StatefulBuilder(
-                                  builder: (BuildContext context, void Function(void Function()) setState) {
-                                    return Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                      child: DropdownButton<dynamic>(
-                                        isExpanded: true,
-                                        underline: Container(),
-                                        menuMaxHeight: double.maxFinite,
-                                        value: className,
-                                        onChanged: (Object? newValue) {
-                                          setState(() {
-                                            className = newValue.toString();
-                                          });
-                                        },
-                                        items: getMenuItems(context),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
                           ),
                           SizedBox(
                             height: 20.h,
@@ -276,7 +255,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                   className: className,
                                   parentPhone: parentPhone,
                                   id: _getStudentId(gender),
-                                  nationalId: nationalId,
                                   gender: gender,
                                 ),
                               );
@@ -322,9 +300,10 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
 
   String _getStudentId(String gender) {
 String date=DateFormat('MM-dd').format(DateTime.now());
-String first=nationalId.substring(0,4);
-String last=nationalId.substring(4,7);
-String genderId=gender[0];
+String randomId=const Uuid().v1();
+String first=randomId.substring(0,4);
+String last=randomId.substring(4,8);
+String genderId=gender[0].toLowerCase();
 
     id = 'st$genderId$first$date$last';
     return id;

@@ -1,6 +1,8 @@
 import 'package:attenda/classes/models/class_model.dart';
 import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:attenda/core/colors.dart';
+import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
+import 'package:attenda/students/models/students_model.dart';
 import 'package:attenda/students/view/widgets/text_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +12,7 @@ import '../../../students/view/widgets/scrollable_widget.dart';
 import '../../../whatsapp/business_logic/functions.dart';
 import '../../../whatsapp/view/widgets/whatsapp_button.dart';
 import '../../business_logic/class_details_cubit.dart';
+import 'data.dart';
 
 class HistoryDetails extends StatefulWidget {
   const HistoryDetails({Key? key, required this.currentClass})
@@ -21,6 +24,8 @@ class HistoryDetails extends StatefulWidget {
 }
 
 class _HistoryDetailsState extends State<HistoryDetails> {
+  StudentsModel? student;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ClassDetailsCubit, ClassDetailsState>(
@@ -59,29 +64,6 @@ class _HistoryDetailsState extends State<HistoryDetails> {
     );
   }
 
-  List<dynamic> quizStatuses = [
-    'لم يؤدي',
-    'أدى في بداية الحصة',
-    'أدى في نهاية الحصة',
-  ];
-
-  List<dynamic> hwStatuses = [
-    false,
-    true,
-  ];
-
-  List<String> columnsLabels = [
-    'whatsapp',
-    'name',
-    'quiz status',
-    'quiz degree',
-    'HW status',
-    'HW degree',
-    'comment',
-    'Pay',
-    'remove'
-  ];
-
   List<DataColumn> getColumns(List<String> columnsLabels) {
     return columnsLabels
         .map((label) => DataColumn(label: Text(label)))
@@ -92,14 +74,15 @@ class _HistoryDetailsState extends State<HistoryDetails> {
     List<DataRow> historyList = [];
     histories.forEach((history) {
       historyList.add(DataRow(cells: [
-        DataCell(SizedBox(
+        DataCell(
+           SizedBox(
             width: 15.w, child: WhatsappButton(
-                num: history.parentPhone,
-                message: makeTemplate(history,context)))),
+                num:StudentsCubit.get(context).students!.firstWhere((element) => element.id==history.id).parentPhone,
+                message: makeTemplate(history,context,StudentsCubit.get(context).students!.firstWhere((element) => element.id==history.id).name)))),
         DataCell(
           TextFormField(
             enabled: false,
-            initialValue: history.name,
+            initialValue: StudentsCubit.get(context).students!.firstWhere((element) => element.id==history.id).name,
           ),
         ),
         DataCell(
@@ -107,8 +90,7 @@ class _HistoryDetailsState extends State<HistoryDetails> {
             value: history.quizStatus,
             onChanged: (Object? newValue) async {
               history.quizStatus = newValue;
-              await ClassDetailsCubit.get(context).updateQuizStatus(
-                  history.id, newValue.toString(), widget.currentClass);
+              await ClassDetailsCubit.get(context).updateQuizStatus(history.id, newValue.toString(), widget.currentClass);
               setState(() {});
             },
             items: <DropdownMenuItem<dynamic>>[
@@ -132,8 +114,7 @@ class _HistoryDetailsState extends State<HistoryDetails> {
               keyboardType: TextInputType.number,
               onFieldSubmitted: (val) async {
                 history.quizDegree = val;
-                await ClassDetailsCubit.get(context)
-                    .updateQuizDegree(history.id, val, widget.currentClass);
+                await ClassDetailsCubit.get(context).updateQuizDegree(history.id, val, widget.currentClass);
               },
             ),
             showEditIcon: true),

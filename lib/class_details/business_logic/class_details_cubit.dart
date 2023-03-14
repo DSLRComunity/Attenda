@@ -472,4 +472,5 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
           .update({'moneyCollected': totalMoney});
     } catch (error) {}
   }
+
 }

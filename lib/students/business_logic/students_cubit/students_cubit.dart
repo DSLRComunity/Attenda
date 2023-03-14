@@ -84,4 +84,11 @@ class StudentsCubit extends Cubit<StudentsState> {
       emit(GetStudentHistoryError(error.toString()));
     });
   }
+
+  Future<void>changeStudentClass(String oldClass,String newClass,StudentsModel student)async{
+    print(oldClass+'///////////////');
+    print(newClass+'///////////////');
+    await FirebaseFirestore.instance.collection('classes').doc(oldClass).collection('classStudents').doc(student.id).delete();
+  await FirebaseFirestore.instance.collection('classes').doc(newClass).collection('classStudents').doc(student.id).set(student.toJson());
+  }
 }

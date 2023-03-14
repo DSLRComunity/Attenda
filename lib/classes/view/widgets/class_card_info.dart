@@ -18,6 +18,7 @@ class ClassCardInfo extends StatelessWidget {
           TextSpan(
             text: title,
             style: TextStyle(
+              height: 1.1.h,
               fontWeight: FontWeight.bold,
               color: Colors.black,
               fontSize: 20.sp,
@@ -25,7 +26,7 @@ class ClassCardInfo extends StatelessWidget {
           ),
           TextSpan(
             text: value,
-            style: TextStyle(color: Colors.black, fontSize:fontSize?? 18.sp,fontWeight:fontWeight),
+            style: TextStyle(height: 1.1.h,color: Colors.black, fontSize:fontSize?? 18.sp,fontWeight:fontWeight),
           ),
         ],
       ),

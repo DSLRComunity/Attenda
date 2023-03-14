@@ -95,6 +95,8 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
+
+
   bool isVisible = true;
   var visibleIcon = Icons.visibility;
 
@@ -116,4 +118,5 @@ class RegisterCubit extends Cubit<RegisterState> {
     id = 'TH-$code-$last7Num';
     return id;
   }
+
 }

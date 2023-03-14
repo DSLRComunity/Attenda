@@ -192,6 +192,7 @@ class LoginScreen extends StatelessWidget {
                       Checkbox(
                         value: LoginCubit.get(context).rememberMe,
                         onChanged: (value) => LoginCubit.get(context).changeRememberMe(value),
+
                       ),
                     ],
                   ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,7 @@ import '../../../core/routes.dart';
 import '../../business_logic/students_cubit/students_cubit.dart';
 import '../../models/students_model.dart';
 import '../widgets/scrollable_widget.dart';
+import '../widgets/show_student_dialog.dart';
 
 class StudentsScreen extends StatefulWidget {
   const StudentsScreen({Key? key}) : super(key: key);
@@ -16,9 +18,10 @@ class StudentsScreen extends StatefulWidget {
 }
 
 class _StudentsScreenState extends State<StudentsScreen> {
-  void _getStudents()async{
+  void _getStudents() async {
     await StudentsCubit.get(context).getAllStudents();
   }
+
   @override
   void initState() {
     _getStudents();
@@ -26,6 +29,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
   }
 
   List<String> columnsLabels = [
+    'Info',
     'Id',
     'Name',
     'phone',
@@ -39,9 +43,16 @@ class _StudentsScreenState extends State<StudentsScreen> {
         .map((label) => DataColumn(label: Text(label)))
         .toList();
   }
+
   List<DataRow> getRows(List<StudentsModel> students) {
     return students
         .map((student) => DataRow(cells: [
+              DataCell(Image.asset(
+                  '${(kDebugMode && kIsWeb) ? "" : "assets/"}images/picture.png',width: 15.w,fit: BoxFit.fitHeight,),
+              onTap: () {
+                showStudentDialog(context, student.id,student.name,student.className);
+              },
+              ),
               DataCell(Text(student.id), onDoubleTap: () {
                 navigateToEditStudent(student);
               }),
@@ -50,45 +61,44 @@ class _StudentsScreenState extends State<StudentsScreen> {
               }),
               DataCell(Text(student.phone), onDoubleTap: () {
                 navigateToEditStudent(student);
-
               }),
               DataCell(Text(student.parentPhone), onDoubleTap: () {
                 navigateToEditStudent(student);
               }),
               DataCell(
-                SizedBox(
-                  height: 200,
-                  width: 150,
-                  child: QrImage(
-                    data: student.name,
-                    version: QrVersions.auto,
-                  ),
-                ),
-                onDoubleTap: (){
-                  showDialog(context: context, builder: (context){
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AlertDialog(
-                            backgroundColor: Colors.white,
-                            content: Center(child: SizedBox(
-                              height: 200,
-                              width: 200,
-                              child: QrImage(
-                                data: student.name,
-                                version: QrVersions.auto,
+                  SizedBox(
+                    width: 20.w,
+                    child: QrImage(
+                      data: student.name,
+                      version: QrVersions.auto,
+                    ),
+                  ), onDoubleTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AlertDialog(
+                              backgroundColor: Colors.white,
+                              content: Center(
+                                child: SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: QrImage(
+                                    data: student.name,
+                                    version: QrVersions.auto,
+                                  ),
+                                ),
                               ),
-                            ),),
-                          ),
-                        ],
-                      ),
-                    );
-                  });
-                }
-              ),
-              DataCell(Text(student.className),
-                  onDoubleTap: () {}),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              }),
+              DataCell(Text(student.className), onDoubleTap: () {}),
             ]))
         .toList();
   }
@@ -132,8 +142,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
     );
   }
 
-  void navigateToEditStudent(StudentsModel student){
-    Navigator.pushNamed(context,Routes.editStudentRoute,arguments: student);
-
+  void navigateToEditStudent(StudentsModel student) {
+    Navigator.pushNamed(context, Routes.editStudentRoute, arguments: student);
   }
 }

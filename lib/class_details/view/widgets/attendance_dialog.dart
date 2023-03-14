@@ -46,7 +46,7 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
                     searched = true;
                     setState(() {
                       searchList = widget.attendanceStudents
-                          .where((student) => student.id.startsWith(value))
+                          .where((student) => student.id.startsWith(value)||student.name.startsWith(value))
                           .toList();
                       itemCount = searchList.length;
                       searchWord = value;
@@ -69,7 +69,7 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
                       prefixIcon: const Padding(
                           padding: EdgeInsets.all(10),
                           child: Icon(Icons.search_outlined)),
-                      hintText: "Search",
+                      hintText: "Search by name or id",
                       hintStyle: Theme.of(context)
                           .textTheme
                           .bodySmall!

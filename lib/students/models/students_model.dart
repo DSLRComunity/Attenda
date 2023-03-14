@@ -5,7 +5,6 @@ class StudentsModel {
   String parentName;
   String id;
   String className;
-  String nationalId;
   String gender;
 
   StudentsModel({
@@ -15,7 +14,6 @@ class StudentsModel {
     required this.className,
     required this.parentPhone,
     required this.id,
-    required this.nationalId,
     required this.gender,
   });
 
@@ -27,7 +25,6 @@ class StudentsModel {
       parentPhone: json['parentPhone'],
       className: json['className'],
       id: json['id'],
-      nationalId: json['nationalId'],
       gender: json['gender'],
     );
   }
@@ -40,7 +37,6 @@ class StudentsModel {
       'parentPhone': parentPhone,
       'className': className,
       'id': id,
-      'nationalId': nationalId,
       'gender':gender,
     };
   }

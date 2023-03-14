@@ -36,7 +36,7 @@ List<Map<String,dynamic>> governorates = [
 ];
 
 
-List<String>subjects=[
+List<String>arabicSubjects=[
   "لغة عربية",
   "رياضيات",
   "علوم",
@@ -51,6 +51,44 @@ List<String>subjects=[
   "فيزياء",
   "جيولوجيا",
   "علم نفس",
-  "احصاء",
   "فلسفة",
+  "احصاء",
+];
+
+List<String>englishSubjects=[
+  "Arabic",
+  "Math",
+  'Science',
+  "Studies",
+  "English",
+  "German",
+  "French",
+  "Biology",
+  "geography",
+  "History",
+  "Chemistry",
+  "Physics",
+  "geology",
+  "Psychology",
+  "philosophy",
+  "statistic",
+];
+
+List<String>frenchSubjects=[
+  "arabe",
+  "mathématiques",
+  "Science",
+  "Études",
+  "Anglais",
+  "allemande",
+  "française",
+  "Biolog",
+  "géographie",
+  "Histoire",
+  "Chimie",
+  "Physique",
+  "géologie",
+  "Psychologie",
+  "philosophie",
+  "Compter",
 ];

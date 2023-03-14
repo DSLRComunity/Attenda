@@ -41,8 +41,8 @@ class _StudentDialogBodyState extends State<StudentDialogBody> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Student Added Successfully',style: TextStyle(color: MyColors.primary),),
-                        SizedBox(height: 50.h,),
+                        // const Text('Student Added Successfully',style: TextStyle(color: MyColors.primary),),
+                        SizedBox(height: 40.h,),
                         Container(
                           alignment: Alignment.center,
                           height: 200.h,

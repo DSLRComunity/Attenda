@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-
 import '../../../classes/business_logic/classes_cubit/classes_cubit.dart';
 import '../../../classes/view/widgets/custom_button.dart';
 import '../../../classes/view/widgets/custom_text_field.dart';
@@ -36,6 +35,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
   late String parentName;
   late String phone;
   late String parentPhone;
+  late String className;
 
   void _getStudentHistory() async {
     await StudentsCubit.get(context).getStudentHistory(widget.student.id);
@@ -47,7 +47,12 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
     nameController.text = widget.student.name;
     phoneController.text = widget.student.phone;
     parentPhoneController.text = widget.student.parentPhone;
-    parentNameController.text=widget.student.parentName;
+    parentNameController.text = widget.student.parentName;
+    name=widget.student.name;
+    parentName=widget.student.parentName;
+    phone=widget.student.phone;
+    parentPhone=widget.student.parentPhone;
+    className=widget.student.className;
     super.initState();
   }
 
@@ -133,13 +138,15 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                                       label: 'Phone',
                                       controller: phoneController,
                                       prefixIcon: Icons.phone,
-                                      suffix: WhatsappButton(num: phoneController.text),
+                                      suffix: WhatsappButton(
+                                          num: phoneController.text),
                                       inputType: TextInputType.phone,
                                       onSave: (value) {
                                         phone = value!;
                                       },
                                       validate: (value) {
-                                        return validation(value, 'phone number');
+                                        return validation(
+                                            value, 'phone number');
                                       }),
                                 ),
                               ],
@@ -150,8 +157,29 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                MyDropDown(
-                                  menuItems: getMenuItems(context),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                  child: Container(
+                                    width: 80.w,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: MyColors.grey),
+                                        borderRadius: BorderRadius.all(Radius.circular(10.r))
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: DropdownButton<dynamic>(
+                                      value:className,
+                                      isExpanded: true,
+                                      underline: Container(),
+                                      menuMaxHeight: double.maxFinite,
+                                      onChanged: (Object? newValue){
+                                        setState((){
+                                          className=newValue.toString();
+                                          //  AddStudentCubit.get(context).className=selectedValue;
+                                        });
+                                      },
+                                      items: getMenuItems(context),
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 80.w,
@@ -161,9 +189,11 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                                       inputType: TextInputType.phone,
                                       prefixIcon: Icons.phone,
                                       controller: parentPhoneController,
-                                      suffix: WhatsappButton(num: parentPhoneController.text),
+                                      suffix: WhatsappButton(
+                                          num: parentPhoneController.text),
                                       onSave: (value) {
                                         parentPhone = value!;
+                                        print(parentPhone);
                                       },
                                       validate: (value) {
                                         return validation(
@@ -184,18 +214,19 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                         height: 40.h,
                         child: CustomButton(
                             text: 'Update',
-                            onPressed: () {
+                            onPressed: () async {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
-                                StudentsCubit.get(context)
-                                    .editStudentInfo(StudentsModel(
+                                if(className!=widget.student.className){
+                              await StudentsCubit.get(context).changeStudentClass(widget.student.className, className, widget.student);
+                                }
+                             await  StudentsCubit.get(context).editStudentInfo(StudentsModel(
                                   name: name,
                                   phone: phone,
                                   parentName: widget.student.parentName,
-                                  className: widget.student.className,
+                                  className: className,
                                   parentPhone: parentPhone,
                                   id: widget.student.id,
-                                  nationalId: widget.student.nationalId,
                                   gender: widget.student.gender,
                                 ));
                                 StudentsCubit.get(context).getAllStudents();
@@ -218,7 +249,9 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                     current is GetStudentHistorySuccess ||
                     current is GetStudentHistoryError ||
                     current is GetStudentHistoryError ||
-                    current is GetStudentHistoryError);
+                    current is GetStudentHistoryError||
+                    current is UpdateStudentSuccess
+                );
               },
               builder: (context, state) {
                 if (state is GetStudentHistoryLoad) {
@@ -254,6 +287,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
       return null;
     }
   }
+
   List<DropdownMenuItem> getMenuItems(BuildContext context) {
     List<DropdownMenuItem> menuItems = ClassesCubit.get(context)
         .getClassesNames()
@@ -287,11 +321,12 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
     List<DataRow> records = [];
     histories.forEach((history) {
       records.add(DataRow(cells: [
-        DataCell(SizedBox(
-            width: 15.w,
-            child: WhatsappButton(
-                num: history.parentPhone,
-                message: makeTemplate(history,context)))),
+        DataCell(
+            SizedBox(
+                width: 15.w,
+                child: WhatsappButton(
+                    num: parentPhone,
+                    message: makeTemplate(history, context,name)))),
         DataCell(
           Text(DateFormat.yMMMd().format(DateTime.parse(history.classDate))),
         ),
