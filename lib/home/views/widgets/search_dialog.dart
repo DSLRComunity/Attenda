@@ -1,24 +1,20 @@
-import 'package:attenda/core/colors.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../classes/models/class_model.dart';
-import '../../../classes/view/widgets/custom_button.dart';
+import '../../../core/colors.dart';
+import '../../../core/routes.dart';
 import '../../../students/models/students_model.dart';
-import '../../business_logic/class_details_cubit.dart';
 
-class AttendanceDialog extends StatefulWidget {
+class SearchDialog extends StatefulWidget {
 
-  const AttendanceDialog({Key? key, required this.attendanceStudents, required this.currentClass}) : super(key: key);
+  const SearchDialog({Key? key, required this.attendanceStudents}) : super(key: key);
   final List<StudentsModel> attendanceStudents;
-  final ClassModel currentClass;
 
   @override
-  State<AttendanceDialog> createState() => _AttendanceDialogState();
+  State<SearchDialog> createState() => _SearchDialogState();
 }
 
-class _AttendanceDialogState extends State<AttendanceDialog> {
+class _SearchDialogState extends State<SearchDialog> {
   TextEditingController searchController = TextEditingController();
   List<StudentsModel> searchList = [];
   bool searched = false;
@@ -46,7 +42,7 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
                     searched = true;
                     setState(() {
                       searchList = widget.attendanceStudents
-                          .where((student) => student.id.startsWith(value)||student.name.startsWith(value))
+                          .where((student) => student.id.startsWith(value))
                           .toList();
                       itemCount = searchList.length;
                       searchWord = value;
@@ -69,7 +65,7 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
                       prefixIcon: const Padding(
                           padding: EdgeInsets.all(10),
                           child: Icon(Icons.search_outlined)),
-                      hintText: "Search by name or id",
+                      hintText: "Search",
                       hintStyle: Theme.of(context)
                           .textTheme
                           .bodySmall!
@@ -96,40 +92,38 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
           ConditionalBuilder(
               condition: searchList.isNotEmpty,
               builder: (context) => Expanded(
-                    child: SizedBox(
-                      width: 100.w,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) => Container(
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: Colors.grey, width: 0.5.w)),
-                          child: Row(
-                            children: [
-                              Text(searchList[index].name),
-                              SizedBox(
-                                width: 5.w,
-                              ),
-                              const Spacer(),
-                              CustomButton(
-                                  text: 'Attend',
-                                  onPressed: () async {
-                                    await ClassDetailsCubit.get(context)
-                                        .addToAttendance(searchList[index],
-                                            widget.currentClass,context);
-                                  }),
-                            ],
-                          ),
+                child: SizedBox(
+                  width: 100.w,
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) => InkWell(
+                      onTap: (){
+                        Navigator.pushNamed(context, Routes.editStudentRoute,arguments: searchList[index]);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border:
+                            Border.all(color: Colors.grey, width: 0.5.w)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(searchList[index].name),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                          ],
                         ),
-                        itemCount: itemCount,
-                        separatorBuilder: (BuildContext context, int index) {
-                          return SizedBox(
-                            height: 20.h,
-                          );
-                        },
                       ),
                     ),
+                    itemCount: itemCount,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(
+                        height: 20.h,
+                      );
+                    },
                   ),
+                ),
+              ),
               fallback: (context) => Expanded(child: Container())),
         ],
       ),

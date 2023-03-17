@@ -31,3 +31,12 @@ class GetStudentHistoryError extends StudentsState {
   GetStudentHistoryError(this.error);
 }
 
+class DeleteStudentLoad extends StudentsState {}
+
+class DeleteStudentSuccess extends StudentsState {}
+
+class DeleteStudentError extends StudentsState {
+  String error;
+  DeleteStudentError(this.error);
+}
+

@@ -75,7 +75,7 @@ class ClassItem extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onPressed: () async {
-                      await ClassesCubit.get(context).deleteClass(currentClass.date, getClassName(currentClass));
+                      await ClassesCubit.get(context).deleteClass(currentClass.date, getClassName(currentClass),context);
                     },
                   ):
                   Container(),

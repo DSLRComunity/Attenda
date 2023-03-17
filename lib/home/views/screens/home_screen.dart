@@ -4,7 +4,7 @@ import 'package:attenda/core/cache_helper.dart';
 import 'package:attenda/core/colors.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:attenda/dash_board/views/screens/dashboard_screen.dart';
-import 'package:attenda/history/historyScreen.dart';
+import 'package:attenda/history/view/screens/historyScreen.dart';
 import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/home/views/widgets/search_field.dart';
 import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
@@ -13,6 +13,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../history/business_logic/history_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -165,11 +167,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           body: TabBarView(
             controller: _tabController,
-            children: const [
-              DashBoard(),
-              ClassesScreen(),
-              StudentsScreen(),
-              HistoryScreen(),
+            children:  [
+              const DashBoard(),
+              const ClassesScreen(),
+              const StudentsScreen(),
+              BlocProvider(create: (context) => HistoryCubit(),child: const HistoryScreen()),
             ],
           ),
         ),

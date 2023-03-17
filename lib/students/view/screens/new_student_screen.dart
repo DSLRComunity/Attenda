@@ -75,6 +75,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
           }
           if (state is AddStudentSuccess) {
             showStudentDialog(context, id,name,className);
+
             nameController.clear();
             parentNameController.clear();
             phoneController.clear();
@@ -247,8 +248,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               formKey.currentState!.save();
-                              await AddStudentCubit.get(context).addStudent(
-                                StudentsModel(
+                              await AddStudentCubit.get(context).addStudent(StudentsModel(
                                   name: name,
                                   phone: phone,
                                   parentName: parentName,
@@ -256,8 +256,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                   parentPhone: parentPhone,
                                   id: _getStudentId(gender),
                                   gender: gender,
-                                ),
-                              );
+                                ),context);
                               await StudentsCubit.get(context).getAllStudents();
                             }
                           })),

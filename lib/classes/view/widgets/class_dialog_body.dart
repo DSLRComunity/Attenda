@@ -226,7 +226,7 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                                         moneyCollected: 0.0,
                                         maxQuizDegree: 0.0,
                                         numOfAttendants: 0,
-                                      ));
+                                      ),context);
                                   ClassesCubit.get(context).getAllClasses();
                                 }
                               }),

@@ -1,4 +1,6 @@
 import 'package:attenda/core/colors.dart';
+import 'package:attenda/history/models/history_model.dart';
+import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/students/models/student_history_model.dart';
 import 'package:attenda/students/models/students_model.dart';
 import 'package:attenda/whatsapp/view/widgets/whatsapp_button.dart';
@@ -12,7 +14,6 @@ import '../../../classes/view/widgets/custom_text_field.dart';
 import '../../../classes/view/widgets/toast.dart';
 import '../../../whatsapp/business_logic/functions.dart';
 import '../../business_logic/students_cubit/students_cubit.dart';
-import '../widgets/drop_down.dart';
 import '../widgets/scrollable_widget.dart';
 
 class EditStudentScreen extends StatefulWidget {
@@ -37,6 +38,13 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
   late String parentPhone;
   late String className;
 
+  late String nameMessage;
+  late String phoneMessage;
+  late String parentPhoneMessage;
+  late String classNameMessage;
+
+  late String hisOrHer;
+late List<String>classesNames;
   void _getStudentHistory() async {
     await StudentsCubit.get(context).getStudentHistory(widget.student.id);
   }
@@ -44,15 +52,17 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
   @override
   void initState() {
     _getStudentHistory();
+   classesNames= ClassesCubit.get(context).getClassesNames().toList();
     nameController.text = widget.student.name;
     phoneController.text = widget.student.phone;
     parentPhoneController.text = widget.student.parentPhone;
     parentNameController.text = widget.student.parentName;
-    name=widget.student.name;
-    parentName=widget.student.parentName;
-    phone=widget.student.phone;
-    parentPhone=widget.student.parentPhone;
-    className=widget.student.className;
+    name = widget.student.name;
+    parentName = widget.student.parentName;
+    phone = widget.student.phone;
+    parentPhone = widget.student.parentPhone;
+    className = widget.student.className==""&&classesNames.isNotEmpty?classesNames[0]:widget.student.className;
+    hisOrHer = widget.student.gender == 'Male' ? 'his' : 'her';
     super.initState();
   }
 
@@ -157,28 +167,26 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
+                                Container(
+                                  width: 80.w,
+                                  height:40.h,
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: MyColors.grey),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.r))),
                                   padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                  child: Container(
-                                    width: 80.w,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: MyColors.grey),
-                                        borderRadius: BorderRadius.all(Radius.circular(10.r))
-                                    ),
-                                    padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                    child: DropdownButton<dynamic>(
-                                      value:className,
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      menuMaxHeight: double.maxFinite,
-                                      onChanged: (Object? newValue){
-                                        setState((){
-                                          className=newValue.toString();
-                                          //  AddStudentCubit.get(context).className=selectedValue;
-                                        });
-                                      },
-                                      items: getMenuItems(context),
-                                    ),
+                                  child: DropdownButton<dynamic>(
+                                    value: className,
+                                    isExpanded: true,
+                                    underline: Container(),
+                                    // menuMaxHeight: double.maxFinite,
+                                    onChanged: (Object? newValue) {
+                                      setState((){
+                                        className = newValue.toString();
+                                      });
+                                    },
+                                    items: getMenuItems(context),
                                   ),
                                 ),
                                 SizedBox(
@@ -217,10 +225,60 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
-                                if(className!=widget.student.className){
-                              await StudentsCubit.get(context).changeStudentClass(widget.student.className, className, widget.student);
+                                if (className != widget.student.className&&widget.student.className!="") {
+                                  await StudentsCubit.get(context)
+                                      .changeStudentClass(
+                                          widget.student.className,
+                                          className,
+                                          widget.student);
+                                  // classNameMessage='the class name from ${widget.student.className} to $className';
+                                  StudentsCubit.get(context).addToManageHistory(
+                                      HistoryModel(userName: HomeCubit.get(context).userData!.firstName!,
+                                          message: "has updated a student whose id ${widget.student.id} by changing $hisOrHer class name from ${widget.student.className} to $className ",
+                                          date: DateFormat.yMEd()
+                                              .add_jms()
+                                              .format(DateTime.now()),
+                                          ));
                                 }
-                             await  StudentsCubit.get(context).editStudentInfo(StudentsModel(
+                                if (name != widget.student.name) {
+                                  // nameMessage='$hisOrHer name from ${widget.student.name} to $name';
+                                  StudentsCubit.get(context).addToManageHistory(HistoryModel(
+                                          userName: HomeCubit.get(context)
+                                              .userData!
+                                              .firstName!,
+                                          message:
+                                          "has updated a student whose id ${widget.student.id} by changing $hisOrHer name from ${widget.student.name} to $name ",
+                                          date: DateFormat.yMEd()
+                                              .add_jms()
+                                              .format(DateTime.now()),
+                                         ));
+                                }
+                                if (phone != widget.student.phone) {
+                                  StudentsCubit.get(context).addToManageHistory(HistoryModel(
+                                          userName: HomeCubit.get(context)
+                                              .userData!
+                                              .firstName!,
+                                          message:
+                                          "has updated a student whose id ${widget.student.id} by changing $hisOrHer phone number from ${widget.student.phone} to $phone ",
+                                          date: DateFormat.yMEd()
+                                              .add_jms()
+                                              .format(DateTime.now()),
+                                          ));
+                                }
+                                if(parentPhone!=widget.student.parentPhone){
+                                  StudentsCubit.get(context).addToManageHistory(
+                                      HistoryModel(
+                                          userName: HomeCubit.get(context)
+                                              .userData!
+                                              .firstName!,
+                                          message:
+                                          "has updated a student whose id ${widget.student.id} by changing $hisOrHer parent phone from ${widget.student.parentPhone} to $parentPhone ",
+                                          date: DateFormat.yMEd()
+                                              .add_jms()
+                                              .format(DateTime.now()),
+                                          ));
+                                }
+                                await StudentsCubit.get(context).editStudentInfo(StudentsModel(
                                   name: name,
                                   phone: phone,
                                   parentName: widget.student.parentName,
@@ -249,9 +307,8 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
                     current is GetStudentHistorySuccess ||
                     current is GetStudentHistoryError ||
                     current is GetStudentHistoryError ||
-                    current is GetStudentHistoryError||
-                    current is UpdateStudentSuccess
-                );
+                    current is GetStudentHistoryError ||
+                    current is UpdateStudentSuccess);
               },
               builder: (context, state) {
                 if (state is GetStudentHistoryLoad) {
@@ -289,8 +346,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
   }
 
   List<DropdownMenuItem> getMenuItems(BuildContext context) {
-    List<DropdownMenuItem> menuItems = ClassesCubit.get(context)
-        .getClassesNames()
+    List<DropdownMenuItem> menuItems = classesNames
         .map((className) => DropdownMenuItem(
               value: className,
               child: Text(className),
@@ -321,12 +377,11 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
     List<DataRow> records = [];
     histories.forEach((history) {
       records.add(DataRow(cells: [
-        DataCell(
-            SizedBox(
-                width: 15.w,
-                child: WhatsappButton(
-                    num: parentPhone,
-                    message: makeTemplate(history, context,name)))),
+        DataCell(SizedBox(
+            width: 15.w,
+            child: WhatsappButton(
+                num: parentPhone,
+                message: makeTemplate(history, context, name)))),
         DataCell(
           Text(DateFormat.yMMMd().format(DateTime.parse(history.classDate))),
         ),
@@ -351,4 +406,5 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
     });
     return records;
   }
+
 }

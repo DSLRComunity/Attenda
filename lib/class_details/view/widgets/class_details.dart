@@ -122,7 +122,7 @@ class _ClassDetailsState extends State<ClassDetails> {
                                     width: 40.w,
                                     child: TextFormField(
                                       controller: dateController,
-                                      enabled: isUpdate,
+                                      enabled: false,
                                       onTap: () {
                                         showDatePicker(
                                           context: context,
@@ -230,7 +230,7 @@ class _ClassDetailsState extends State<ClassDetails> {
                                   SizedBox(
                                     width: 40.w,
                                     child: TextFormField(
-                                      enabled: isUpdate,
+                                      enabled: false,
                                       controller: timeController,
                                       onTap: () {
                                         showTimePicker(
@@ -436,9 +436,9 @@ class _ClassDetailsState extends State<ClassDetails> {
                                               region: widget.currentClass.region,
                                               classPrice: price,
                                               centerName: place,
-                                              iteration: widget.currentClass.iteration,
                                               maxQuizDegree: maxQuizDegree,
                                               maxHwDegree: maxHwDegree,
+                                              iteration: widget.currentClass.iteration,
                                               moneyCollected: ClassDetailsCubit.get(context).totalMoney,
                                               numOfAttendants:ClassDetailsCubit.get(context).classAttendants,
                                             ));

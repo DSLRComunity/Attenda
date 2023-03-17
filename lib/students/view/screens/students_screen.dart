@@ -1,3 +1,4 @@
+import 'package:attenda/core/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
   }
 
   List<String> columnsLabels = [
+    'remove',
     'Info',
     'Id',
     'Name',
@@ -47,6 +49,14 @@ class _StudentsScreenState extends State<StudentsScreen> {
   List<DataRow> getRows(List<StudentsModel> students) {
     return students
         .map((student) => DataRow(cells: [
+          DataCell(
+             IconButton(
+               onPressed: ()async{
+                await StudentsCubit.get(context).removeStudent(student.id, student.className,context);
+               },
+               icon: const Icon(Icons.delete,color: MyColors.primary,),
+             )
+          ),
               DataCell(Image.asset(
                   '${(kDebugMode && kIsWeb) ? "" : "assets/"}images/picture.png',width: 15.w,fit: BoxFit.fitHeight,),
               onTap: () {

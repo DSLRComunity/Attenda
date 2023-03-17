@@ -1,7 +1,6 @@
 import 'package:attenda/classes/models/class_model.dart';
 import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:attenda/core/colors.dart';
-import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
 import 'package:attenda/students/models/students_model.dart';
 import 'package:attenda/students/view/widgets/text_dialog.dart';
 import 'package:flutter/material.dart';
@@ -77,12 +76,12 @@ class _HistoryDetailsState extends State<HistoryDetails> {
         DataCell(
            SizedBox(
             width: 15.w, child: WhatsappButton(
-                num:StudentsCubit.get(context).students!.firstWhere((element) => element.id==history.id).parentPhone,
-                message: makeTemplate(history,context,StudentsCubit.get(context).students!.firstWhere((element) => element.id==history.id).name)))),
+                num:history.parentPhone,
+                message: makeTemplate(history,context,history.name)))),
         DataCell(
           TextFormField(
             enabled: false,
-            initialValue: StudentsCubit.get(context).students!.firstWhere((element) => element.id==history.id).name,
+            initialValue: history.name,
           ),
         ),
         DataCell(
@@ -182,11 +181,11 @@ class _HistoryDetailsState extends State<HistoryDetails> {
             showEditIcon: true),
         DataCell(IconButton(
           onPressed: () async {
-            ClassDetailsCubit.get(context).classAttendants--;
-            ClassDetailsCubit.get(context).totalMoney-=history.costPurchased;
-            await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
-            await ClassDetailsCubit.get(context).updateNumOfAttendants(widget.currentClass);
-            await ClassDetailsCubit.get(context).removeFromAttendance(history.id, widget.currentClass);
+            // ClassDetailsCubit.get(context).classAttendants--;
+            // ClassDetailsCubit.get(context).totalMoney-=history.costPurchased;
+            // await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
+            // await ClassDetailsCubit.get(context).updateNumOfAttendants(widget.currentClass);
+            await ClassDetailsCubit.get(context).removeFromAttendance(history.id, widget.currentClass,context);
           },
           icon: const Icon(
             Icons.group_remove_outlined,

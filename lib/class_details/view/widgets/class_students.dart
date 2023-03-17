@@ -94,10 +94,9 @@ class _ClassStudentsState extends State<ClassStudents> {
                               student: student),
                         ],
                       ),
-                    )).toList() :
-                    ClassDetailsCubit.get(context)
-                        .classStudents
-                        .map((student) => Padding(
+                    )).toList()
+                        :
+                    ClassDetailsCubit.get(context).classStudents.map((student) => Padding(
                               padding: EdgeInsets.symmetric(vertical: 3.h),
                               child: Row(
                                 children: [
@@ -143,9 +142,9 @@ class _AttendButtonState extends State<AttendButton> {
           onPressed: () async {
             // ClassDetailsCubit.get(context).classAttendants++;
             // ClassDetailsCubit.get(context).totalMoney+=widget.currentClass.classPrice;
-            await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
-            await ClassDetailsCubit.get(context).updateNumOfAttendants(widget.currentClass);
-            await ClassDetailsCubit.get(context).addToAttendance(widget.student, widget.currentClass);
+            // await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
+            // await ClassDetailsCubit.get(context).updateNumOfAttendants(widget.currentClass);
+            await ClassDetailsCubit.get(context).addToAttendance(widget.student, widget.currentClass,context);
           },
           icon: const Icon(
             Icons.add,

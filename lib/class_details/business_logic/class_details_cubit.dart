@@ -1,13 +1,15 @@
+import 'package:attenda/history/models/history_model.dart';
+import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/students/models/student_history_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../classes/models/class_model.dart';
 import '../../classes/view/widgets/get_day_function.dart';
 import '../../students/models/students_model.dart';
-
 part 'class_details_state.dart';
 
 class ClassDetailsCubit extends Cubit<ClassDetailsState> {
@@ -18,9 +20,9 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
 
   double totalMoney = 0;
   int classAttendants = 0;
+
   List<StudentsModel> classStudents = [];
   List<StudentsModel> classAttendantStudents = [];
-
   Future<void> updateClassDetails(ClassModel currentClass) async  {
     emit(UpdateDetailsLoad());
     FirebaseFirestore instance = FirebaseFirestore.instance;
@@ -28,8 +30,13 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('classes')
-        .doc(getClassName(currentClass))
-        .update(currentClass.toJson())
+        .doc(getClassName(currentClass)).collection('dates').doc(currentClass.date.toString())
+        .update({
+      'centerName':currentClass.centerName,
+      'classPrice':currentClass.classPrice,
+      'maxHwDegree':currentClass.maxHwDegree,
+      'maxQuizDegree':currentClass.maxQuizDegree,
+    })
         .then((value) {
       emit(UpdateDetailsSuccess());
     }).catchError((error) {
@@ -92,7 +99,7 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
     });
     return valid;
   }
-  Future<void> addToAttendance(StudentsModel student, ClassModel currentClass) async {
+  Future<void> addToAttendance(StudentsModel student, ClassModel currentClass,BuildContext context) async {
     if (checkAttendance(student.id)) {
       Map<String, dynamic> history = StudentHistory(
         comment: 'No Comment ',
@@ -122,7 +129,7 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
           .doc(student.id)
           .set(student.toJson())
           .then((value) async {
-        await addHistory(currentClass, student.id, history);
+        await addHistory(currentClass, student.id, history,context);
         emit(AddAttendantStudentSuccess());
       }).catchError((error) {
         emit(AddAttendantStudentError(error.toString()));
@@ -130,11 +137,17 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
     }
   }
 
-  Future<void> addHistory(ClassModel currentClass, String studentId, Map<String, dynamic> history) async {
+  Future<void> addHistory(ClassModel currentClass, String studentId, Map<String, dynamic> history,BuildContext context) async {
     await addHistoryToClass(currentClass, studentId, history).then((value) async {
       classHistory.add(StudentHistory.fromJson(history));
       emit(UpdateHistorySuccess());
       await addHistoryToStudent(currentClass.date, studentId, history);
+      await addToAttendanceHistory(HistoryModel(
+        userName: HomeCubit.get(context).userData!.firstName!,
+        message: 'has register student with id ${studentId} as attendant in class ${getClassName(currentClass)} on ${DateFormat('yyyy-MM-dd').format(currentClass.date)} ',
+            date: DateFormat.yMEd()
+          .add_jms()
+          .format(DateTime.now()),));
     }).catchError((error) {
       emit(UpdateHistoryError(error.toString()));
     });
@@ -174,7 +187,7 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
     } catch (error) {}
   }
 
-  Future<void> removeFromAttendance(String studentId, ClassModel currentClass) async {
+  Future<void> removeFromAttendance(String studentId, ClassModel currentClass,BuildContext context) async {
     emit(AddAttendantStudentLoad());
     FirebaseFirestore instance = FirebaseFirestore.instance;
     await instance
@@ -188,18 +201,24 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
         .doc(studentId)
         .delete()
         .then((value) async {
-      await removeHistory(currentClass, studentId);
+      await removeHistory(currentClass, studentId,context);
       emit(AddAttendantStudentSuccess());
     }).catchError((error) {
       emit(AddAttendantStudentError(error.toString()));
     });
   }
 
-  Future<void> removeHistory(ClassModel currentClass, String studentId) async {
+  Future<void> removeHistory(ClassModel currentClass, String studentId,BuildContext context) async {
     await removeHistoryFromClass(currentClass, studentId).then((value) async {
       classHistory.removeWhere((element) => element.id == studentId);
       emit(UpdateHistorySuccess());
       await removeHistoryFromStudent(currentClass.date, studentId);
+      await addToAttendanceHistory(HistoryModel(
+        userName: HomeCubit.get(context).userData!.firstName!,
+        message: 'has unregister student with id ${studentId} from attendance in class ${getClassName(currentClass)} on ${DateFormat('yyyy-MM-dd').format(currentClass.date)} ',
+        date: DateFormat.yMEd()
+            .add_jms()
+            .format(DateTime.now()),));
     }).catchError((error) {
       emit(UpdateHistoryError(error.toString()));
     });
@@ -471,6 +490,19 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
           .doc(currentClass.date.toString())
           .update({'moneyCollected': totalMoney});
     } catch (error) {}
+  }
+
+  Future<void>addToAttendanceHistory(HistoryModel history)async{
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('attendanceHistory')
+          .doc()
+          .set(history.toJson());
+    } catch (error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+    }
   }
 
 }

@@ -15,7 +15,9 @@ class ClassesScreen extends StatefulWidget {
 class _ClassesScreenState extends State<ClassesScreen> {
 
   void _getClasses()async{
-    await  ClassesCubit.get(context).getAllClasses();
+    if(ClassesCubit.get(context).classes!.isEmpty){
+      await  ClassesCubit.get(context).getAllClasses();
+    }
     }
 
   @override
