@@ -2,6 +2,7 @@ import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:attenda/login/business_logic/home_login_cubit/home_login_cubit.dart';
 import 'package:attenda/login/business_logic/login_cubit/login_cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,17 +28,26 @@ class LoginScreen extends StatelessWidget {
     return Form(
       key: formKey,
       child: BlocListener<LoginCubit,LoginState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is LoginError) {
             showErrorToast(context: context, message: state.error);
-          } else if (state is LoginSuccess) {
-            showSuccessToast(
-                context: context, message: 'Login Successfully');
-            uId = state.uId;
-            if (LoginCubit.get(context).rememberMe) {
-              CacheHelper.putData(key: 'uId', value: uId);
+          }else if(state is CheckCompleteError){
+            showErrorToast(context: context, message: state.error);
+          } else if (state is LoginSuccess){
+          await LoginCubit.get(context).checkComplete();
+          }else if(state is CheckCompleteSuccess){
+            if(LoginCubit.get(context).isComplete){
+              showSuccessToast(context: context, message: 'Login Successfully');
+              uId = FirebaseAuth.instance.currentUser!.uid;
+              role='t';
+              if (LoginCubit.get(context).rememberMe) {
+                CacheHelper.putData(key: 'uId', value: uId);
+                CacheHelper.putData(key: 'role', value: role);
+              }
+              goToHome(context);
+            }else{
+              goToCompleteRegistration(context);
             }
-            goToHome(context);
           }
         },
 
@@ -261,5 +271,11 @@ class LoginScreen extends StatelessWidget {
     emailController.dispose();
     passController.dispose();
     Navigator.pushReplacementNamed(context, Routes.homeRoute);
+  }
+  void goToCompleteRegistration(BuildContext context){
+    emailController.dispose();
+    passController.dispose();
+    HomeLoginCubit.get(context).changeToCompleteRegister();
+
   }
 }

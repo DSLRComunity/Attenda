@@ -14,6 +14,7 @@ class CustomTextFiled extends StatelessWidget {
     this.onTab,
     this.controller,
     this.suffix,
+    this.onSubmit,
 
   })
       : super(key: key);
@@ -27,6 +28,7 @@ class CustomTextFiled extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validate;
   final void Function()? onTab;
+  final Function(String)? onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,7 @@ class CustomTextFiled extends StatelessWidget {
         validator: validate,
         onTap: onTab,
         onSaved: onSave,
+        onFieldSubmitted: onSubmit,
       ),
     );
   }

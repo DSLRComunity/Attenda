@@ -87,12 +87,29 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                                 dateController.text=DateFormat.yMMMd().format(DateTime.now());
                                 dateTime=DateTime.now();
                               }else{
-                              dateController.text =
-                              DateFormat.yMMMd().format(value);
+                              dateController.text = DateFormat.yMMMd().format(value);
                               dateTime = value;
                               }
                             });
                           },
+                          onSubmit:(value)async{
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              await AddClassCubit.get(context).addClass(ClassModel(
+                                date: dateTime,
+                                time: time,
+                                region: region,
+                                classPrice: price,
+                                centerName: centerName,
+                                iteration: iterative,
+                                maxHwDegree: 0.0,
+                                moneyCollected: 0.0,
+                                maxQuizDegree: 0.0,
+                                numOfAttendants: 0,
+                              ),context);
+                              ClassesCubit.get(context).getAllClasses();
+                            }
+                          } ,
                           validate: (value) {
                             if (value!.isEmpty) {
                               return 'Enter the data !';
@@ -124,6 +141,24 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                                   }
                             });
                           },
+                          onSubmit:(value)async{
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              await AddClassCubit.get(context).addClass(ClassModel(
+                                date: dateTime,
+                                time: time,
+                                region: region,
+                                classPrice: price,
+                                centerName: centerName,
+                                iteration: iterative,
+                                maxHwDegree: 0.0,
+                                moneyCollected: 0.0,
+                                maxQuizDegree: 0.0,
+                                numOfAttendants: 0,
+                              ),context);
+                              ClassesCubit.get(context).getAllClasses();
+                            }
+                          } ,
                           validate: (value) {
                             if (value!.isEmpty) {
                               return 'Enter the time !';
@@ -142,6 +177,24 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                           onSave: (value) {
                             region = value!;
                           },
+                          onSubmit:(value)async{
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              await AddClassCubit.get(context).addClass(ClassModel(
+                                date: dateTime,
+                                time: time,
+                                region: region,
+                                classPrice: price,
+                                centerName: centerName,
+                                iteration: iterative,
+                                maxHwDegree: 0.0,
+                                moneyCollected: 0.0,
+                                maxQuizDegree: 0.0,
+                                numOfAttendants: 0,
+                              ),context);
+                              ClassesCubit.get(context).getAllClasses();
+                            }
+                          } ,
                           validate: (value) {
                             if (value!.isEmpty) {
                               return 'Enter the region !';
@@ -160,6 +213,24 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                           onSave: (value) {
                             centerName = value!;
                           },
+                          onSubmit: (value)async{
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              await AddClassCubit.get(context).addClass(ClassModel(
+                                date: dateTime,
+                                time: time,
+                                region: region,
+                                classPrice: price,
+                                centerName: centerName,
+                                iteration: iterative,
+                                maxHwDegree: 0.0,
+                                moneyCollected: 0.0,
+                                maxQuizDegree: 0.0,
+                                numOfAttendants: 0,
+                              ),context);
+                              ClassesCubit.get(context).getAllClasses();
+                            }
+                          } ,
                           validate: (value) {
                             if (value!.isEmpty) {
                               return 'Enter the center name !';
@@ -179,6 +250,24 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                           onSave: (value) {
                             price = double.parse(value!);
                           },
+                          onSubmit: (value)async{
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              await AddClassCubit.get(context).addClass(ClassModel(
+                                date: dateTime,
+                                time: time,
+                                region: region,
+                                classPrice: price,
+                                centerName: centerName,
+                                iteration: iterative,
+                                maxHwDegree: 0.0,
+                                moneyCollected: 0.0,
+                                maxQuizDegree: 0.0,
+                                numOfAttendants: 0,
+                              ),context);
+                              ClassesCubit.get(context).getAllClasses();
+                            }
+                          },
                           validate: (value) {
                             if (value!.isEmpty) {
                               return 'Enter the price !';
@@ -197,6 +286,24 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                           onSave: (value) {
                             iterative = int.parse(value!);
                           },
+                          onSubmit:(value)async{
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              await AddClassCubit.get(context).addClass(ClassModel(
+                                date: dateTime,
+                                time: time,
+                                region: region,
+                                classPrice: price,
+                                centerName: centerName,
+                                iteration: iterative,
+                                maxHwDegree: 0.0,
+                                moneyCollected: 0.0,
+                                maxQuizDegree: 0.0,
+                                numOfAttendants: 0,
+                              ),context);
+                              ClassesCubit.get(context).getAllClasses();
+                            }
+                          } ,
                           validate: (value) {
                             if (value!.isEmpty) {
                               return 'Enter the class times !';
@@ -214,8 +321,7 @@ class _ClassDialogBodyState extends State<ClassDialogBody> {
                               onPressed: () async{
                                 if (formKey.currentState!.validate()) {
                                   formKey.currentState!.save();
-                                 await AddClassCubit.get(context).addClass(
-                                      ClassModel(
+                                 await AddClassCubit.get(context).addClass(ClassModel(
                                       date: dateTime,
                                       time: time,
                                       region: region,

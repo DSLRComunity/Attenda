@@ -39,14 +39,14 @@ class MyTextField extends StatelessWidget {
             borderSide: BorderSide(color: MyColors.primary)),
         hintText: hint ?? '',
         hintStyle: Theme.of(context).textTheme.displaySmall,
-        suffixIcon: IconButton(
+        suffixIcon:suffixIcon!=null? IconButton(
           icon: Icon(
             suffixIcon,
             color: MyColors.black,
           ),
           onPressed: suffixPress,
-        ),
-        contentPadding: const EdgeInsets.all(15),
+        ):null,
+        contentPadding: const EdgeInsets.symmetric(vertical: 15,horizontal: 6),
       ),
       onSaved: onSave,
       controller: myController,

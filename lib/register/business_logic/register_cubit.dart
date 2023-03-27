@@ -82,6 +82,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       expectedStudentsNum: expectedStudentsNum,
       governorateCode: governorateCode,
       subject: subject,
+      isComplete: true,
     );
     try {
       await FirebaseFirestore.instance
@@ -90,12 +91,16 @@ class RegisterCubit extends Cubit<RegisterState> {
           .set(userData.toJson());
       emit(CreateUserSuccess());
     } catch (error) {
-      print(error.toString());
       emit(CreateUserError(error.toString()));
     }
   }
 
-
+  String _createTeacherId(String phoneNumber, String code) {
+    String id;
+    String last7Num = phoneNumber.substring(3, 11);
+    id = 'TH-$code-$last7Num';
+    return id;
+  }
 
   bool isVisible = true;
   var visibleIcon = Icons.visibility;
@@ -110,13 +115,6 @@ class RegisterCubit extends Cubit<RegisterState> {
       isVisible = true;
       emit(ChangePassVisibilityState());
     }
-  }
-
-  String _createTeacherId(String phoneNumber, String code) {
-    String id;
-    String last7Num = phoneNumber.substring(3, 11);
-    id = 'TH-$code-$last7Num';
-    return id;
   }
 
 }

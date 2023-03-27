@@ -49,30 +49,44 @@ class _StudentsScreenState extends State<StudentsScreen> {
   List<DataRow> getRows(List<StudentsModel> students) {
     return students
         .map((student) => DataRow(cells: [
-          DataCell(
-             IconButton(
-               onPressed: ()async{
-                await StudentsCubit.get(context).removeStudent(student.id, student.className,context);
-               },
-               icon: const Icon(Icons.delete,color: MyColors.primary,),
-             )
-          ),
-              DataCell(Image.asset(
-                  '${(kDebugMode && kIsWeb) ? "" : "assets/"}images/picture.png',width: 15.w,fit: BoxFit.fitHeight,),
-              onTap: () {
-                showStudentDialog(context, student.id,student.name,student.className);
-              },
+              DataCell(IconButton(
+                onPressed: () async {
+                  await StudentsCubit.get(context)
+                      .removeStudent(student.id, student.className, context);
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: MyColors.primary,
+                ),
+              )),
+              DataCell(
+                Image.asset(
+                  '${(kDebugMode && kIsWeb) ? "" : "assets/"}images/picture.png',
+                  width: 15.w,
+                  fit: BoxFit.fitHeight,
+                ),
+                onTap: () {
+                  showStudentDialog(
+                      context, student.id, student.name, student.className);
+                },
               ),
-              DataCell(Text(student.id), onDoubleTap: () {
+              DataCell(
+                  Text(
+                    student.id,
+                    style: TextStyle(height: 1.h),
+                  ), onDoubleTap: () {
                 navigateToEditStudent(student);
               }),
-              DataCell(Text(student.name), onDoubleTap: () {
+              DataCell(Text(student.name, style: TextStyle(height: 1.h)),
+                  onDoubleTap: () {
                 navigateToEditStudent(student);
               }),
-              DataCell(Text(student.phone), onDoubleTap: () {
+              DataCell(Text(student.phone, style: TextStyle(height: 1.h)),
+                  onDoubleTap: () {
                 navigateToEditStudent(student);
               }),
-              DataCell(Text(student.parentPhone), onDoubleTap: () {
+              DataCell(Text(student.parentPhone, style: TextStyle(height: 1.h)),
+                  onDoubleTap: () {
                 navigateToEditStudent(student);
               }),
               DataCell(
@@ -108,7 +122,8 @@ class _StudentsScreenState extends State<StudentsScreen> {
                       );
                     });
               }),
-              DataCell(Text(student.className), onDoubleTap: () {}),
+              DataCell(Text(student.className, style: TextStyle(height: 1.h)),
+                  onDoubleTap: () {}),
             ]))
         .toList();
   }
@@ -130,23 +145,19 @@ class _StudentsScreenState extends State<StudentsScreen> {
           ),
         ),
         Expanded(
-          child: ScrollableWidget(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                BlocBuilder<StudentsCubit, StudentsState>(
-                  builder: (context, state) {
-                    return StudentsCubit.get(context).students == null
+          child: BlocBuilder<StudentsCubit, StudentsState>(
+              builder: (context, state) {
+            return StudentsCubit.get(context).students == null
+                ? Container()
+                : ScrollableWidget(
+                    child: StudentsCubit.get(context).students == null
                         ? Container()
                         : DataTable(
                             columns: getColumns(columnsLabels),
                             rows: getRows(StudentsCubit.get(context).students!),
-                          );
-                  },
-                ),
-              ],
-            ),
-          ),
+                          ),
+                  );
+          }),
         ),
       ],
     );

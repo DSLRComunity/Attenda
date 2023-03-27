@@ -1,4 +1,6 @@
 import 'package:attenda/core/strings.dart';
+import 'package:attenda/register/models/register_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +13,18 @@ class LoginCubit extends Cubit<LoginState> {
 
   static LoginCubit get(BuildContext context) => BlocProvider.of(context);
 
-  Future<void> loginUser({required String email, required String password}) async {
+  Future<void> loginUser(
+      {required String email, required String password}) async {
     emit(LoginLoadingState());
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password).then((loginUser){
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((loginUser) {
         if (kDebugMode) {
           print('${loginUser.user!.uid}/////////////////////////////////////');
         }
-          uId=loginUser.user!.uid;
-          emit(LoginSuccess(loginUser.user!.uid));
-
+        uId = loginUser.user!.uid;
+        emit(LoginSuccess(loginUser.user!.uid));
       });
     } on FirebaseAuthException catch (error) {
       if (error.code == 'user-not-found') {
@@ -48,10 +52,43 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  bool rememberMe=false;
-  void changeRememberMe(bool? value){
-    rememberMe=value!;
+  bool rememberMe = false;
+
+  void changeRememberMe(bool? value) {
+    rememberMe = value!;
     emit(ChangeRememberMe());
   }
 
+  Future<void> completeRegister(
+      String expectedStudents, String technicalNumber, String password) async {
+    emit(CompleteRegisterLoad());
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'expectedStudentsNum': expectedStudents,
+      'technicalSupportNum': technicalNumber,
+      'isComplete': true,
+    }).then((value) async {
+      emit(CompleteRegisterSuccess());
+    }).catchError((error) {
+      emit(CompleteRegisterError(error.toString()));
+    });
+    await FirebaseAuth.instance.currentUser?.updatePassword(password);
+  }
+
+  bool isComplete=false;
+  Future<void> checkComplete() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) {
+      var user=UserModel.fromJson(value.data()!);
+      isComplete=user.isComplete;
+      emit(CheckCompleteSuccess());
+    }).catchError((error) {
+      emit(CheckCompleteError(error.toString()));
+    });
+  }
 }

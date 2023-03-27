@@ -77,7 +77,7 @@ class _HistoryDetailsState extends State<HistoryDetails> {
            SizedBox(
             width: 15.w, child: WhatsappButton(
                 num:history.parentPhone,
-                message: makeTemplate(history,context,history.name)))),
+                message: MyFunctions.makeTemplate(history,context,history.name)))),
         DataCell(
           TextFormField(
             enabled: false,

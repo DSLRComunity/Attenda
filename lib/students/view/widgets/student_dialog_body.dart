@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:attenda/classes/view/widgets/custom_button.dart';
-import 'package:flutter/foundation.dart';
+import 'package:attenda/whatsapp/business_logic/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 import '../../../core/colors.dart';
-import "package:universal_html/html.dart" show AnchorElement, document;
 
 
 class StudentDialogBody extends StatefulWidget {
@@ -26,7 +24,6 @@ class _StudentDialogBodyState extends State<StudentDialogBody> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-
       children: [
         AlertDialog(
           backgroundColor: MyColors.white,
@@ -63,7 +60,7 @@ class _StudentDialogBodyState extends State<StudentDialogBody> {
                   ),
                   SizedBox(height: 10.h,),
                   CustomButton(text: 'Take screenshot and share', onPressed: ()async{
-                    _takeScreenShot(widget.name);
+                    MyFunctions.takeScreenShot(widget.name,_screenshotController);
                   }),
                 ],
               ),
@@ -74,19 +71,4 @@ class _StudentDialogBodyState extends State<StudentDialogBody> {
     );
   }
 
-  void _takeScreenShot(String name)async{
-    final image=await _screenshotController.capture();
-    if (image != null) {
-      if(kIsWeb){
-        final anchor = AnchorElement(href: 'data:application/octet-stream;base64,${base64.encode(image)}')..download = "$name.png"..target='blank';
-        document.body!.append(anchor);
-        anchor.click();
-        anchor.remove();
-
-       // String? x= anchor.text;
-       // // print(x);
-       // // Share.shareXFiles([XFile(x!)]);
-      }
-    }
-  }
 }

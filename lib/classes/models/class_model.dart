@@ -47,7 +47,7 @@ class ClassModel {
       'classPrice': classPrice,
       'centerName': centerName,
       'iteration': iteration,
-      'uId': FirebaseAuth.instance.currentUser!.uid,
+      'uId':'zSEouWFmfMSvZsZcsgPO2qjdxeN2',                       //FirebaseAuth.instance.currentUser!.uid,
       'maxQuizDegree': maxQuizDegree,
       'maxHwDegree': maxHwDegree,
       'moneyCollected': moneyCollected,

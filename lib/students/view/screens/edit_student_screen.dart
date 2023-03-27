@@ -44,7 +44,8 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
   late String classNameMessage;
 
   late String hisOrHer;
-late List<String>classesNames;
+  late List<String> classesNames;
+
   void _getStudentHistory() async {
     await StudentsCubit.get(context).getStudentHistory(widget.student.id);
   }
@@ -52,7 +53,7 @@ late List<String>classesNames;
   @override
   void initState() {
     _getStudentHistory();
-   classesNames= ClassesCubit.get(context).getClassesNames().toList();
+    classesNames = ClassesCubit.get(context).getClassesNames().toList();
     nameController.text = widget.student.name;
     phoneController.text = widget.student.phone;
     parentPhoneController.text = widget.student.parentPhone;
@@ -61,7 +62,9 @@ late List<String>classesNames;
     parentName = widget.student.parentName;
     phone = widget.student.phone;
     parentPhone = widget.student.parentPhone;
-    className = widget.student.className==""&&classesNames.isNotEmpty?classesNames[0]:widget.student.className;
+    className = widget.student.className == "" && classesNames.isNotEmpty
+        ? classesNames[0]
+        : widget.student.className;
     hisOrHer = widget.student.gender == 'Male' ? 'his' : 'her';
     super.initState();
   }
@@ -137,6 +140,7 @@ late List<String>classesNames;
                                       onSave: (value) {
                                         name = value!;
                                       },
+                                      onSubmit:(value)=>_update(),
                                       validate: (value) {
                                         return validation(value, 'name');
                                       }),
@@ -154,6 +158,7 @@ late List<String>classesNames;
                                       onSave: (value) {
                                         phone = value!;
                                       },
+                                      onSubmit: (value)=>_update(),
                                       validate: (value) {
                                         return validation(
                                             value, 'phone number');
@@ -169,20 +174,20 @@ late List<String>classesNames;
                               children: [
                                 Container(
                                   width: 80.w,
-                                  height:40.h,
+                                  height: 40.h,
                                   decoration: BoxDecoration(
-                                      border:
-                                          Border.all(color: MyColors.grey),
+                                      border: Border.all(color: MyColors.grey),
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(10.r))),
-                                  padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 2.w),
                                   child: DropdownButton<dynamic>(
                                     value: className,
                                     isExpanded: true,
                                     underline: Container(),
                                     // menuMaxHeight: double.maxFinite,
                                     onChanged: (Object? newValue) {
-                                      setState((){
+                                      setState(() {
                                         className = newValue.toString();
                                       });
                                     },
@@ -203,6 +208,7 @@ late List<String>classesNames;
                                         parentPhone = value!;
                                         print(parentPhone);
                                       },
+                                      onSubmit: (value)=>_update(),
                                       validate: (value) {
                                         return validation(
                                             value, 'parent phone');
@@ -223,72 +229,7 @@ late List<String>classesNames;
                         child: CustomButton(
                             text: 'Update',
                             onPressed: () async {
-                              if (formKey.currentState!.validate()) {
-                                formKey.currentState!.save();
-                                if (className != widget.student.className&&widget.student.className!="") {
-                                  await StudentsCubit.get(context)
-                                      .changeStudentClass(
-                                          widget.student.className,
-                                          className,
-                                          widget.student);
-                                  // classNameMessage='the class name from ${widget.student.className} to $className';
-                                  StudentsCubit.get(context).addToManageHistory(
-                                      HistoryModel(userName: HomeCubit.get(context).userData!.firstName!,
-                                          message: "has updated a student whose id ${widget.student.id} by changing $hisOrHer class name from ${widget.student.className} to $className ",
-                                          date: DateFormat.yMEd()
-                                              .add_jms()
-                                              .format(DateTime.now()),
-                                          ));
-                                }
-                                if (name != widget.student.name) {
-                                  // nameMessage='$hisOrHer name from ${widget.student.name} to $name';
-                                  StudentsCubit.get(context).addToManageHistory(HistoryModel(
-                                          userName: HomeCubit.get(context)
-                                              .userData!
-                                              .firstName!,
-                                          message:
-                                          "has updated a student whose id ${widget.student.id} by changing $hisOrHer name from ${widget.student.name} to $name ",
-                                          date: DateFormat.yMEd()
-                                              .add_jms()
-                                              .format(DateTime.now()),
-                                         ));
-                                }
-                                if (phone != widget.student.phone) {
-                                  StudentsCubit.get(context).addToManageHistory(HistoryModel(
-                                          userName: HomeCubit.get(context)
-                                              .userData!
-                                              .firstName!,
-                                          message:
-                                          "has updated a student whose id ${widget.student.id} by changing $hisOrHer phone number from ${widget.student.phone} to $phone ",
-                                          date: DateFormat.yMEd()
-                                              .add_jms()
-                                              .format(DateTime.now()),
-                                          ));
-                                }
-                                if(parentPhone!=widget.student.parentPhone){
-                                  StudentsCubit.get(context).addToManageHistory(
-                                      HistoryModel(
-                                          userName: HomeCubit.get(context)
-                                              .userData!
-                                              .firstName!,
-                                          message:
-                                          "has updated a student whose id ${widget.student.id} by changing $hisOrHer parent phone from ${widget.student.parentPhone} to $parentPhone ",
-                                          date: DateFormat.yMEd()
-                                              .add_jms()
-                                              .format(DateTime.now()),
-                                          ));
-                                }
-                                await StudentsCubit.get(context).editStudentInfo(StudentsModel(
-                                  name: name,
-                                  phone: phone,
-                                  parentName: widget.student.parentName,
-                                  className: className,
-                                  parentPhone: parentPhone,
-                                  id: widget.student.id,
-                                  gender: widget.student.gender,
-                                ));
-                                StudentsCubit.get(context).getAllStudents();
-                              }
+                             _update();
                             })),
                     Divider(
                       thickness: 2.h,
@@ -337,6 +278,59 @@ late List<String>classesNames;
     );
   }
 
+  void _update() async {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      if (className != widget.student.className &&
+          widget.student.className != "") {
+        await StudentsCubit.get(context).changeStudentClass(
+            widget.student.className, className, widget.student);
+        // classNameMessage='the class name from ${widget.student.className} to $className';
+        StudentsCubit.get(context).addToManageHistory(HistoryModel(
+          userName: HomeCubit.get(context).userData!.firstName!,
+          message:
+              "has updated a student whose id ${widget.student.id} by changing $hisOrHer class name from ${widget.student.className} to $className ",
+          date: DateFormat.yMEd().add_jms().format(DateTime.now()),
+        ));
+      }
+      if (name != widget.student.name) {
+        // nameMessage='$hisOrHer name from ${widget.student.name} to $name';
+        StudentsCubit.get(context).addToManageHistory(HistoryModel(
+          userName: HomeCubit.get(context).userData!.firstName!,
+          message:
+              "has updated a student whose id ${widget.student.id} by changing $hisOrHer name from ${widget.student.name} to $name ",
+          date: DateFormat.yMEd().add_jms().format(DateTime.now()),
+        ));
+      }
+      if (phone != widget.student.phone) {
+        StudentsCubit.get(context).addToManageHistory(HistoryModel(
+          userName: HomeCubit.get(context).userData!.firstName!,
+          message:
+              "has updated a student whose id ${widget.student.id} by changing $hisOrHer phone number from ${widget.student.phone} to $phone ",
+          date: DateFormat.yMEd().add_jms().format(DateTime.now()),
+        ));
+      }
+      if (parentPhone != widget.student.parentPhone) {
+        StudentsCubit.get(context).addToManageHistory(HistoryModel(
+          userName: HomeCubit.get(context).userData!.firstName!,
+          message:
+              "has updated a student whose id ${widget.student.id} by changing $hisOrHer parent phone from ${widget.student.parentPhone} to $parentPhone ",
+          date: DateFormat.yMEd().add_jms().format(DateTime.now()),
+        ));
+      }
+      await StudentsCubit.get(context).editStudentInfo(StudentsModel(
+        name: name,
+        phone: phone,
+        parentName: widget.student.parentName,
+        className: className,
+        parentPhone: parentPhone,
+        id: widget.student.id,
+        gender: widget.student.gender,
+      ));
+      StudentsCubit.get(context).getAllStudents();
+    }
+  }
+
   String? validation(String? value, String text) {
     if (value!.isEmpty) {
       return 'Enter the $text';
@@ -381,7 +375,7 @@ late List<String>classesNames;
             width: 15.w,
             child: WhatsappButton(
                 num: parentPhone,
-                message: makeTemplate(history, context, name)))),
+                message:MyFunctions.makeTemplate(history, context, name)))),
         DataCell(
           Text(DateFormat.yMMMd().format(DateTime.parse(history.classDate))),
         ),
@@ -406,5 +400,4 @@ late List<String>classesNames;
     });
     return records;
   }
-
 }

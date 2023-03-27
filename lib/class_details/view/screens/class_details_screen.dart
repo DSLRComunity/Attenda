@@ -19,14 +19,15 @@ class ClassDetailsScreen extends StatefulWidget {
 }
 
 class _ClassDetailsScreenState extends State<ClassDetailsScreen> {
+
   void _getClassStudents() async {
-    ClassDetailsCubit.get(context).totalMoney=0;
-    ClassDetailsCubit.get(context)..classAttendants=0;
+    // ClassDetailsCubit.get(context).totalMoney=0;
+    // ClassDetailsCubit.get(context)..classAttendants=0;
     await ClassDetailsCubit.get(context).getClassStudents(widget.currentClass);
     await ClassDetailsCubit.get(context).getClassAttendantStudents(widget.currentClass);
     await ClassDetailsCubit.get(context).getClassHistory(widget.currentClass);
-    await  ClassDetailsCubit.get(context).getTotalMoney(widget.currentClass);
-    await ClassDetailsCubit.get(context).getClassAttendantsNum(widget.currentClass);
+    // await  ClassDetailsCubit.get(context).getTotalMoney(widget.currentClass);
+    // await ClassDetailsCubit.get(context).getClassAttendantsNum(widget.currentClass);
 
   }
 

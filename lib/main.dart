@@ -1,6 +1,6 @@
+import 'package:attenda/center/center_home/business_logic/center_home_cubit.dart';
 import 'package:attenda/class_details/business_logic/class_details_cubit.dart';
 import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
-import 'package:attenda/core/dio_helper.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:attenda/core/strings.dart';
 import 'package:attenda/home/business_logic/home_cubit.dart';
@@ -36,18 +36,21 @@ void main() async {
   await CacheHelper.init();
   String initialRoute;
   uId = CacheHelper.getData(key: 'uId');
+  role=CacheHelper.getData(key: 'role');
   if (uId != null) {
-    initialRoute = Routes.homeRoute;
+    if(role=='t'){
+      initialRoute=Routes.homeRoute;
+    }else{
+      initialRoute = Routes.centerHomeRoute;
+    }
     if (kDebugMode) {
       print('$uId');
     }
   } else {
-    initialRoute = Routes.homeLoginRoute;
+    initialRoute = Routes.welcomeRoute;
   }
-  DioHelper.init();
-  runApp(MyApp(
-    initialRoute: initialRoute,
-  ));
+  // DioHelper.init();
+  runApp(MyApp(initialRoute: initialRoute,));
   Bloc.observer = MyBlocObserver();
 }
 
@@ -69,6 +72,7 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (_) => StudentsCubit()),
               BlocProvider(create: (_) => ClassDetailsCubit()),
               BlocProvider(create: (_)=>HomeCubit()),
+              BlocProvider(create: (_)=>CenterHomeCubit()),
             ],
             child: MaterialApp(
               title: 'Attenda',

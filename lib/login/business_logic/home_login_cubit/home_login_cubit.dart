@@ -1,3 +1,4 @@
+import 'package:attenda/login/views/screens/complete_register.dart';
 import 'package:attenda/login/views/screens/login_screen.dart';
 import 'package:attenda/register/views/screens/register_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,11 @@ class HomeLoginCubit extends Cubit<HomeLoginState> {
   void changeToRegister(){
 
     view=const RegisterScreen();
+    emit(ChangeView());
+  }
+
+  void changeToCompleteRegister(){
+    view=const CompleteRegisterScreen();
     emit(ChangeView());
   }
 }

@@ -1,6 +1,7 @@
 import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 
 import '../../../core/colors.dart';
 import '../../business_logic/history_cubit.dart';
@@ -14,6 +15,8 @@ class AttendanceHistory extends StatefulWidget {
 }
 
 class _AttendanceHistoryState extends State<AttendanceHistory> {
+  final _scrollController=ScrollController();
+
   _getInit() async {
     if(HistoryCubit.get(context).attendanceHistory.isEmpty){
       await HistoryCubit.get(context).getAttendanceHistory();
@@ -37,18 +40,23 @@ class _AttendanceHistoryState extends State<AttendanceHistory> {
             if(state is GetAttendanceHistoryLoad){
               return const Center(child: CircularProgressIndicator(),);
             }else{
-              return ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return HistoryItem(
-                      message:
-                      HistoryCubit.get(context).attendanceHistory[index].message,
-                      date: HistoryCubit.get(context).attendanceHistory[index].date,
-                    );
-                  },
-                  separatorBuilder: (context, index) =>
-                  const Divider(color: MyColors.grey),
-                  itemCount: HistoryCubit.get(context).attendanceHistory.length);
+              return ImprovedScrolling(
+                scrollController: _scrollController,
+                enableKeyboardScrolling: true,
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    itemBuilder: (context, index) {
+                      return HistoryItem(
+                        message:
+                        HistoryCubit.get(context).attendanceHistory[index].message,
+                        date: HistoryCubit.get(context).attendanceHistory[index].date,
+                      );
+                    },
+                    separatorBuilder: (context, index) =>
+                    const Divider(color: MyColors.grey),
+                    itemCount: HistoryCubit.get(context).attendanceHistory.length),
+              );
             }
         },
         listener: (context, state) {

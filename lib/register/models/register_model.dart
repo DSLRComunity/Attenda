@@ -9,6 +9,7 @@ class UserModel {
   String? governorate;
   String? governorateCode;
   String? subject;
+  bool isComplete;
 
   UserModel({
     required this.firstName,
@@ -21,6 +22,7 @@ class UserModel {
     required this.technicalSupportNum,
     required this.governorateCode,
     required this.subject,
+    required this.isComplete,
   });
 
   Map<String, dynamic> toJson() {
@@ -35,6 +37,7 @@ class UserModel {
       'technicalSupportNum': technicalSupportNum,
       'governorateCode': governorateCode,
       'subject': subject,
+      'isComplete': isComplete,
     };
   }
 
@@ -48,7 +51,9 @@ class UserModel {
         expectedStudentsNum: json['expectedStudentsNum'],
         technicalSupportNum: json['technicalSupportNum'],
         governorateCode: json['governorateCode'],
-        subject: json['subject']);
+        subject: json['subject'],
+        isComplete:json['isComplete'],
+    );
   }
 
 }

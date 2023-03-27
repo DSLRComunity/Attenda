@@ -13,7 +13,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../history/business_logic/history_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,9 +48,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocListener<HomeCubit, HomeState>(
       listener: (context, state) async {
         if (state is LogoutSuccess) {
-          if (await CacheHelper.removeValue(key: 'uId')) {
+          if (await CacheHelper.removeValue(key: 'uId')&&await CacheHelper.removeValue(key: 'role')) {
             Navigator.pushNamedAndRemoveUntil(
-                context, Routes.homeLoginRoute, (route) => false);
+                context, Routes.welcomeRoute, (route) => false);
           }
         }
       },

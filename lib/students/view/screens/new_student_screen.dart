@@ -116,6 +116,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     onSave: (value) {
                                       name = value!;
                                     },
+                                    onSubmit: (value)=>_addNewStudent(),
                                     validate: (value) {
                                       return validation(value, 'name');
                                     }),
@@ -131,6 +132,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     onSave: (value) {
                                       phone = value!;
                                     },
+                                    onSubmit: (value)=>_addNewStudent(),
                                     validate: (value) {
                                       return validateMobile(value);
                                     }),
@@ -182,6 +184,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     onSave: (value) {
                                       parentName = value!;
                                     },
+                                    onSubmit: (value)=>_addNewStudent(),
                                     validate: (value) {
                                       return validation(value, 'parent name');
                                     }),
@@ -197,6 +200,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                                     onSave: (value) {
                                       parentPhone = value!;
                                     },
+                                    onSubmit:(value)=>_addNewStudent(),
                                     validate: (value) {
                                       return validateMobile(value);
                                     }),
@@ -246,19 +250,7 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
                       child: CustomButton(
                           text: 'Add',
                           onPressed: () async {
-                            if (formKey.currentState!.validate()) {
-                              formKey.currentState!.save();
-                              await AddStudentCubit.get(context).addStudent(StudentsModel(
-                                  name: name,
-                                  phone: phone,
-                                  parentName: parentName,
-                                  className: className,
-                                  parentPhone: parentPhone,
-                                  id: _getStudentId(gender),
-                                  gender: gender,
-                                ),context);
-                              await StudentsCubit.get(context).getAllStudents();
-                            }
+                            _addNewStudent();
                           })),
                   Divider(
                     thickness: 2.h,
@@ -275,6 +267,22 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
     );
   }
 
+  void _addNewStudent()async{
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      await AddStudentCubit.get(context).addStudent(StudentsModel(
+        name: name,
+        phone: phone,
+        parentName: parentName,
+        className: className,
+        parentPhone: parentPhone,
+        id: _getStudentId(gender),
+        gender: gender,
+      ),context);
+      await StudentsCubit.get(context).getAllStudents();
+    }
+  }
+
   List<DropdownMenuItem> getMenuItems(BuildContext context) {
     List<DropdownMenuItem> menuItems = ClassesCubit.get(context)
         .getClassesNames()
@@ -285,7 +293,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
         .toList();
     return menuItems;
   }
-
   List<String>genders=['Male','Female'];
   List<DropdownMenuItem> getGenderItems() {
     List<DropdownMenuItem> genderItems = genders
@@ -296,7 +303,6 @@ class _NewStudentScreenState extends State<NewStudentScreen> {
         .toList();
     return genderItems;
   }
-
   String _getStudentId(String gender) {
 String date=DateFormat('MM-dd').format(DateTime.now());
 String randomId=const Uuid().v1();

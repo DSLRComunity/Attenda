@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../business_logic/classes_cubit/classes_cubit.dart';
 import 'class_item.dart';
 
-class MyGridView extends StatelessWidget {
+class MyGridView extends StatefulWidget {
   const MyGridView({Key? key,}) : super(key: key);
+
+  @override
+  State<MyGridView> createState() => _MyGridViewState();
+}
+
+class _MyGridViewState extends State<MyGridView> {
+
   @override
   Widget build(BuildContext context) {
     return  BlocBuilder<ClassesCubit,ClassesState>(

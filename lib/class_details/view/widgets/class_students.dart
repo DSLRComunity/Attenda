@@ -3,6 +3,7 @@ import 'package:attenda/students/business_logic/students_cubit/students_cubit.da
 import 'package:attenda/students/models/students_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/colors.dart';
 import '../../business_logic/class_details_cubit.dart';
@@ -16,7 +17,8 @@ class ClassStudents extends StatefulWidget {
 }
 
 class _ClassStudentsState extends State<ClassStudents> {
-  TextEditingController searchController=TextEditingController();
+  final _scrollController=ScrollController();
+ final TextEditingController searchController=TextEditingController();
   List<StudentsModel> searchList = [];
   bool searched = false;
   int itemCount = 0;
@@ -32,11 +34,11 @@ class _ClassStudentsState extends State<ClassStudents> {
             child: CircularProgressIndicator(),
           );
         } else {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 3.w),
-            child: Column(
-              children: [
-                SizedBox(
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 3.w),
+                child: SizedBox(
                   child: TextFormField(
                     onChanged: (value) {
                       searched = true;
@@ -76,44 +78,67 @@ class _ClassStudentsState extends State<ClassStudents> {
                             .copyWith(fontSize: 16)),
                   ),
                 ),
-
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:searchController.text.isNotEmpty? searchList.map((student) => Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3.h),
-                      child: Row(
-                        children: [
-                          FittedBox(
-                              fit:BoxFit.fitWidth,
-                              child: Text(student.name)),
-                          const Spacer(),
-                          AttendButton(
-                              currentClass: widget.currentClass,
-                              student: student),
-                        ],
+              ),
+              Expanded(
+                child: ImprovedScrolling(
+                  scrollController: _scrollController,
+                  enableKeyboardScrolling: true,
+                  keyboardScrollConfig: KeyboardScrollConfig(
+                    arrowsScrollAmount: 100,
+                    homeScrollDurationBuilder: (currentScrollOffset, minScrollOffset) {
+                      return const Duration(milliseconds: 100);
+                    },
+                    endScrollDurationBuilder: (currentScrollOffset, maxScrollOffset) {
+                      return const Duration(milliseconds: 2000);
+                    },
+                  ),
+                  child: Scrollbar(
+                    controller: _scrollController,
+                    thumbVisibility:true ,
+                    scrollbarOrientation: ScrollbarOrientation.left,
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric( horizontal: 3.w),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:searchController.text.isNotEmpty? searchList.map((student) => Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3.h),
+                            child: Row(
+                              children: [
+                                FittedBox(
+                                    fit:BoxFit.fitWidth,
+                                    child: Text(student.name)),
+                                const Spacer(),
+                                AttendButton(
+                                    currentClass: widget.currentClass,
+                                    student: student),
+                              ],
+                            ),
+                          )).toList()
+                              :
+                          ClassDetailsCubit.get(context).classStudents.map((student) => Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 3.h),
+                                    child: Row(
+                                      children: [
+                                        FittedBox(
+                                            fit:BoxFit.fitWidth,
+                                            child: Text(student.name)),
+                                        const Spacer(),
+                                        AttendButton(
+                                            currentClass: widget.currentClass,
+                                            student: student),
+                                      ],
+                                    ),
+                                  )).toList(), //getStudentsNames(context),
+                        ),
                       ),
-                    )).toList()
-                        :
-                    ClassDetailsCubit.get(context).classStudents.map((student) => Padding(
-                              padding: EdgeInsets.symmetric(vertical: 3.h),
-                              child: Row(
-                                children: [
-                                  FittedBox(
-                                      fit:BoxFit.fitWidth,
-                                      child: Text(student.name)),
-                                  const Spacer(),
-                                  AttendButton(
-                                      currentClass: widget.currentClass,
-                                      student: student),
-                                ],
-                              ),
-                            )).toList(), //getStudentsNames(context),
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         }
       },
@@ -122,9 +147,7 @@ class _ClassStudentsState extends State<ClassStudents> {
 }
 
 class AttendButton extends StatefulWidget {
-  const AttendButton(
-      {Key? key, required this.currentClass, required this.student})
-      : super(key: key);
+  const AttendButton({Key? key, required this.currentClass, required this.student}) : super(key: key);
   final ClassModel currentClass;
   final StudentsModel student;
 

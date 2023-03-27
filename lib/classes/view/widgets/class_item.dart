@@ -19,7 +19,6 @@ class ClassItem extends StatelessWidget {
       },
       child: Card(
         color: const Color(0xff89cff0),
-        // Color(0xff89cff0).withOpacity(.5),
         elevation: 0,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),

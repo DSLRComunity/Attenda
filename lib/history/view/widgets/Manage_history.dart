@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import '../../../classes/view/widgets/toast.dart';
 import '../../../core/colors.dart';
 import '../../business_logic/history_cubit.dart';
@@ -13,6 +14,7 @@ class ManageHistory extends StatefulWidget {
 }
 
 class _ManageHistoryState extends State<ManageHistory> {
+  final _scrollController=ScrollController();
   void _getInit()async{
     if(HistoryCubit.get(context).manageHistory.isEmpty){
       await HistoryCubit.get(context).getManageHistory();
@@ -34,18 +36,23 @@ super.initState();
         if(state is GetManageHistoryLoad){
           return const Center(child: CircularProgressIndicator(),);
         }else{
-          return ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return HistoryItem(
-                  message:
-                  HistoryCubit.get(context).manageHistory[index].message,
-                  date: HistoryCubit.get(context).manageHistory[index].date,
-                );
-              },
-              separatorBuilder: (context, index) =>
-              const Divider(color: MyColors.grey),
-              itemCount: HistoryCubit.get(context).manageHistory.length);
+          return ImprovedScrolling(
+            scrollController: _scrollController,
+            enableKeyboardScrolling: true,
+            child: ListView.separated(
+              controller: _scrollController,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return HistoryItem(
+                    message:
+                    HistoryCubit.get(context).manageHistory[index].message,
+                    date: HistoryCubit.get(context).manageHistory[index].date,
+                  );
+                },
+                separatorBuilder: (context, index) =>
+                const Divider(color: MyColors.grey),
+                itemCount: HistoryCubit.get(context).manageHistory.length),
+          );
         }
       },
       listener: (context, state) {
