@@ -1,20 +1,23 @@
-import 'package:attenda/center/center_home/business_logic/center_home_cubit.dart';
-import 'package:attenda/center/center_home/models/event_model.dart';
+import 'package:attenda/center/center_home/business_logic/booking_cubit/booking_cubit.dart';
+import 'package:attenda/center/center_home/business_logic/center_home_cubit/center_home_cubit.dart';
+import 'package:attenda/center/center_appointments/models/event_model.dart';
 import 'package:attenda/center/center_home/view/widgets/teacher_search_field.dart';
 import 'package:attenda/center/new_room/models/room_model.dart';
 import 'package:attenda/center/new_teacher/view/screens/new_teacher_screen.dart';
+import 'package:attenda/center/rooms/business_logic/rooms_cubit.dart';
 import 'package:attenda/classes/view/widgets/custom_button.dart';
 import 'package:attenda/classes/view/widgets/toast.dart';
+import 'package:attenda/core/colors.dart';
 import 'package:attenda/core/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/colors.dart';
 import 'booking_text_field.dart';
 
 class BookingDialog extends StatefulWidget {
-  const BookingDialog({Key? key}) : super(key: key);
+  const BookingDialog({Key? key,required this.centerHomeCubit}) : super(key: key);
+final CenterHomeCubit centerHomeCubit;
 
   @override
   State<BookingDialog> createState() => _BookingDialogState();
@@ -41,13 +44,13 @@ class _BookingDialogState extends State<BookingDialog> {
 
   @override
   void initState() {
-    chooseRoom = CenterHomeCubit.get(context).rooms[0];
+    chooseRoom = RoomsCubit.get(context).rooms[0];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CenterHomeCubit, CenterHomeState>(
+    return BlocListener<BookingCubit, BookingState>(
       listener: (context, state) {
         if (state is SearchForTeacherError) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -57,7 +60,7 @@ class _BookingDialogState extends State<BookingDialog> {
           ));
         }
         if (state is SearchForTeacherSuccess) {
-          if (CenterHomeCubit.get(context).teachers.isEmpty) {
+          if (BookingCubit.get(context).teachers.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('Not found'),
               duration: Duration(seconds: 2),
@@ -67,7 +70,7 @@ class _BookingDialogState extends State<BookingDialog> {
             teacherIdController.text = '';
           } else {
             teacherNameController.text =
-                CenterHomeCubit.get(context).teachers[0];
+                BookingCubit.get(context).teachers[0];
             teacherIdController.text = searchController.text;
             setState(() {});
           }
@@ -92,10 +95,7 @@ class _BookingDialogState extends State<BookingDialog> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    BlocBuilder<CenterHomeCubit, CenterHomeState>(
-                      builder: (context, state) {
-                        return StatefulBuilder(
-                          builder: (context, setState) => Container(
+                   StatefulBuilder(builder: (context, setState) => Container(
                               decoration: BoxDecoration(
                                   border: Border.all(color: MyColors.grey),
                                   borderRadius:
@@ -111,17 +111,14 @@ class _BookingDialogState extends State<BookingDialog> {
                                       chooseRoom = newValue;
                                     });
                                   },
-                                  items: CenterHomeCubit.get(context)
+                                  items: RoomsCubit.get(context)
                                           .rooms
                                           .isEmpty
                                       ? []
                                       : getAvailableRooms(
-                                          CenterHomeCubit.get(context).rooms),
+                                          RoomsCubit.get(context).rooms),
                                 ),
-                              )),
-                        );
-                      },
-                    ),
+                              )),),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -132,11 +129,11 @@ class _BookingDialogState extends State<BookingDialog> {
                             width: constraints.maxWidth * .7,
                             child: TeacherSearchField(
                               searchAction: () {
-                                CenterHomeCubit.get(context)
+                                BookingCubit.get(context)
                                     .searchTeacher(searchController.text);
                               },
                               onFieldSubmitted: (value){
-                                CenterHomeCubit.get(context)
+                                BookingCubit.get(context)
                                     .searchTeacher(searchController.text);
                               },
                               controller: searchController,
@@ -336,7 +333,7 @@ class _BookingDialogState extends State<BookingDialog> {
                     SizedBox(
                       height: 15.h,
                     ),
-                    BlocBuilder<CenterHomeCubit, CenterHomeState>(
+                    BlocBuilder<BookingCubit, BookingState>(
                       builder: (context, state) {
                         if (state is AddAppointmentLoad) {
                           return const Center(
@@ -348,7 +345,7 @@ class _BookingDialogState extends State<BookingDialog> {
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
                                   formKey.currentState!.save();
-                                  await CenterHomeCubit.get(context)
+                                  await BookingCubit.get(context)
                                       .addAppointment(MyEvent(
                                           roomName: chooseRoom.roomNum,
                                           from: DateTime(
@@ -369,8 +366,7 @@ class _BookingDialogState extends State<BookingDialog> {
                                           teacherName: teacherName,
                                   recursion: int.parse(recursion),
                                   ));
-                                  CenterHomeCubit.get(context)
-                                      .getAppointments();
+                                  widget.centerHomeCubit.getAppointments();
                                 }
                               });
                         }

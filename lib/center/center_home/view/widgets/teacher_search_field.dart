@@ -1,4 +1,5 @@
-import 'package:attenda/center/center_home/business_logic/center_home_cubit.dart';
+import 'package:attenda/center/center_home/business_logic/booking_cubit/booking_cubit.dart';
+import 'package:attenda/center/center_home/business_logic/center_home_cubit/center_home_cubit.dart';
 import 'package:attenda/core/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class TeacherSearchField extends StatelessWidget {
               .copyWith(color: Colors.grey[700]),
           suffixIcon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w),
-              child: BlocBuilder<CenterHomeCubit, CenterHomeState>(
+              child: BlocBuilder<BookingCubit, BookingState>(
                 builder: (context, state) {
                   if (state is SearchForTeacherLoad) {
                     return const CircularProgressIndicator();

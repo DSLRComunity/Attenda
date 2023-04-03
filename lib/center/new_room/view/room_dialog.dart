@@ -1,7 +1,7 @@
-import 'package:attenda/center/center_home/business_logic/center_home_cubit.dart';
 import 'package:attenda/center/center_home/view/widgets/booking_text_field.dart';
 import 'package:attenda/center/new_room/business_logic/add_room_cubit.dart';
 import 'package:attenda/center/new_room/models/room_model.dart';
+import 'package:attenda/center/rooms/business_logic/rooms_cubit.dart';
 import 'package:attenda/classes/view/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +49,7 @@ class _RoomDialogState extends State<RoomDialog> {
               context: context, message: 'Room Added Successfully');
           roomNumController.clear();
           maxSizeController.clear();
-          await CenterHomeCubit.get(context).getRooms();
+          await RoomsCubit.get(context).getRooms();
         }
         if (state is AddRoomError) {
           showErrorToast(context: context, message: state.error);

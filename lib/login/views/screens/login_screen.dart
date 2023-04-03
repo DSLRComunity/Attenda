@@ -268,8 +268,8 @@ class LoginScreen extends StatelessWidget {
   }
 
   void goToHome(BuildContext context) {
-    emailController.dispose();
-    passController.dispose();
+    // emailController.dispose();
+    // passController.dispose();
     Navigator.pushReplacementNamed(context, Routes.homeRoute);
   }
   void goToCompleteRegistration(BuildContext context){

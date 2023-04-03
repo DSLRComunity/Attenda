@@ -1,9 +1,11 @@
+import 'package:attenda/center/center_home/business_logic/center_home_cubit/center_home_cubit.dart';
 import 'package:attenda/center/center_home/view/screens/home_screen.dart';
 import 'package:attenda/center/center_login/business_logic/center_home_login/center_login_cubit.dart';
 import 'package:attenda/center/center_login/business_logic/center_login_cubit/center_login_cubit.dart';
 import 'package:attenda/center/center_login/view/screens/center_home_login.dart';
+import 'package:attenda/center/center_profile/business_logic/profile_cubit.dart';
+import 'package:attenda/center/center_profile/view/screens/profile_screen.dart';
 import 'package:attenda/center/center_register/bsuiness_logic/center_register_cubit.dart';
-import 'package:attenda/center/enter_profile/view/screens/profile_screen.dart';
 import 'package:attenda/center/new_teacher/business_logic/new_teacher_cubit.dart';
 import 'package:attenda/center/new_teacher/view/screens/new_teacher_screen.dart';
 import 'package:attenda/class_details/view/screens/class_details_screen.dart';
@@ -13,7 +15,6 @@ import 'package:attenda/home/views/screens/home_screen.dart';
 import 'package:attenda/login/business_logic/home_login_cubit/home_login_cubit.dart';
 import 'package:attenda/login/business_logic/login_cubit/login_cubit.dart';
 import 'package:attenda/login/views/screens/choose_screen.dart';
-import 'package:attenda/login/views/screens/complete_register.dart';
 import 'package:attenda/login/views/screens/home_login.dart';
 import 'package:attenda/register/business_logic/register_cubit.dart';
 import 'package:attenda/splash/splash_screen.dart';
@@ -76,14 +77,23 @@ class AppRouter {
                   child: const CenterHomeLogin(),
                 ));
       case Routes.centerHomeRoute:
-        return MaterialPageRoute(builder: (_) => const CenterHomeScreen());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                create: (context) => CenterHomeCubit(),
+                child: const CenterHomeScreen()));
       case Routes.registerTeacher:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                 create: (context) => NewTeacherCubit(),
                 child: const NewTeacherScreen()));
       case Routes.centerProfile:
-        return MaterialPageRoute(builder: (_) => const CenterProfileScreen());
+        final cubit = settings.arguments as CenterHomeCubit;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                create: (context) => ProfileCubit(),
+                child: CenterProfileScreen(
+                  centerHomeCubit: cubit,
+                )));
     }
     return null;
   }

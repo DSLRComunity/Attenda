@@ -224,8 +224,8 @@ class CenterLoginScreen extends StatelessWidget {
     );
   }
    void goToHome(BuildContext context) {
-     emailController.dispose();
-     passController.dispose();
+     // emailController.dispose();
+     // passController.dispose();
      Navigator.pushReplacementNamed(context, Routes.centerHomeRoute);
    }
 }

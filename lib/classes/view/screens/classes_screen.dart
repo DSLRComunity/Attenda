@@ -1,4 +1,5 @@
 import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,9 +18,7 @@ class _ClassesScreenState extends State<ClassesScreen> {
   final _scrollController=ScrollController();
 
   void _getClasses()async{
-    if(ClassesCubit.get(context).classes!.isEmpty){
       await  ClassesCubit.get(context).getAllClasses();
-    }
     }
 
   @override
@@ -63,8 +62,8 @@ class _ClassesScreenState extends State<ClassesScreen> {
               ClassesCubit.get(context).classes==[]? Center(child: Container(
                 height: 100,
                 width: 100,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(image: AssetImage('images/empty.gif')),
+                decoration:  const BoxDecoration(
+                  image: DecorationImage(image: AssetImage('${(kDebugMode && kIsWeb)?"":"assets/"}images/empty.gif')),
                 ),
               )):
                const MyGridView(),

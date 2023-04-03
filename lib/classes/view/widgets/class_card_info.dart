@@ -22,11 +22,13 @@ class ClassCardInfo extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: Colors.black,
               fontSize: 20.sp,
+              overflow: TextOverflow.ellipsis
             ),
           ),
           TextSpan(
             text: value,
-            style: TextStyle(height: 1.1.h,color: Colors.black, fontSize:fontSize?? 18.sp,fontWeight:fontWeight),
+            style: TextStyle(height: 1.1.h,color: Colors.black, fontSize:fontSize?? 18.sp,fontWeight:fontWeight,overflow: TextOverflow.ellipsis
+            ),
           ),
         ],
       ),

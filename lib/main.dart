@@ -1,4 +1,5 @@
-import 'package:attenda/center/center_home/business_logic/center_home_cubit.dart';
+import 'package:attenda/center/center_home/business_logic/center_home_cubit/center_home_cubit.dart';
+import 'package:attenda/center/rooms/business_logic/rooms_cubit.dart';
 import 'package:attenda/class_details/business_logic/class_details_cubit.dart';
 import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
 import 'package:attenda/core/routes.dart';
@@ -72,7 +73,8 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (_) => StudentsCubit()),
               BlocProvider(create: (_) => ClassDetailsCubit()),
               BlocProvider(create: (_)=>HomeCubit()),
-              BlocProvider(create: (_)=>CenterHomeCubit()),
+              BlocProvider(create: (_)=>RoomsCubit()),
+
             ],
             child: MaterialApp(
               title: 'Attenda',

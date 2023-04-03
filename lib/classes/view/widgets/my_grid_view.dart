@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../business_logic/classes_cubit/classes_cubit.dart';
 import 'class_item.dart';
 

@@ -18,6 +18,7 @@ class ClassesCubit extends Cubit<ClassesState> {
   List<ClassModel>? classes = [];
 
   Future<void> getAllClasses() async {
+    classes=[];
     List<ClassModel>? tempClasses = [];
     emit(GetClassesLoad());
     CollectionReference<Map<String, dynamic>> collectionReference =
