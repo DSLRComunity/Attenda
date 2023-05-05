@@ -14,8 +14,20 @@ class SearchForTeacherError extends BookingState {
   SearchForTeacherError(this.error);
 }
 
+class GetMyRoomsLoad extends BookingState {}
+
+class GetMyRoomsSuccess extends BookingState {}
+
+class GetMyRoomsError extends BookingState {
+  String error;
+  GetMyRoomsError(this.error);
+}
+
 class AddAppointmentLoad extends BookingState {}
 
 class AddAppointmentSuccess extends BookingState {}
 
-class AddAppointmentError extends BookingState {}
+class AddAppointmentError extends BookingState {
+  String error;
+  AddAppointmentError(this.error);
+}

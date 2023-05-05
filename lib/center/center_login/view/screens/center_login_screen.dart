@@ -1,16 +1,14 @@
 import 'package:attenda/center/center_login/business_logic/center_home_login/center_login_cubit.dart';
 import 'package:attenda/center/center_login/business_logic/center_login_cubit/center_login_cubit.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../classes/view/widgets/toast.dart';
 import '../../../../core/cache_helper.dart';
-import '../../../../core/routes.dart';
+import '../../../../core/routing/routes.dart';
 import '../../../../core/strings.dart';
 import '../../../../login/views/widgets/custom_button.dart';
 import '../../../../login/views/widgets/custom_text_field.dart';
-import '../../../../login/views/widgets/icon_button.dart';
 
 class CenterLoginScreen extends StatelessWidget {
    CenterLoginScreen({Key? key}) : super(key: key);
@@ -31,10 +29,10 @@ class CenterLoginScreen extends StatelessWidget {
             showErrorToast(context: context, message: state.error);
           } else if (state is LoginSuccess) {
             showSuccessToast(context: context, message: 'Login Successfully');
-            uId = state.uId;
+            token = state.token;
             role='c';
             if (CenterLoginCubit.get(context).rememberMe) {
-              CacheHelper.putData(key: 'uId', value: uId);
+              CacheHelper.putData(key: 'uId', value: token);
               CacheHelper.putData(key: 'role', value: role);
             }
             goToHome(context);
@@ -111,7 +109,7 @@ class CenterLoginScreen extends StatelessWidget {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
                       await CenterLoginCubit.get(context).loginCenter(
-                          email: email, password: password);
+                          email: email, password: password,context: context);
                     }
                   },
                 ),
@@ -150,7 +148,7 @@ class CenterLoginScreen extends StatelessWidget {
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
                         await CenterLoginCubit.get(context).loginCenter(
-                            email: email, password: password);
+                            email: email, password: password,context: context);
                       }
                     },
                   ),
@@ -172,7 +170,7 @@ class CenterLoginScreen extends StatelessWidget {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
                                 await CenterLoginCubit.get(context).loginCenter(
-                                    email: email, password: password);
+                                    email: email, password: password,context: context);
                               }
                             },
                             text: 'Login'),
@@ -224,8 +222,16 @@ class CenterLoginScreen extends StatelessWidget {
     );
   }
    void goToHome(BuildContext context) {
-     // emailController.dispose();
-     // passController.dispose();
      Navigator.pushReplacementNamed(context, Routes.centerHomeRoute);
    }
 }
+
+class HomeeScreen extends StatelessWidget {
+  const HomeeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: Text('Home')),);
+  }
+}
+

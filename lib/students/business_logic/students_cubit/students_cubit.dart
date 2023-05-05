@@ -148,7 +148,7 @@ class StudentsCubit extends Cubit<StudentsState> {
       students!.removeWhere((element) => element.id == studentId);
       emit(DeleteStudentSuccess());
       await addToManageHistory(HistoryModel(
-        userName: HomeCubit.get(context).userData!.firstName!,
+        userName: HomeCubit.get(context).userData!.name!,
         message: 'has removed a student whose id $studentId from our students ',
         date: DateFormat.yMEd().add_jms().format(DateTime.now()),
       ));

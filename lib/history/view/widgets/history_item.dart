@@ -13,7 +13,7 @@ final String date;
       child: RichText(text: TextSpan(
 children:[
   TextSpan(
-      text: '${HomeCubit.get(context).userData!.firstName}  ',
+      text: '${HomeCubit.get(context).userData!.name}  ',
       style:TextStyle(fontWeight: FontWeight.w600,color: Colors.black,fontSize: 22.sp),
   ),
   TextSpan(

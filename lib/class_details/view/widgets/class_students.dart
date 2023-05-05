@@ -163,10 +163,6 @@ class _AttendButtonState extends State<AttendButton> {
       backgroundColor: MyColors.primary,
       child: IconButton(
           onPressed: () async {
-            // ClassDetailsCubit.get(context).classAttendants++;
-            // ClassDetailsCubit.get(context).totalMoney+=widget.currentClass.classPrice;
-            // await ClassDetailsCubit.get(context).updateMoneyCollected(widget.currentClass);
-            // await ClassDetailsCubit.get(context).updateNumOfAttendants(widget.currentClass);
             await ClassDetailsCubit.get(context).addToAttendance(widget.student, widget.currentClass,context);
           },
           icon: const Icon(

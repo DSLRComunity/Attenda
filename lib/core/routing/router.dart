@@ -6,11 +6,17 @@ import 'package:attenda/center/center_login/view/screens/center_home_login.dart'
 import 'package:attenda/center/center_profile/business_logic/profile_cubit.dart';
 import 'package:attenda/center/center_profile/view/screens/profile_screen.dart';
 import 'package:attenda/center/center_register/bsuiness_logic/center_register_cubit.dart';
+import 'package:attenda/center/center_requests/buiness_logic/request_details_cubit/request_details_cubit.dart';
+import 'package:attenda/center/center_requests/view/screens/center_request_details.dart';
 import 'package:attenda/center/new_teacher/business_logic/new_teacher_cubit.dart';
 import 'package:attenda/center/new_teacher/view/screens/new_teacher_screen.dart';
+import 'package:attenda/center/room_details/business_logic/room_details_cubit.dart';
+import 'package:attenda/center/room_details/view/room_details_screen.dart';
+import 'package:attenda/center/rooms/models/room_model.dart';
 import 'package:attenda/class_details/view/screens/class_details_screen.dart';
 import 'package:attenda/classes/models/class_model.dart';
-import 'package:attenda/core/routes.dart';
+import 'package:attenda/core/routing/animations.dart';
+import 'package:attenda/core/routing/routes.dart';
 import 'package:attenda/home/views/screens/home_screen.dart';
 import 'package:attenda/login/business_logic/home_login_cubit/home_login_cubit.dart';
 import 'package:attenda/login/business_logic/login_cubit/login_cubit.dart';
@@ -94,6 +100,22 @@ class AppRouter {
                 child: CenterProfileScreen(
                   centerHomeCubit: cubit,
                 )));
+      case Routes.roomDetails:
+        final roomModel = settings.arguments as RoomModel;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => RoomDetailsCubit(),
+                  child: RoomDetailsScreen(model: roomModel),
+                ));
+      case Routes.centerRequestDetails:
+        final param = settings.arguments as Map<String, dynamic>;
+
+        return CustomPageRoute(child: BlocProvider(
+          create: (context) => RequestDetailsCubit(),
+          child: CenterRequestDetails(
+              centerRequest: param['centerRequest'],
+              requestsPagingController: param['requestsPagingController']),
+        ));
     }
     return null;
   }

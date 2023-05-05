@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:attenda/center/center_appointments/view/screens/appointments_screen.dart';
 import 'package:attenda/center/center_history/view/screens/center_history_screen.dart';
 import 'package:attenda/center/center_home/business_logic/center_home_cubit/center_home_cubit.dart';
+import 'package:attenda/center/center_requests/buiness_logic/center_requests_cubit/center_requests_cubit.dart';
 import 'package:attenda/center/center_requests/view/screens/center_requests_screen.dart';
-import 'package:attenda/center/rooms/business_logic/rooms_cubit.dart';
 import 'package:attenda/center/rooms/view/screens/rooms_screen.dart';
+import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:attenda/core/cache_helper.dart';
 import 'package:attenda/core/colors.dart';
-import 'package:attenda/core/routes.dart';
+import 'package:attenda/core/routing/routes.dart';
+import 'package:attenda/core/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,21 +23,32 @@ class CenterHomeScreen extends StatefulWidget {
   State<CenterHomeScreen> createState() => _CenterHomeScreenState();
 }
 
-class _CenterHomeScreenState extends State<CenterHomeScreen>with TickerProviderStateMixin {
+class _CenterHomeScreenState extends State<CenterHomeScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
+  Timer? timer;
 
   void _getCenterData() async {
-    await RoomsCubit.get(context).getRooms();
-    await CenterHomeCubit.get(context).getAppointments();
+    await CenterHomeCubit.get(context).getAppointments(context);
   }
+
+  // void checkAppointments() {
+  //   if (CenterHomeCubit.get(context).appointments != []) {
+  //     setState(() {});
+  //   }
+  // }
 
   @override
   void initState() {
     _tabController = TabController(vsync: this, length: 4);
     _tabController.addListener(_handleTabColor);
     _getCenterData();
+    timer = Timer.periodic(const Duration(microseconds: 500), (timer) {
+      // checkAppointments();
+    });
     super.initState();
   }
+
   void _handleTabColor() {
     setState(() {});
   }
@@ -48,7 +63,8 @@ class _CenterHomeScreenState extends State<CenterHomeScreen>with TickerProviderS
             Navigator.pushNamedAndRemoveUntil(
                 context, Routes.welcomeRoute, (route) => false);
           }
-         // await CenterHomeCubit.get(context).close();
+        } else if (state is LogoutError) {
+          showErrorToast(context: context, message: state.error);
         }
       },
       child: DefaultTabController(
@@ -69,7 +85,8 @@ class _CenterHomeScreenState extends State<CenterHomeScreen>with TickerProviderS
                       shape: BoxShape.circle,
                       color: MyColors.primary,
                     ),
-                    child: Image.asset('${(kDebugMode && kIsWeb)?"":"assets/"}images/a.png'),
+                    child: Image.asset(
+                        '${(kDebugMode && kIsWeb) ? "" : "assets/"}images/a.png'),
                   ),
                   SizedBox(
                     width: 2.w,
@@ -109,39 +126,38 @@ class _CenterHomeScreenState extends State<CenterHomeScreen>with TickerProviderS
                                 .textTheme
                                 .bodySmall!
                                 .copyWith(
-                                color: _tabController.index == 0
-                                    ? MyColors.primary
-                                    : Colors.white,
-                                fontSize: 16.sp),
+                                    color: _tabController.index == 0
+                                        ? MyColors.primary
+                                        : Colors.white,
+                                    fontSize: 16.sp),
                           ),
                           Text('Rooms',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
-                                  color: _tabController.index == 1
-                                      ? MyColors.primary
-                                      : Colors.white,
-                                  fontSize: 16.sp)),
+                                      color: _tabController.index == 1
+                                          ? MyColors.primary
+                                          : Colors.white,
+                                      fontSize: 16.sp)),
                           Text('History',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
-                                  color: _tabController.index == 2
-                                      ? MyColors.primary
-                                      : Colors.white,
-                                  fontSize: 16.sp)),
+                                      color: _tabController.index == 2
+                                          ? MyColors.primary
+                                          : Colors.white,
+                                      fontSize: 16.sp)),
                           Text('Requests',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
-                                  color: _tabController.index == 3
-                                      ? MyColors.primary
-                                      : Colors.white,
-                                  fontSize: 16.sp)),
-
+                                      color: _tabController.index == 3
+                                          ? MyColors.primary
+                                          : Colors.white,
+                                      fontSize: 16.sp)),
                         ],
                       ),
                     ),
@@ -151,7 +167,7 @@ class _CenterHomeScreenState extends State<CenterHomeScreen>with TickerProviderS
               actions: [
                 TextButton(
                     onPressed: () async {
-                      await CenterHomeCubit.get(context).logout();
+                      await CenterHomeCubit.get(context).logout(context);
                     },
                     child: Text(
                       'Logout',
@@ -163,18 +179,16 @@ class _CenterHomeScreenState extends State<CenterHomeScreen>with TickerProviderS
               ],
             ),
           ),
-          body: TabBarView(
-              controller: _tabController,
-              children: const [
-            AppointmentsScreen(),
-            RoomsScreen(),
-            CenterHistoryScreen(),
-            CenterRequestsScreen(),
+          body: TabBarView(controller: _tabController, children: [
+            const AppointmentsScreen(),
+            const RoomsScreen(),
+            const CenterHistoryScreen(),
+            BlocProvider(
+                create: (context) => CenterRequestsCubit(),
+                child: const CenterRequestsScreen()),
           ]),
-
         ),
       ),
     );
   }
-
 }

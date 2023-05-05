@@ -2,7 +2,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/colors.dart';
-import '../../../core/routes.dart';
+import '../../../core/routing/routes.dart';
 import '../../../students/models/students_model.dart';
 
 class SearchDialog extends StatefulWidget {

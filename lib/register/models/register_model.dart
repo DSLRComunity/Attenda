@@ -1,59 +1,54 @@
 class UserModel {
-  String? firstName;
-  String? lastName;
+  String? name;
   String? email;
   String? phone;
-  String? uId;
   String? technicalSupportNum;
   String? expectedStudentsNum;
   String? governorate;
-  String? governorateCode;
+  String address;
   String? subject;
-  bool isComplete;
+  String? password;
+  String? confirmPassword;
 
-  UserModel({
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.phone,
-    required this.uId,
-    required this.governorate,
-    required this.expectedStudentsNum,
-    required this.technicalSupportNum,
-    required this.governorateCode,
-    required this.subject,
-    required this.isComplete,
-  });
+  UserModel(
+      {required this.name,
+      required this.email,
+      required this.phone,
+      required this.governorate,
+      required this.address,
+      required this.expectedStudentsNum,
+      required this.technicalSupportNum,
+      required this.subject,
+      required this.password,
+      required this.confirmPassword});
 
   Map<String, dynamic> toJson() {
     return {
-      'firstName': firstName,
-      'lastName': lastName,
+      'name': name,
       'email': email,
-      'phone': phone,
-      'uId': uId,
-      'governorate': governorate,
-      'expectedStudentsNum': expectedStudentsNum,
-      'technicalSupportNum': technicalSupportNum,
-      'governorateCode': governorateCode,
-      'subject': subject,
-      'isComplete': isComplete,
+      'teche_phone': phone,
+      'city': governorate,
+      'maxStudent': expectedStudentsNum,
+      'work_phone': technicalSupportNum,
+      'speciality': subject,
+      'address': address,
+      'password': password,
+      'password_confirmation': confirmPassword,
     };
   }
 
-  factory UserModel.fromJson(Map<String, dynamic>json){
-    return UserModel(firstName: json['firstName'],
-        lastName: json['lastName'],
-        email: json['email'],
-        phone: json['phone'],
-        uId: json['uId'],
-        governorate: json['governorate'],
-        expectedStudentsNum: json['expectedStudentsNum'],
-        technicalSupportNum: json['technicalSupportNum'],
-        governorateCode: json['governorateCode'],
-        subject: json['subject'],
-        isComplete:json['isComplete'],
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      name: json['name'],
+      email: json['email'],
+      phone: json['teche_phone'],
+      governorate: json['city'],
+      expectedStudentsNum: json['maxStudent'],
+      technicalSupportNum: json['work_phone'],
+      subject: json['speciality'],
+      address: json['address'],
+      password: json['password'],
+      confirmPassword: json['password_confirmation'],
     );
   }
-
 }

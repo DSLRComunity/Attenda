@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/colors.dart';
-import '../../../core/routes.dart';
+import '../../../core/routing/routes.dart';
 
 class ChooseScreen extends StatelessWidget {
   const ChooseScreen({Key? key}) : super(key: key);

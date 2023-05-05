@@ -22,7 +22,7 @@ class CustomTextFiled extends StatelessWidget {
   final bool isPass;
   final String hint;
   final String label;
-  final IconData prefixIcon;
+  final IconData? prefixIcon;
   final Widget? suffix;
   final void Function(String? value) onSave;
   final TextEditingController? controller;

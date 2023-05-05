@@ -1,5 +1,6 @@
-import 'package:attenda/center/new_room/models/room_model.dart';
+import 'package:attenda/center/rooms/models/room_model.dart';
 import 'package:attenda/classes/view/widgets/class_card_info.dart';
+import 'package:attenda/core/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,9 +12,10 @@ final RoomModel room;
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: () {
+        Navigator.pushNamed(context, Routes.roomDetails,arguments: room);
       },
       child: Card(
-        color:  Color(room.color),
+        color:  const Color(0xff568466),
         elevation: 0,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
@@ -26,37 +28,21 @@ final RoomModel room;
             children: [
               Row(
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClassCardInfo(
-                        title: 'Room Name: ',
-                        value: room.roomNum,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22.sp,
-                      ),
-                      SizedBox(
-                        height: 7.h,
-                      ),
-                      ClassCardInfo(
-                          title: 'Max Size: ',
-                          value: room.maxSize.toString(),),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      ClassCardInfo(
-                          title: 'fee method: ', value: room.feeMethod),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      ClassCardInfo(
-                          title: 'price: ', value: room.price.toString()),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClassCardInfo(
+                          title: 'Room Name: ',
+                          value: room.name,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22.sp,
+                        ),
+                      ],
+                    ),
                   ),
+                  IconButton(onPressed: (){}, icon: const Icon(Icons.delete,color: Colors.white,))
                 ],
               ),
             ],

@@ -7,8 +7,8 @@ class CenterLoginInitial extends CenterLoginState {}
 class LoginLoadingState extends CenterLoginState {}
 
 class LoginSuccess extends CenterLoginState {
-  String uId;
-  LoginSuccess(this.uId);
+  String token;
+  LoginSuccess(this.token);
 }
 
 class LoginError extends CenterLoginState {

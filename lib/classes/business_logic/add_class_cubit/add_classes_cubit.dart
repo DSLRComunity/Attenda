@@ -41,7 +41,7 @@ class AddClassCubit extends Cubit<AddClassState> {
         initialDate = initialDate.add(const Duration(days: 7));
       }
       await StudentsCubit.get(context).addToManageHistory(HistoryModel(
-        userName: HomeCubit.get(context).userData!.firstName!,
+        userName: HomeCubit.get(context).userData!.name!,
         message:
             'has added a new class ${getClassName(myClass)} in ${myClass.region} at center ${myClass.centerName} starts at date ${DateFormat('yyyy-MM-dd').format(myClass.date)} with price ${myClass.classPrice} and will be repeated ${myClass.iteration} times ',
         date: DateFormat.yMEd().add_jms().format(DateTime.now()),

@@ -12,14 +12,4 @@ class RegisterError extends RegisterState {
   String error;
   RegisterError(this.error);
 }
-
-class CreateUserLoad extends RegisterState{}
-
-class CreateUserSuccess extends RegisterState {}
-
-class CreateUserError extends RegisterState {
-  String error;
-  CreateUserError(this.error);
-}
-
 class ChangePassVisibilityState extends RegisterState {}

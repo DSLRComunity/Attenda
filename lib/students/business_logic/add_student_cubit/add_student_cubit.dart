@@ -26,7 +26,7 @@ class AddStudentCubit extends Cubit<AddStudentState> {
         .then((value) {
       emit(AddStudentSuccess());
       addStudentToChoosedClass(student);
-      addToManageHistory(HistoryModel(userName: HomeCubit.get(context).userData!.firstName!,
+      addToManageHistory(HistoryModel(userName: HomeCubit.get(context).userData!.name!,
         message: 'has added a new student with id ${student.id}, name ${student.name} and phone number ${student.phone} at class ${student.className} '
         , date:  DateFormat.yMEd()
           .add_jms()

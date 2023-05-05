@@ -10,7 +10,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   static ProfileCubit get(BuildContext context)=>BlocProvider.of<ProfileCubit>(context);
 
-  CenterModel? centerData;
+  CenterRegisterModel? centerData;
   Future<void> getCenterData() async {
     emit(GetCenterDataLoad());
     FirebaseFirestore.instance
@@ -18,7 +18,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
-      centerData = CenterModel.fromJson(value.data()!);
+      // centerData = CenterRegisterModel.fromJson(value.data()!);
       emit(GetCenterDataSuccess());
     }).catchError((error) {
       emit(GetCenterDataError(error.toString()));

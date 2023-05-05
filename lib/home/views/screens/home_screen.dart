@@ -1,13 +1,12 @@
-import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
 import 'package:attenda/classes/view/screens/classes_screen.dart';
+import 'package:attenda/classes/view/widgets/toast.dart';
 import 'package:attenda/core/cache_helper.dart';
 import 'package:attenda/core/colors.dart';
-import 'package:attenda/core/routes.dart';
+import 'package:attenda/core/routing/routes.dart';
 import 'package:attenda/dash_board/views/screens/dashboard_screen.dart';
 import 'package:attenda/history/view/screens/historyScreen.dart';
 import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/home/views/widgets/search_field.dart';
-import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
 import 'package:attenda/students/view/screens/students_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,17 +24,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late TabController _tabController;
 
-  void _getInitialData() async {
-    await ClassesCubit.get(context).getAllClasses();
-    await StudentsCubit.get(context).getAllStudents();
-    await HomeCubit.get(context).getUserData();
-  }
+  // void _getInitialData() async {
+  //   await ClassesCubit.get(context).getAllClasses();
+  //   await StudentsCubit.get(context).getAllStudents();
+  //   await HomeCubit.get(context).getUserData();
+  // }
 
   @override
   void initState() {
     _tabController = TabController(vsync: this, length: 4);
     _tabController.addListener(_handleTabColor);
-    _getInitialData();
+    // _getInitialData();
     super.initState();
   }
 
@@ -52,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Navigator.pushNamedAndRemoveUntil(
                 context, Routes.welcomeRoute, (route) => false);
           }
+        }else if(state is LogoutError){
+          showErrorToast(context: context, message: state.error);
         }
       },
       child: DefaultTabController(
@@ -152,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 const SearchField(),
                 TextButton(
                     onPressed: () async {
-                      await HomeCubit.get(context).logout();
+                      await HomeCubit.get(context).logout(context);
                     },
                     child: Text(
                       'Logout',

@@ -1,54 +1,34 @@
+import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class MyEvent {
-  String roomName;
-  String teacherId;
-  String teacherName;
-  DateTime from;
-  DateTime to;
-  int recursion;
+class MyBooking {
+  String id;
+  String date;
+  String time;
+  String duration;
   int color;
-  bool isAllDay;
 
-  MyEvent({required this.roomName,
-    required this.from,
-    required this.to,
-    required this.recursion,
+  MyBooking({
+    required this.id,
     required this.color,
-    required this.isAllDay,
-    required this.teacherId,
-    required this.teacherName});
+    required this.time,
+    required this.duration,
+    required this.date,
+  });
 
-  factory MyEvent.fromJson(Map<String, dynamic>json){
-    return MyEvent(roomName: json['roomName'],
-        from: DateTime.parse(json['from']),
-        to: DateTime.parse(json['to']),
-        recursion: json['recursion'],
-        color: json['color'],
-        isAllDay: json['isAllDay'],
-        teacherId: json['teacherId'],
-        teacherName: json['teacherName']);
+  factory MyBooking.fromJson(Map<String, dynamic> json) {
+    return MyBooking(
+      color: Colors.teal.value,
+      id: json['id'],
+      date: json['from'],
+      time: json['start'],
+      duration: json['do'],
+    );
   }
-
-  Map<String,dynamic>toJson(){
-    return {
-      'roomName':roomName,
-      'from':from.toString(),
-      'to':to.toString(),
-      'recursion':recursion,
-      'color':color,
-      'isAllDay':isAllDay,
-      'teacherId':teacherId,
-      'teacherName':teacherName,
-    };
-  }
-
 }
 
 class EventDataSource extends CalendarDataSource {
-  EventDataSource(List<Appointment>source){
-    appointments=source;
+  EventDataSource(List<Appointment> source) {
+    appointments = source;
   }
-
-
 }

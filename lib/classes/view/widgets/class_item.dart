@@ -1,6 +1,6 @@
 import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
 import 'package:attenda/classes/view/widgets/get_day_function.dart';
-import 'package:attenda/core/routes.dart';
+import 'package:attenda/core/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';

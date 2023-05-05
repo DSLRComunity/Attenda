@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../classes/view/widgets/toast.dart';
-import '../../../../core/colors.dart';
 import '../../../../login/views/widgets/custom_button.dart';
 import '../../../../login/views/widgets/custom_text_field.dart';
 import '../../../center_login/business_logic/center_home_login/center_login_cubit.dart';
@@ -23,23 +22,18 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
   final centerNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
-  final roomsNumController = TextEditingController();
-  final locationController = TextEditingController();
-  final infoController = TextEditingController();
+  final addressController = TextEditingController();
+  final cityController=TextEditingController();
+  final confirmPassController=TextEditingController();
+  final passwordController=TextEditingController();
 
   late String centerName;
   late String email;
-  late String location;
+  late String city;
   late String phone;
-  late int roomsNum;
-  late String feeMethod;
-  late String info;
-
-  @override
-  void initState() {
-    feeMethod = '0';
-    super.initState();
-  }
+  late String address;
+  late String password;
+  late String confirmPass;
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +41,11 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
       key: formKey,
       child: BlocListener<CenterRegisterCubit, CenterRegisterState>(
         listener: (context, state) {
-          if (state is RegisterFirstStepSuccess) {
-            CenterHomeLoginCubit.get(context).changeToVerification(
-                CenterRegisterCubit.get(context).centerModel!.email);
-          } else if (state is RegisterFirstStepError) {
-            showErrorToast(context: context, message: 'Error, try again');
+          if (state is RegisterSuccess){
+            showSuccessToast(context: context, message: 'Register Success');
+            goToLogin(context);
+          } else if (state is RegisterError) {
+            showErrorToast(context: context, message:state.errors[0]);
           }
         },
         child: ImprovedScrolling(
@@ -198,7 +192,7 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Location',
+                              'City',
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall!
@@ -212,12 +206,12 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
                               width: constraints.maxWidth * 0.48,
                               child: MyTextField(
                                 onSave: (value) {
-                                  location = value!;
+                                  city = value!;
                                 },
-                                myController: locationController,
+                                myController: cityController,
                                 validate: (String? value) {
                                   if (value!.isEmpty) {
-                                    return 'enter location';
+                                    return 'enter the city';
                                   } else {
                                     return null;
                                   }
@@ -240,7 +234,7 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Info about center',
+                              'Address',
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall!
@@ -251,41 +245,21 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
                               height: 5.h,
                             ),
                             SizedBox(
-                              width: constraints.maxWidth * .48,
-                              child: TextFormField(
-                                maxLines: 5,
-                                controller: infoController,
-                                onSaved: (value) {
-                                  info = value!;
+                              width: constraints.maxWidth * 0.48,
+                              child: MyTextField(
+                                onSave: (value) {
+                                  address = value!;
                                 },
-                                validator: (value) {
+                                myController: addressController,
+                                validate: (String? value) {
                                   if (value!.isEmpty) {
-                                    return 'this field can not be empty';
+                                    return 'enter the address';
                                   } else {
                                     return null;
                                   }
                                 },
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: MyColors.primary),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.r)),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: MyColors.primary),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.r)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: MyColors.primary),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.r)),
-                                  ),
-                                ),
+                                isPassword: false,
+                                type: TextInputType.number,
                               ),
                             ),
                           ],
@@ -293,86 +267,117 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Rooms Number',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displaySmall!
-                                      .copyWith(
-                                          color: Colors.black, fontSize: 18.sp),
-                                ),
-                                SizedBox(
-                                  height: 5.h,
-                                ),
-                                SizedBox(
-                                  width: constraints.maxWidth * 0.48,
-                                  child: MyTextField(
-                                    onSave: (value) {
-                                      roomsNum = int.tryParse(value!)!;
-                                    },
-                                    myController: roomsNumController,
-                                    validate: (String? value) {
-                                      if (value!.isEmpty) {
-                                        return 'enter number of rooms';
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    isPassword: false,
-                                    type: TextInputType.number,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              'Password',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall!
+                                  .copyWith(color: Colors.black, fontSize: 18),
                             ),
-                            SizedBox(height: 40.h,),
-                            BlocBuilder<CenterRegisterCubit, CenterRegisterState>(
-                              builder: (context, state) {
-                                if (state is RegisterFirstStepLoad) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else {
-                                  return SizedBox(
-                                    width: 70.w,
-                                    child: CustomLoginButton(
-                                        onPressed: () async {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            formKey.currentState!.save();
-                                            CenterRegisterCubit cubit =
-                                                CenterRegisterCubit.get(
-                                                    context);
-                                            cubit.centerModel = CenterModel(
-                                              email: email,
-                                              phone: phone,
-                                              centerName: centerName,
-                                              attendaEmail: ' ',
-                                              location: location,
-                                              roomsNum: roomsNum,
-                                              feeMethod: feeMethod,
-                                              info: info,
-                                            );
-                                            await CenterRegisterCubit.get(
-                                                    context)
-                                                .centerRegister();
-                                          }
-                                        },
-                                        text: 'Next'),
-                                  );
-                                }
-                              },
+                            SizedBox(height: 5.h),
+                            SizedBox(
+                              width: constraints.maxWidth * .48,
+                              child: MyTextField(
+                                  myController: passwordController,
+                                  onSave: (value){
+                                    password=value!;
+                                  },
+                                  validate: (String? value) {
+                                    if (value!.isEmpty) {
+                                      return 'please confirm the password';
+                                    } else if (value.length < 8) {
+                                      return 'password must be above 8 digits';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  type: TextInputType.visiblePassword,
+                                  isPassword: true,
+                                ),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
+                  SizedBox(height: 15.h,),
+                  LayoutBuilder(builder: (context,constraints)=>Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Confirm Password',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(color: Colors.black, fontSize: 18),
+                          ),
+                          SizedBox(height: 5.h),
+                          SizedBox(
+                            width: constraints.maxWidth * .48,
+                            child: MyTextField(
+                              myController: confirmPassController,
+                              onSave: (value){
+                                confirmPass=value!;
+                              },
+                              validate: (String? value) {
+                                if (value!.isEmpty) {
+                                  return 'please confirm the password';
+                                } else if (value.length < 8) {
+                                  return 'password must be above 8 digits';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              type: TextInputType.visiblePassword,
+                              isPassword: true,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                    ],
+                  )),
                   SizedBox(
                     height: 20.h,
                   ),
+                  BlocBuilder<CenterRegisterCubit, CenterRegisterState>(
+                    builder: (context, state) {
+                      if (state is RegisterLoad) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return SizedBox(
+                          width: 70.w,
+                          child: CustomLoginButton(
+                              onPressed: () async {
+                                if (formKey.currentState!
+                                    .validate()) {
+                                  formKey.currentState!.save();
+                                  CenterRegisterCubit cubit =
+                                  CenterRegisterCubit.get(
+                                      context);
+                                  cubit.centerModel = CenterRegisterModel(
+                                    email: email,
+                                    phone: phone,
+                                    centerName: centerName,
+                                   password: password,
+                                    address: address,
+                                    city: city,
+                                    passwordConfirmation: confirmPass,
+                                  );
+                                  await cubit.centerRegister(context);
+                                }
+                              },
+                              text: 'Next'),
+                        );
+                      }
+                    },
+                  ),
+
                   SizedBox(
                     height: 10.h,
                   ),
@@ -406,10 +411,12 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
     CenterHomeLoginCubit.get(context).changeToLogin();
     emailController.dispose();
     centerNameController.dispose();
-    locationController.dispose();
     phoneController.dispose();
-    roomsNumController.dispose();
     _scrollController.dispose();
+    addressController.dispose();
+    cityController.dispose();
+    passwordController.dispose();
+    confirmPassController.dispose();
   }
 
   String? validateMobile(String? value) {
@@ -422,19 +429,4 @@ class _CenterRegisterScreenState extends State<CenterRegisterScreen> {
     }
     return null;
   }
-
-  List<DropdownMenuItem> getFeeMethods(List<String> list) {
-    List<DropdownMenuItem> menuItems = list
-        .map((item) => DropdownMenuItem(
-              value: list.indexOf(item).toString(),
-              child: Text(item),
-            ))
-        .toList();
-    return menuItems;
-  }
-
-  List<String> feeMethods = [
-    'per student',
-    'per hour',
-  ];
 }

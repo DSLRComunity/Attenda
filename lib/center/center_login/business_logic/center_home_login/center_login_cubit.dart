@@ -1,5 +1,3 @@
-import 'package:attenda/center/center_register/view/screens/set_password_screen.dart';
-import 'package:attenda/center/center_register/view/screens/verification_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../center_register/view/screens/censter_register_screen.dart';
@@ -21,13 +19,13 @@ class CenterHomeLoginCubit extends Cubit<CenterHomeLoginState> {
     view= const CenterRegisterScreen();
     emit(ChangeView());
   }
-  void changeToVerification(String email){
-    view= VerificationScreen(email:email);
-    emit(ChangeView());
-  }
+  // void changeToVerification(String email){
+  //   view= VerificationScreen(email:email);
+  //   emit(ChangeView());
+  // }
 
-  void changeToSetPassword(String attendaEmail){
-    view=SetPasswordScreen(attendaEmail: attendaEmail);
-    emit(ChangeView());
-  }
+  // void changeToSetPassword(String attendaEmail){
+  //   view=SetPasswordScreen(attendaEmail: attendaEmail);
+  //   emit(ChangeView());
+  // }
 }

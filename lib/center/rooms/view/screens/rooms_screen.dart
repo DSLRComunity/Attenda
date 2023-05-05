@@ -21,7 +21,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
   final _scrollController = ScrollController();
 
   void _getRooms() async {
-    await RoomsCubit.get(context).getRooms();
+    await RoomsCubit.get(context).getRooms(context);
   }
 
   @override

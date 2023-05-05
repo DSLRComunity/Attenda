@@ -69,10 +69,10 @@ class _CenterProfileScreenState extends State<CenterProfileScreen> {
                                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
                                 ),
                                 SizedBox(height: 5.h,),
-                                Text(
-                                  cubit.centerData!.info,
-                                  style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white),
-                                )
+                                // Text(
+                                //   cubit.centerData!.info,
+                                //   style: Theme.of(context).textTheme.displaySmall!.copyWith(color: Colors.white),
+                                // )
                               ],
                             ),
                           ),
@@ -91,7 +91,7 @@ class _CenterProfileScreenState extends State<CenterProfileScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    ProfileInfo(title: 'Address', icon: Icons.location_on_outlined, info:cubit.centerData!.location),
+                                    // ProfileInfo(title: 'Address', icon: Icons.location_on_outlined, info:cubit.centerData!.location),
                                     ProfileInfo(title: 'Phone Number', icon: Icons.phone, info: cubit.centerData!.phone),
                                     ProfileInfo(title: 'Email', icon: Icons.email_outlined, info: cubit.centerData!.email),
                                     InkWell(onTap: (){},child: const ProfileInfo(title: 'Chat us', icon: Icons.chat, info: '')),

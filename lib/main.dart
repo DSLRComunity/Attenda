@@ -2,7 +2,8 @@ import 'package:attenda/center/center_home/business_logic/center_home_cubit/cent
 import 'package:attenda/center/rooms/business_logic/rooms_cubit.dart';
 import 'package:attenda/class_details/business_logic/class_details_cubit.dart';
 import 'package:attenda/classes/business_logic/classes_cubit/classes_cubit.dart';
-import 'package:attenda/core/routes.dart';
+import 'package:attenda/core/routing/routes.dart';
+import 'package:attenda/core/services.dart';
 import 'package:attenda/core/strings.dart';
 import 'package:attenda/home/business_logic/home_cubit.dart';
 import 'package:attenda/students/business_logic/students_cubit/students_cubit.dart';
@@ -14,7 +15,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'bloc_observer.dart';
 import 'core/cache_helper.dart';
 import 'core/firebase_config/firebase_config.dart';
-import 'core/router.dart';
+import 'core/network/dio_helper.dart';
+import 'core/routing/router.dart';
 import 'core/theme.dart';
 
 void main() async {
@@ -35,22 +37,23 @@ void main() async {
     await Firebase.initializeApp();
   }
   await CacheHelper.init();
+  ServiceLocator().init();
   String initialRoute;
-  uId = CacheHelper.getData(key: 'uId');
+  token = CacheHelper.getData(key: 'uId');
   role=CacheHelper.getData(key: 'role');
-  if (uId != null) {
+  if (token != null) {
     if(role=='t'){
       initialRoute=Routes.homeRoute;
     }else{
       initialRoute = Routes.centerHomeRoute;
     }
     if (kDebugMode) {
-      print('$uId');
+      print('$token');
     }
   } else {
     initialRoute = Routes.welcomeRoute;
   }
-  // DioHelper.init();
+  DioHelper.init();
   runApp(MyApp(initialRoute: initialRoute,));
   Bloc.observer = MyBlocObserver();
 }

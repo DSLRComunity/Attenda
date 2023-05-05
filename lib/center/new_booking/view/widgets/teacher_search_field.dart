@@ -1,4 +1,4 @@
-import 'package:attenda/center/center_home/business_logic/booking_cubit/booking_cubit.dart';
+import 'package:attenda/center/new_booking/business_logic/booking_cubit.dart';
 import 'package:attenda/center/center_home/business_logic/center_home_cubit/center_home_cubit.dart';
 import 'package:attenda/core/colors.dart';
 import 'package:flutter/foundation.dart';

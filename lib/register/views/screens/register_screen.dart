@@ -22,26 +22,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _scrollController=ScrollController();
   final emailController = TextEditingController();
   final passController = TextEditingController();
-  final firstNameController = TextEditingController();
-  final latNameController = TextEditingController();
+  final nameController = TextEditingController();
   final confirmPassController = TextEditingController();
   final personalPhoneNumberController = TextEditingController();
   final technicalSupportNumberController = TextEditingController();
   final subjectController = TextEditingController();
-
+final addressController=TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late String email;
   late String password;
+  late String confirmPassword;
   late String phone;
-  late String firstName;
-  late String lastName;
+  late String name;
   late String technicalSupportNumber;
   late Map<String, dynamic> governorate;
   late String governorateName;
-  late String governorateCode;
   late String expectedStudentsNum;
   late String subject;
+  late String address;
+
 
   List<DropdownMenuItem> getGovernoratesItems(List<Map<String, dynamic>> list) {
     List<DropdownMenuItem> menuItems = list
@@ -52,7 +52,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         .toList();
     return menuItems;
   }
-
   List<DropdownMenuItem> getExpectedStudentsItems(List<String> list) {
     List<DropdownMenuItem> menuItems = list
         .map((item) => DropdownMenuItem(
@@ -62,7 +61,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         .toList();
     return menuItems;
   }
-
   List<DropdownMenuItem> getSubjectsItem(List<String> list) {
     List<DropdownMenuItem> menuItems = list
         .map((item) => DropdownMenuItem(
@@ -77,7 +75,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     governorate = governorates[0];
     governorateName = governorates[0]['governorate'];
-    governorateCode = governorates[0]['code'];
     expectedStudentsNum = expectedStudentsList[0];
     subject = arabicSubjects[0];
     super.initState();
@@ -93,6 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (context, state) {
           if (state is RegisterSuccess) {
             showSuccessToast(context: context, message: 'Registered Success');
+            goToLogin(context);
           } else if (state is RegisterError) {
             showErrorToast(context: context, message: state.error);
           }
@@ -129,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'First Name',
+                              'Name',
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall!
@@ -142,12 +140,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: constraints.maxWidth * 0.48,
                               child: MyTextField(
                                 onSave: (value) {
-                                  firstName = value!;
+                                  name = value!;
                                 },
-                                myController: firstNameController,
+                                myController: nameController,
                                 validate: (String? value) {
                                   if (value!.isEmpty) {
-                                    return 'enter first name';
+                                    return 'enter your name';
                                   } else {
                                     return null;
                                   }
@@ -158,39 +156,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Last Name',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall!
-                                  .copyWith(color: Colors.black, fontSize: 18.sp),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            SizedBox(
-                              width: constraints.maxWidth * 0.48,
-                              child: MyTextField(
+                        SizedBox(
+                          width: constraints.maxWidth * .48,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Email',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(
+                                    color: Colors.black, fontSize: 18.sp),
+                              ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              MyTextField(
                                 onSave: (value) {
-                                  lastName = value!;
+                                  email = value!;
                                 },
-                                myController: latNameController,
+                                myController: emailController,
                                 validate: (String? value) {
                                   if (value!.isEmpty) {
-                                    return 'ente last name';
-                                  } else {
+                                    return 'enter an email';
+                                  } else if (value.contains('@') &&
+                                      value.substring(0, value.indexOf('@'))
+                                          .isNotEmpty) {
                                     return null;
+                                  } else {
+                                    return 'enter a valid email';
                                   }
                                 },
+                                type: TextInputType.emailAddress,
                                 isPassword: false,
-                                type: TextInputType.name,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+
                       ],
                     ),
                   ),
@@ -299,9 +303,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         onChanged: (dynamic newValue) {
                                           setState(() {
                                             governorate = newValue;
-                                            governorateName =
-                                                newValue['governorate'];
-                                            governorateCode = newValue['code'];
+                                            governorateName = newValue['governorate'];
+                                            // governorateCode = newValue['code'];
                                           });
                                         },
                                         items: getGovernoratesItems(governorates),
@@ -317,41 +320,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Expected students number',
+                                'Address',
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall!
                                     .copyWith(
-                                        color: Colors.black, fontSize: 18.sp),
+                                    color: Colors.black, fontSize: 18.sp),
                               ),
                               SizedBox(
                                 height: 5.h,
                               ),
-                              StatefulBuilder(
-                                builder: (context, setState) => Container(
-                                    width: constraints.maxWidth * .48,
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: MyColors.primary),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.r))),
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 2.w),
-                                      child: DropdownButton<dynamic>(
-                                        isExpanded: true,
-                                        underline: Container(),
-                                        value: expectedStudentsNum,
-                                        onChanged: (Object? newValue) {
-                                          setState(() {
-                                            expectedStudentsNum =
-                                                newValue.toString();
-                                          });
-                                        },
-                                        items: getExpectedStudentsItems(
-                                            expectedStudentsList),
-                                      ),
-                                    )),
+                              MyTextField(
+                                onSave: (value) {
+                                   address= value!;
+                                },
+                                myController: addressController,
+                                validate: (String? value) {
+                                  if (value!.isEmpty) {
+                                    return 'enter an address';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                type: TextInputType.streetAddress,
+                                isPassword: false,
                               ),
                             ],
                           ),
@@ -370,36 +362,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Email',
+                                'Expected students number',
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall!
                                     .copyWith(
-                                        color: Colors.black, fontSize: 18.sp),
+                                    color: Colors.black, fontSize: 18.sp),
                               ),
                               SizedBox(
                                 height: 5.h,
                               ),
-                              MyTextField(
-                                onSave: (value) {
-                                  email = value!;
-                                },
-                                myController: emailController,
-                                validate: (String? value) {
-                                  if (value!.isEmpty) {
-                                    return 'enter an email';
-                                  } else if (value.endsWith('.com') &&
-                                      value.contains('@') &&
-                                      value
-                                          .substring(0, value.indexOf('@'))
-                                          .isNotEmpty) {
-                                    return null;
-                                  } else {
-                                    return 'enter a valid email';
-                                  }
-                                },
-                                type: TextInputType.emailAddress,
-                                isPassword: false,
+                              StatefulBuilder(
+                                builder: (context, setState) => Container(
+                                    width: constraints.maxWidth * .48,
+                                    decoration: BoxDecoration(
+                                        border:
+                                        Border.all(color: MyColors.primary),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.r))),
+                                    child: Padding(
+                                      padding:
+                                      EdgeInsets.symmetric(horizontal: 2.w),
+                                      child: DropdownButton<dynamic>(
+                                        isExpanded: true,
+                                        underline: Container(),
+                                        value: expectedStudentsNum,
+                                        onChanged: (Object? newValue) {
+                                          setState(() {
+                                            expectedStudentsNum =
+                                                newValue.toString();
+                                          });
+                                        },
+                                        items: getExpectedStudentsItems(
+                                            expectedStudentsList),
+                                      ),
+                                    )),
                               ),
                             ],
                           ),
@@ -602,16 +599,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
                                 await RegisterCubit.get(context).register(
-                                  firstName: firstName,
-                                  lastName: lastName,
+                                 context,
+                                  name: name,
                                   email: email,
                                   password: password,
                                   phone: phone,
                                   expectedStudentsNum: expectedStudentsNum,
                                   governorate: governorateName,
                                   technicalSupportNum: technicalSupportNumber,
-                                  governorateCode: governorateCode,
                                   subject: subject,
+                                  confirmPassword: confirmPassword,
+                                  address: address
                                 );
                                 goToLogin(context);
                               }
@@ -655,10 +653,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     emailController.dispose();
     passController.dispose();
     confirmPassController.dispose();
-    firstNameController.dispose();
-    latNameController.dispose();
+    nameController.dispose();
     personalPhoneNumberController.dispose();
     technicalSupportNumberController.dispose();
     subjectController.dispose();
+    addressController.dispose();
   }
 }

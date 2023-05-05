@@ -287,7 +287,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
             widget.student.className, className, widget.student);
         // classNameMessage='the class name from ${widget.student.className} to $className';
         StudentsCubit.get(context).addToManageHistory(HistoryModel(
-          userName: HomeCubit.get(context).userData!.firstName!,
+          userName: HomeCubit.get(context).userData!.name!,
           message:
               "has updated a student whose id ${widget.student.id} by changing $hisOrHer class name from ${widget.student.className} to $className ",
           date: DateFormat.yMEd().add_jms().format(DateTime.now()),
@@ -296,7 +296,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
       if (name != widget.student.name) {
         // nameMessage='$hisOrHer name from ${widget.student.name} to $name';
         StudentsCubit.get(context).addToManageHistory(HistoryModel(
-          userName: HomeCubit.get(context).userData!.firstName!,
+          userName: HomeCubit.get(context).userData!.name!,
           message:
               "has updated a student whose id ${widget.student.id} by changing $hisOrHer name from ${widget.student.name} to $name ",
           date: DateFormat.yMEd().add_jms().format(DateTime.now()),
@@ -304,7 +304,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
       }
       if (phone != widget.student.phone) {
         StudentsCubit.get(context).addToManageHistory(HistoryModel(
-          userName: HomeCubit.get(context).userData!.firstName!,
+          userName: HomeCubit.get(context).userData!.name!,
           message:
               "has updated a student whose id ${widget.student.id} by changing $hisOrHer phone number from ${widget.student.phone} to $phone ",
           date: DateFormat.yMEd().add_jms().format(DateTime.now()),
@@ -312,7 +312,7 @@ class _EditStudentScreenState extends State<EditStudentScreen> {
       }
       if (parentPhone != widget.student.parentPhone) {
         StudentsCubit.get(context).addToManageHistory(HistoryModel(
-          userName: HomeCubit.get(context).userData!.firstName!,
+          userName: HomeCubit.get(context).userData!.name!,
           message:
               "has updated a student whose id ${widget.student.id} by changing $hisOrHer parent phone from ${widget.student.parentPhone} to $parentPhone ",
           date: DateFormat.yMEd().add_jms().format(DateTime.now()),

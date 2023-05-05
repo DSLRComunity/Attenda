@@ -1,47 +1,31 @@
-class CenterModel {
+class CenterRegisterModel {
   String email;
-  String attendaEmail;
-  String centerName;
-  int roomsNum;
+  String password;
+  String passwordConfirmation;
+  String city;
+  String address;
   String phone;
-  String location;
-  String feeMethod;
-  String info;
+  String centerName;
 
-  CenterModel({
+  CenterRegisterModel({
     required this.email,
     required this.phone,
     required this.centerName,
-    required this.attendaEmail,
-    required this.location,
-    required this.roomsNum,
-    required this.feeMethod,
-    required this.info,
+   required this.password,
+    required this.passwordConfirmation,
+    required this.address,
+    required this.city
   });
-
-  factory CenterModel.fromJson(Map<String, dynamic> json) {
-    return CenterModel(
-      email: json['email'],
-      phone: json['phone'],
-      centerName: json['centerName'],
-      attendaEmail: json['attendaEmail'],
-      location: json['location'],
-      roomsNum: json['roomsNum'],
-      feeMethod: json['feeMethod'],
-      info:json['info'],
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return {
       'email': email,
       'phone': phone,
-      'centerName': centerName,
-      'attendaEmail': attendaEmail,
-      'location': location,
-      'roomsNum': roomsNum,
-      'feeMethod': feeMethod,
-      'info':info,
+      'name': centerName,
+      'password':password,
+      'password_confirmation':passwordConfirmation,
+      'city':city,
+      'address':address,
     };
   }
 }

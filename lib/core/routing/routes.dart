@@ -13,4 +13,6 @@ class Routes {
   static const String centerHomeRoute = '/center-home';
   static const String registerTeacher = '/register-teacher';
   static const String centerProfile = '/center-profile';
+  static const String roomDetails='/room-details';
+  static const String centerRequestDetails='/center-request-details';
 }

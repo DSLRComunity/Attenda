@@ -103,7 +103,7 @@ class ClassesCubit extends Cubit<ClassesState> {
       }
     });
     await StudentsCubit.get(context).addToManageHistory(HistoryModel(
-      userName: HomeCubit.get(context).userData!.firstName!,
+      userName: HomeCubit.get(context).userData!.name!,
       message:
           'has deleted class $className that is at date ${DateFormat('yyyy-MM-dd').format(date)} ',
       date: DateFormat.yMEd().add_jms().format(DateTime.now()),

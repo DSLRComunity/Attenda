@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../classes/view/widgets/custom_button.dart';
-import '../../../core/routes.dart';
+import '../../../core/routing/routes.dart';
 import '../../business_logic/students_cubit/students_cubit.dart';
 import '../../models/students_model.dart';
 import '../widgets/scrollable_widget.dart';

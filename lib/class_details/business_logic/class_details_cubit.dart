@@ -143,7 +143,7 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
       emit(UpdateHistorySuccess());
       await addHistoryToStudent(currentClass.date, studentId, history);
       await addToAttendanceHistory(HistoryModel(
-        userName: HomeCubit.get(context).userData!.firstName!,
+        userName: HomeCubit.get(context).userData!.name!,
         message: 'has register student with id ${studentId} as attendant in class ${getClassName(currentClass)} on ${DateFormat('yyyy-MM-dd').format(currentClass.date)} ',
             date: DateFormat.yMEd()
           .add_jms()
@@ -214,7 +214,7 @@ class ClassDetailsCubit extends Cubit<ClassDetailsState> {
       emit(UpdateHistorySuccess());
       await removeHistoryFromStudent(currentClass.date, studentId);
       await addToAttendanceHistory(HistoryModel(
-        userName: HomeCubit.get(context).userData!.firstName!,
+        userName: HomeCubit.get(context).userData!.name!,
         message: 'has unregister student with id ${studentId} from attendance in class ${getClassName(currentClass)} on ${DateFormat('yyyy-MM-dd').format(currentClass.date)} ',
         date: DateFormat.yMEd()
             .add_jms()

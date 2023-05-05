@@ -1,8 +1,7 @@
 import 'package:attenda/classes/view/widgets/toast.dart';
-import 'package:attenda/core/routes.dart';
+import 'package:attenda/core/routing/routes.dart';
 import 'package:attenda/login/business_logic/home_login_cubit/home_login_cubit.dart';
 import 'package:attenda/login/business_logic/login_cubit/login_cubit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,23 +30,16 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) async {
           if (state is LoginError) {
             showErrorToast(context: context, message: state.error);
-          }else if(state is CheckCompleteError){
-            showErrorToast(context: context, message: state.error);
-          } else if (state is LoginSuccess){
-          await LoginCubit.get(context).checkComplete();
-          }else if(state is CheckCompleteSuccess){
-            if(LoginCubit.get(context).isComplete){
+          }else if (state is LoginSuccess){
               showSuccessToast(context: context, message: 'Login Successfully');
-              uId = FirebaseAuth.instance.currentUser!.uid;
+              token = state.uId;
               role='t';
               if (LoginCubit.get(context).rememberMe) {
-                CacheHelper.putData(key: 'uId', value: uId);
+                CacheHelper.putData(key: 'uId', value: token);
                 CacheHelper.putData(key: 'role', value: role);
               }
               goToHome(context);
-            }else{
-              goToCompleteRegistration(context);
-            }
+
           }
         },
 
@@ -121,6 +113,7 @@ class LoginScreen extends StatelessWidget {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
                       await LoginCubit.get(context).loginUser(
+                      context,
                           email: email, password: password);
                     }
                   },
@@ -159,7 +152,7 @@ class LoginScreen extends StatelessWidget {
                     onSubmit: (value)async{
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
-                        await LoginCubit.get(context).loginUser(
+                        await LoginCubit.get(context).loginUser(context,
                             email: email, password: password);
                       }
                     },
@@ -181,7 +174,7 @@ class LoginScreen extends StatelessWidget {
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
-                                await LoginCubit.get(context).loginUser(
+                                await LoginCubit.get(context).loginUser(context,
                                     email: email, password: password);
                               }
                             },
@@ -272,10 +265,10 @@ class LoginScreen extends StatelessWidget {
     // passController.dispose();
     Navigator.pushReplacementNamed(context, Routes.homeRoute);
   }
-  void goToCompleteRegistration(BuildContext context){
-    emailController.dispose();
-    passController.dispose();
-    HomeLoginCubit.get(context).changeToCompleteRegister();
-
-  }
+  // void goToCompleteRegistration(BuildContext context){
+  //   emailController.dispose();
+  //   passController.dispose();
+  //   HomeLoginCubit.get(context).changeToCompleteRegister();
+  //
+  // }
 }

@@ -8,15 +8,9 @@ class LogoutLoading extends CenterHomeState {}
 
 class LogoutSuccess extends CenterHomeState {}
 
-class LogoutError extends CenterHomeState {}
-
-class GetRoomsLoad extends CenterHomeState {}
-
-class GetRoomsSuccess extends CenterHomeState {}
-
-class GetRoomsError extends CenterHomeState {
+class LogoutError extends CenterHomeState {
   String error;
-  GetRoomsError(this.error);
+  LogoutError(this.error);
 }
 
 class GetAppointmentsLoad extends CenterHomeState {}

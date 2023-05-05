@@ -1,6 +1,5 @@
-import 'package:attenda/center/center_home/view/widgets/booking_text_field.dart';
 import 'package:attenda/center/new_room/business_logic/add_room_cubit.dart';
-import 'package:attenda/center/new_room/models/room_model.dart';
+import 'package:attenda/center/new_room/models/new_room_model.dart';
 import 'package:attenda/center/rooms/business_logic/rooms_cubit.dart';
 import 'package:attenda/classes/view/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -23,20 +22,16 @@ class _RoomDialogState extends State<RoomDialog> {
 
   final roomNumController = TextEditingController();
   final maxSizeController = TextEditingController();
-  final priceController=TextEditingController();
 
   late String roomNum;
-  late int maxSize;
+  late String maxSize;
   late int color;
-  late String feeMethod;
-  late String price;
 
   @override
   void initState() {
     color = Colors.teal.value;
-    roomNum='';
-    maxSize=0;
-    feeMethod='0';
+    roomNum = '';
+    maxSize = '';
     super.initState();
   }
 
@@ -44,12 +39,12 @@ class _RoomDialogState extends State<RoomDialog> {
   Widget build(BuildContext context) {
     return BlocListener<AddRoomCubit, AddRoomState>(
       listener: (context, state) async {
-        if (state is AddRoomSuccess){
+        if (state is AddRoomSuccess) {
           showSuccessToast(
               context: context, message: 'Room Added Successfully');
           roomNumController.clear();
           maxSizeController.clear();
-          await RoomsCubit.get(context).getRooms();
+          await RoomsCubit.get(context).getRooms(context);
         }
         if (state is AddRoomError) {
           showErrorToast(context: context, message: state.error);
@@ -83,13 +78,13 @@ class _RoomDialogState extends State<RoomDialog> {
                         onSubmit: (value) async {
                           if (formKey.currentState!.validate()) {
                             formKey.currentState!.save();
-                            await AddRoomCubit.get(context).addRoom(RoomModel(
-                                maxSize: maxSize,
-                                feeMethod: feeMethod,
-                                color: color,
-                                roomNum: roomNum,
-                            price: double.parse(price)
-                            ));
+                            await AddRoomCubit.get(context).addRoom(
+                                NewRoomModel(
+                                  name: roomNum,
+                                  color: int.tryParse(color.toString().substring(0,6))!,
+                                  size: maxSize,
+                                ),
+                                context);
 
                             // ClassesCubit.get(context).getAllClasses();
                           }
@@ -110,66 +105,29 @@ class _RoomDialogState extends State<RoomDialog> {
                         prefixIcon: Icons.groups,
                         controller: maxSizeController,
                         onSave: (value) {
-                          maxSize = int.parse(value!);
+                          maxSize = value!;
                         },
                         onSubmit: (value) async {
                           if (formKey.currentState!.validate()) {
                             formKey.currentState!.save();
-                            await AddRoomCubit.get(context).addRoom(RoomModel(
-                                maxSize: maxSize,
-                                feeMethod: feeMethod,
-                                color: color,
-                                roomNum: roomNum,
-                            price: double.parse(price),
-                            ));
+                            await AddRoomCubit.get(context).addRoom(
+                                NewRoomModel(
+                                  name: roomNum,
+                                  color: int.tryParse(color.toString().substring(0,6))!,
+                                  size: maxSize,
+                                ),
+                                context);
                           }
                         },
                         validate: (value) {
                           if (value!.isEmpty) {
                             return 'Enter the max size of the room !';
-                          } else if(value is num){
+                          } else if (value is num) {
                             return 'valid number';
-                          }
-                          else {
+                          } else {
                             return null;
                           }
                         }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    StatefulBuilder(
-                      builder: (context, setState) => LayoutBuilder(
-                        builder: (context,constraints) => Row(
-                          children: [
-                            SizedBox(
-                              width: constraints.maxWidth*.3,
-                              child: BookingTextField(
-                                  isEnabled: true,
-                                  hint: 'price',
-                                  myController: priceController,
-                                  validate: (value){
-                                if(value!.isEmpty){
-                                  return 'enter the price';
-                                }else if(double.tryParse(value)==null){
-                                  return 'enter valid price';
-                                }else {
-                                  return null;
-                                }
-                              }, onSave: (value){
-                                 price=value!;
-                              }),
-                            ),
-                            SizedBox(width: 2.w,),
-                            const Text('Per'),
-                            SizedBox(width: 8.w,),
-                            Radio(value: '0', groupValue: feeMethod, onChanged: (value){setState((){feeMethod=value!;});}),
-                            const Text('student'),
-                            Radio(value: '1', groupValue: feeMethod, onChanged: (value){setState((){feeMethod=value!;});}),
-                            const Text('hour'),
-                          ],
-                        ),
-                      ),
-                    ),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -183,7 +141,9 @@ class _RoomDialogState extends State<RoomDialog> {
                             color: Color(color),
                           ),
                         ),
-                        SizedBox(width: 5.w,),
+                        SizedBox(
+                          width: 5.w,
+                        ),
                         CustomLoginButton(
                             text: 'Pick Color',
                             onPressed: () => pickColor(context)),
@@ -192,24 +152,24 @@ class _RoomDialogState extends State<RoomDialog> {
                     SizedBox(
                       height: 10.h,
                     ),
-                    BlocBuilder<AddRoomCubit,AddRoomState>(
+                    BlocBuilder<AddRoomCubit, AddRoomState>(
                       builder: (context, state) {
-                        if(state is AddRoomLoad){
+                        if (state is AddRoomLoad) {
                           return const CircularProgressIndicator();
-                        }else {
+                        } else {
                           return CustomButton(
                               text: 'Add',
                               onPressed: () async {
-                              if(formKey.currentState!.validate()){
-                                formKey.currentState!.save();
-                                await AddRoomCubit.get(context).addRoom(RoomModel(
-                                    maxSize: maxSize,
-                                    feeMethod: feeMethod,
-                                    color: color,
-                                    roomNum: roomNum,
-                                price: double.parse(price),
-                                ));
-                              }
+                                if (formKey.currentState!.validate()) {
+                                  formKey.currentState!.save();
+                                  await AddRoomCubit.get(context).addRoom(
+                                      NewRoomModel(
+                                        name: roomNum,
+                                        color: int.tryParse(color.toString().substring(0,6))!,
+                                        size: maxSize,
+                                      ),
+                                      context);
+                                }
                               });
                         }
                       },
@@ -225,32 +185,30 @@ class _RoomDialogState extends State<RoomDialog> {
   }
 
   Widget buildColorPicker() => BlockPicker(
-      pickerColor: Color(color),
-      availableColors: const [
-        Colors.black,
-        Colors.amber,
-        Colors.deepPurpleAccent,
-        Colors.blueAccent,
-        Colors.grey,
-        Colors.pinkAccent,
-        Colors.lightBlueAccent,
-        Colors.red,
-        Colors.yellow,
-        Colors.greenAccent,
-        Colors.blue,
-        Colors.brown,
-        Colors.purple,
-        Colors.teal,
-      ],
-      onColorChanged: (Color color) => setState(() {
-            this.color = color.value;
-            Navigator.of(context).pop();
-          }),
+        pickerColor: Color(color),
+        availableColors: const [
+          Colors.black,
+          Colors.amber,
+          Colors.deepPurpleAccent,
+          Colors.blueAccent,
+          Colors.grey,
+          Colors.pinkAccent,
+          Colors.lightBlueAccent,
+          Colors.red,
+          Colors.yellow,
+          Colors.greenAccent,
+          Colors.blue,
+          Colors.brown,
+          Colors.purple,
+          Colors.teal,
+        ],
+        onColorChanged: (Color color) => setState(() {
+          this.color = color.value;
+          Navigator.of(context).pop();
+        }),
+      );
 
-  );
-  void pickColor(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
+  void pickColor(BuildContext context) => showDialog(context: context, builder: (context) => AlertDialog(
             title: const Text('Pick room color'),
             content: Column(
               mainAxisSize: MainAxisSize.min,

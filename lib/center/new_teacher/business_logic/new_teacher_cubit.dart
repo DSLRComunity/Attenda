@@ -69,17 +69,15 @@ class NewTeacherCubit extends Cubit<NewTeacherState> {
   }) async {
     emit(CreateUserLoad());
     UserModel userData = UserModel(
-      firstName: firstName,
-      lastName: lastName,
+      name: firstName,
       email: email,
       phone: phone,
-      uId: uId,
       technicalSupportNum: technicalSupportNum,
       governorate: governorate,
       expectedStudentsNum: expectedStudentsNum,
-      governorateCode: governorateCode,
       subject: subject,
-      isComplete: false,
+      address: '', password: '', confirmPassword: '',
+
     );
     try {
       await FirebaseFirestore.instance
